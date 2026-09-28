@@ -1,0 +1,239 @@
+<mxfile host="app.diagrams.net" modified="2026-09-28T00:00:00.000Z" agent="prd-generator" version="22.0.0" type="device">
+  <diagram name="GLC 欧线(OOCL)" id="glc-page">
+    <mxGraphModel dx="1422" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1650" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L1" value="触发 / 人工(调度 + 业务确认)" style="swimlane;horizontal=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="MBPTS 平台(收单 / 暂存 / 模板 / 差异计算)" style="swimlane;horizontal=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="1520" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="IES+ 系统(导入 / 预报 / 台账 / 附件)" style="swimlane;horizontal=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="460" width="1520" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" value="邮件 / 归档 / 大表(AVIS BL status report)" style="swimlane;horizontal=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="660" width="1520" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="T01" value="T01 定时触发&#10;每周一 09:00(可配置)&#10;处理上周一至周日" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="90" y="55" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="H01" value="H01 人工确认缺 AVIS&#10;确认后再跑该票" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1330" y="55" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R01" value="R01 扫描公邮 · 分类收单&#10;主题:AVIS / Shippers_Decl / Bill of landing" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="70" y="160" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R02" value="R02 附件入暂存库 · 台账登记&#10;按 BL 号归并 upsert" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="290" y="160" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D01" value="D01 Customer code&#10;在配置表?" style="rhombus;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="510" y="155" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="D02" value="D02 本票 AVIS 与 BL&#10;齐备?" style="rhombus;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="690" y="155" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="R05" value="R05 取件组装文件包&#10;AVIS+BL(DG 加 Shipper)+两模板" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="870" y="160" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R06" value="R06 填写 AVIS / BL 导入模板&#10;Container Type 单位改 &quot;'&quot;" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1100" y="160" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="E02" value="E02 缺 AVIS 挂起&#10;单列一行,P 列记&quot;未找到对应 AVIS&quot;" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="660" y="270" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R08" value="R08 DG:导出发票算差异&#10;FOB=Total-Goods-Packing-Insurance-Freight-DGR" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="900" y="270" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D04" value="D04 找到对应&#10;发票 PDF?" style="rhombus;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1170" y="265" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="R09" value="R09 核对 FOB charge&#10;金额不一致以 IES 导出值为准并记录" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1330" y="270" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="E03" value="E03 未找到发票 PDF&#10;按差异值填,记&quot;未找到 xxx 发票&quot;" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1150" y="370" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R07" value="R07 批量导入 AVIS&#10;绿灯后上传,回写 G 列" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="70" y="490" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D03" value="D03 是否 DG&#10;货物?" style="rhombus;fillColor=#fff2cc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="300" y="485" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="R10" value="R10 FOB 填入 Others 保存" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="460" y="490" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R11" value="R11 全选发票 · 生成预报&#10;预报信息取自提单" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="670" y="490" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="R12" value="R12 集装箱信息导入 BL 模板" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="890" y="490" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="D05" value="D05 提单与发票&#10;有差异?" style="rhombus;fillColor=#fff2cc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1110" y="485" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="R13" value="R13 上传 AVIS/Shipper/BL 附件&#10;(AVIS 类别选 Other)并保存" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1280" y="490" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="E04" value="E04 记录差异弹窗&#10;回写 L 列 BL different" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1080" y="590" width="180" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="O01" value="O01 生成台账成功" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="590" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="MAIL" value="Portal 公邮&#10;(ie-import 等)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="70" y="690" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="STG" value="暂存库 + 附件台账&#10;(pending / 已处理)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="270" y="690" width="170" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="E01" value="E01 无配置:建 Other 文件夹&#10;异常反馈列记录,流程继续" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="490" y="690" width="200" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="O02" value="O02 回写大表&#10;G/H/J/K/L/M/N/P 列" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="690" width="190" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="O03" value="O03 周归档文件夹齐备&#10;PDC&gt;GLC&gt;运行周&gt;票文件夹" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1260" y="690" width="200" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="T01" target="R01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R01" target="R02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R02" target="D01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" value="在配置表中" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="D01" target="D02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" value="不存在" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="D01" target="E01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" value="继续齐套判断" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="E01" target="D02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" value="齐备" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="D02" target="R05"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" value="不齐(缺 AVIS)" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="D02" target="E02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" value="转人工" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="E02" target="H01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" value="确认后再跑" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="H01" target="D02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R05" target="R06"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R06" target="R07"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R07" target="D03"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e14" value="是(DG)" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="D03" target="R08"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e15" value="否(非 DG)" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="D03" target="R11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R08" target="D04"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e17" value="找到" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="D04" target="R09"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e18" value="未找到" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="D04" target="E03"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R09" target="R10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e20" value="按差异值填写" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="E03" target="R10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R10" target="R11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R11" target="R12"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R12" target="D05"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e24" value="有差异" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="D05" target="E04"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e25" value="记录后继续" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="E04" target="R13"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e26" value="无差异" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="D05" target="R13"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e27" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="R13" target="O01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e28" value="回写大表" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="R13" target="O02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e29" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666" edge="1" parent="1" source="MAIL" target="R01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e30" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666" edge="1" parent="1" source="R02" target="STG"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e31" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666" edge="1" parent="1" source="R02" target="O03"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="MBUSI 美线(CMA CGM)" id="mbusi-page">
+    <mxGraphModel dx="1422" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1650" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ML1" value="触发(调度)" style="swimlane;horizontal=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ML2" value="MBPTS 平台(大表登记 / 拆分 / 暂存 / 模板)" style="swimlane;horizontal=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="1520" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="ML3" value="IES+ 系统(导入 / 预报 / 台账 / 附件)" style="swimlane;horizontal=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="1520" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ML4" value="外部系统 / 邮件 / 归档 / 大表" style="swimlane;horizontal=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="610" width="1520" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="T11" value="T11 定时触发&#10;每周一 09:00(可配置)&#10;处理上周一至周日" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="90" y="55" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M02" value="M02 筛选新增提单并登记&#10;按 created 列筛上周,登记大表美线 sheet" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="270" y="160" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M03" value="M03 单票行单独存 Excel&#10;Shipping log information_BL号" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="510" y="160" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M04" value="M04 监控邮件 · 附件入暂存库&#10;主题含 CMA CGM Seaway Bill,台账 pending" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="740" y="160" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DM1" value="DM1 大表已登记&#10;该 BL?" style="rhombus;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1000" y="155" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="M05" value="M05 填写 Shipping Log&#10;VOL/Load 取自 BL" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1170" y="160" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M06" value="M06 填写 BL 模板&#10;据 BL PDF 填写并保存" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1170" y="270" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ME1" value="ME1 美表漏数 · 挂起 pending&#10;不删不处理,等补登记下轮续跑" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="970" y="270" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M08" value="M08 IES 批量导入 Shipping Log" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="270" y="420" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M09" value="M09 全选发票 · 生成预报&#10;港口经 IES Port 对应表转换" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="500" y="420" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="M10" value="M10 集装箱信息导入 BL 模板" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="730" y="420" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DM2" value="DM2 导入&#10;有差异?" style="rhombus;fillColor=#fff2cc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="960" y="415" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="M11" value="M11 上传 BL PDF 并保存" style="rounded=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1120" y="420" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ME2" value="ME2 差异弹窗 · 不生成台账&#10;记录 BL different" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="920" y="530" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="O11" value="O11 生成台账成功" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="500" y="530" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="M01" value="M01 导出美国 Shipping Log&#10;Central Warehouse 网站 gvShipLog" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="70" y="640" width="190" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="MMAIL" value="平台公邮&#10;(CMA CGM 提单转发)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="300" y="640" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="MSTG" value="暂存库 + 附件台账&#10;(key=BL 号,同 BL 留最新版)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="500" y="640" width="190" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="M07" value="M07 归档 SharePoint 四件套&#10;BL模板/ShippingLog/单票Excel/BL PDF" style="rounded=1;fillColor=#ffffff;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="730" y="640" width="210" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="O12" value="O12 归档齐备可查" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="980" y="640" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="O13" value="O13 大表登记可查询&#10;(美线 sheet)" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1170" y="640" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="me1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="T11" target="M01"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M01" target="M02"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M02" target="M03"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M03" target="M04"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M04" target="DM1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me6" value="匹配成功" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="DM1" target="M05"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me7" value="未匹配(漏数)" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="DM1" target="ME1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me8" value="补登记→下轮 created 捕获→台账取回续跑" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="ME1" target="T11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me9" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M05" target="M06"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me10" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M06" target="M07"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me11" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M07" target="M08"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me12" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M08" target="M09"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me13" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M09" target="M10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me14" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M10" target="DM2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me15" value="有差异" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;fontSize=10" edge="1" parent="1" source="DM2" target="ME2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me16" value="无差异" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#82b366;fontSize=10" edge="1" parent="1" source="DM2" target="M11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me17" value="记录后继续上传" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="ME2" target="M11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me18" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#666666" edge="1" parent="1" source="M11" target="O11"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me19" value="登记可查询" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="M02" target="O13"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me20" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666" edge="1" parent="1" source="MMAIL" target="M04"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me21" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666" edge="1" parent="1" source="M04" target="MSTG"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="me22" value="四类文件齐备" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#666666;fontSize=10" edge="1" parent="1" source="M07" target="O12"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

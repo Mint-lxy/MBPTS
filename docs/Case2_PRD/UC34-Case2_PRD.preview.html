@@ -1,0 +1,1910 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><style>
+body{font:14px/1.7 "Microsoft YaHei","PingFang SC",sans-serif;color:#24292f;max-width:900px;margin:0 auto;padding:32px}
+h1{font-size:22px;border-bottom:2px solid #1c2e42;padding-bottom:8px;margin-top:36px}
+h2{font-size:18px;border-bottom:1px solid #d0d7de;padding-bottom:6px;margin-top:28px}
+h3{font-size:16px;margin-top:22px}
+h4{font-size:14px;margin-top:18px}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:12.5px}
+th,td{border:1px solid #d0d7de;padding:6px 10px;text-align:left;vertical-align:top}
+th{background:#f2f5f8}
+tr:nth-child(even) td{background:#fafbfc}
+code{background:#eff1f3;padding:1px 5px;border-radius:4px;font-size:12px}
+pre{background:#f6f8fa;border:1px solid #d0d7de;border-radius:8px;padding:12px;overflow-x:auto;font-size:12px}
+pre code{background:none;padding:0}
+img{max-width:100%;border:1px solid #d0d7de;border-radius:6px;margin:8px 0}
+blockquote{border-left:4px solid #2f7480;margin:12px 0;padding:4px 14px;color:#57606a;background:#f6f9fa}
+a{color:#2f7480;text-decoration:none}
+hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+</style></head><body><h1>MBPTS UC34 Case 2:GLC / MBUSI 进口提单(AVIS/BL)自动化 — 产品需求文档</h1>
+<h2>文档信息</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>文档名称</strong></td>
+<td>UC34 Case 2 GLC / MBUSI 进口提单自动化 PRD</td>
+</tr>
+<tr>
+<td><strong>版本</strong></td>
+<td>v1.0.0</td>
+</tr>
+<tr>
+<td><strong>创建日期</strong></td>
+<td>2026-09-28</td>
+</tr>
+<tr>
+<td><strong>最后更新</strong></td>
+<td>2026-09-28</td>
+</tr>
+<tr>
+<td><strong>负责人</strong></td>
+<td>BA(SCM-IE / Import Operations 对接)</td>
+</tr>
+<tr>
+<td><strong>审核人</strong></td>
+<td>待审核</td>
+</tr>
+<tr>
+<td><strong>密级</strong></td>
+<td>内部</td>
+</tr>
+</tbody></table>
+<p><strong>文档用途</strong>:定义 MBPTS 平台 UC34 Case 2(GLC 欧线 / MBUSI 美线进口提单处理自动化)的产品需求,覆盖业务范围、业务流程、功能设计、数据需求与非功能性需求,作为开发与验收依据。</p>
+<p><strong>关联文档</strong>:</p>
+<ul>
+<li><a href="./UC34-Case2_%E9%9C%80%E6%B1%82%E6%BE%84%E6%B8%85%E6%96%87%E6%A1%A3.md">需求澄清文档</a>(Q1~Q14 全部已澄清)</li>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E%E4%B9%A6.md">设计说明书</a></li>
+<li><a href="./requirements_plan.md">需求 Plan</a> / <a href="./design_plan.md">设计 Plan</a></li>
+<li>原型基线:<code>C:\MBPTS\case2页面demo\</code>(13 页高保真可交互原型)</li>
+<li>业务依据:<code>【MBPTS-UC34】case 2:AVIS_BL_Automation_BRD_0920</code>、<code>【MBPTS-UC34】case 2:MBUSI_Shipping_Log_BL_Automation_BRD_0920</code>(BRD-MBUSI-BL-002 V3)、<code>【MBPTS-UC34】Case 2:GLC&amp;MBUSI梳理</code></li>
+</ul>
+<hr>
+<h2>版本历史</h2>
+<table>
+<thead>
+<tr>
+<th>版本号</th>
+<th>修订日期</th>
+<th>修订人</th>
+<th>修订内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v1.0.0</td>
+<td>2026-09-28</td>
+<td>BA</td>
+<td>初版(Stage 1/2 已审批)</td>
+<td>草稿</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第一部分:产品概述</h1>
+<h2>1.1 产品定义</h2>
+<p><strong>产品名称</strong>:MBPTS UC34 Case 2 — GLC / MBUSI 进口提单(AVIS/BL)自动化</p>
+<p><strong>所属系统</strong>:MBPTS AI Quick Win 平台(UC34)</p>
+<p><strong>功能定位</strong>:将 GLC 欧线(OOCL)与 MBUSI 美线(CMA CGM)的进口提单处理——公邮收单、归档建夹、模板填写、IES+ 导入、差异处理、状态回写——从全人工转为&quot;平台自动化 + 异常人工协同&quot;。</p>
+<p><strong>使用端</strong>:PC Web</p>
+<p><strong>交付版本</strong>:v1.0.0</p>
+<h2>1.2 产品愿景</h2>
+<p>业务老师每周只处理异常票,其余全部自动完成;每一票全程可追溯、可审计、可受控重跑。</p>
+<h2>1.3 核心价值</h2>
+<table>
+<thead>
+<tr>
+<th>价值维度</th>
+<th>价值描述</th>
+<th>受益人群</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>效率</td>
+<td>每周批量自动处理两线提单,单票端到端自动化率 ≥80%</td>
+<td>进口运营</td>
+</tr>
+<tr>
+<td>质量</td>
+<td>OCR + 交叉核对 + 差异捕获,异常票 100% 识别不漏</td>
+<td>进口运营/关务</td>
+</tr>
+<tr>
+<td>合规</td>
+<td>全程证据留痕(WORM)、修正留痕、审计可查</td>
+<td>审计/管理层</td>
+</tr>
+<tr>
+<td>可维护</td>
+<td>PDC 对应表、导入模板、邮件规则、调度均配置化,业务自维护</td>
+<td>业务老师/平台管理员</td>
+</tr>
+</tbody></table>
+<h2>1.4 产品范围</h2>
+<h3>包含范围</h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>功能描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>邮件监听与统一收单</td>
+<td>按线路规则监听 Portal 公邮,附件按 BL 号入暂存库 + 附件台账(pending/processed)</td>
+</tr>
+<tr>
+<td>GLC 线自动处理</td>
+<td>齐套判断 → 组装文件包 → 填 AVIS/BL 模板 → IES+ 导入 AVIS → DG 分支(FOB Charges)→ 生成预报 → 导入 BL → 上传附件 → 回写</td>
+</tr>
+<tr>
+<td>MBUSI 线自动处理</td>
+<td>gvShipLog 筛新增登记 → 拆单子表 → 邮件取 BL → 填 Shipping Log/BL 模板 → SharePoint 归档 → IES+ 导入 → 差异处理</td>
+</tr>
+<tr>
+<td>工作台 / 任务中心 / 任务详情</td>
+<td>双线统计、状态筛选、Task×Run 管理、整单/节点/批量重跑、字段修正留痕、PDF 原文定位、证据预览</td>
+</tr>
+<tr>
+<td>异常处理与人工协同</td>
+<td>Other 文件夹、缺 AVIS 挂起、美表漏数 pending、IES 差异回写 BL different、缺件补传、人工确认续跑</td>
+</tr>
+<tr>
+<td>邮件中心 + 规则编辑器</td>
+<td>监听规则 CRUD、附件角色录入、流程绑定、dry-run 试运行</td>
+</tr>
+<tr>
+<td>配置中心</td>
+<td>PDC-Customer Code 对应表、IES Port 对应表、AVIS/BL/Shipping Log 模板版本管理、调度配置</td>
+</tr>
+<tr>
+<td>归档与证据</td>
+<td>归档根可配置(默认 SharePoint,兼容 T 盘),节点证据 WORM 留痕</td>
+</tr>
+<tr>
+<td>状态回写与提醒</td>
+<td>平台台账为主 + 双写 AVIS BL status report;站内提醒(不发通知邮件)</td>
+</tr>
+</tbody></table>
+<h3>不包含范围(后续迭代 / 平台侧)</h3>
+<ul>
+<li>治理运营台、权限中心(RBAC)、提醒中心、上传中心的平台级完整需求(本 PRD 仅简述引用,见 7.3.7)</li>
+<li>源系统改造(IES+、美国 Central Warehouse 网站、公邮系统)</li>
+<li>未匹配 BL 的业务线下处理(平台只记录异常并转人工)</li>
+<li>UC26、UC64 及 Case 1/3/4/5(平台按 caseId 扩展)</li>
+<li>IES+ 交互的技术实现选型(UI 自动化或接口通道,留待概要设计)</li>
+</ul>
+<hr>
+<h1>第二部分:业务背景与目标</h1>
+<h2>2.1 业务问题</h2>
+<ol>
+<li><strong>全人工、强重复</strong>:GLC/MBUSI 两线每周需人工搜索公邮下载 AVIS/Shipper/BL、按 PDC 建文件夹归档、对照 PDF 逐字段抄录三张导入模板、登录 IES+ 逐票导入并生成预报/台账。</li>
+<li><strong>跨周时差易漏</strong>:BL 较 AVIS 晚 2~3 周到邮,人工跨周匹配易漏;美表(Shipping Log)存在漏数,补登后 created 更新不回溯,人工难以追踪。</li>
+<li><strong>差异处理靠经验</strong>:DG 票 FOB Charges 需手工导表算差异、逐张核对发票 PDF;IES 差异弹窗靠人工抄录回写大表。</li>
+<li><strong>不可追溯</strong>:人工操作无留痕,出错无法定位环节,也无法受控重跑。</li>
+</ol>
+<h2>2.2 业务目标与成功指标</h2>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>描述</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>提效</td>
+<td>两线提单处理自动化,业务只处理异常票</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>保质</td>
+<td>异常票(无配置/缺件/差异/漏数)100% 识别并转人工</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>可审计</td>
+<td>全链路证据与操作留痕,每票可查可重跑</td>
+<td>P1</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>目标值</th>
+<th>测量方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单票端到端自动化率</td>
+<td>≥80%(建议值,待业务确认)</td>
+<td>无需人工介入完成票数 / 总票数</td>
+</tr>
+<tr>
+<td>异常票识别率</td>
+<td>100% 不漏</td>
+<td>抽查运行周台账</td>
+</tr>
+<tr>
+<td>异常票单票人工耗时</td>
+<td>≤5 分钟(建议值)</td>
+<td>任务详情操作日志计时</td>
+</tr>
+<tr>
+<td>每周批量运行完成时间</td>
+<td>&lt;2 小时(建议值)</td>
+<td>调度起止时间</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第三部分:用户角色与权限</h1>
+<p>四角色,身份与授权由 Alice 管理(权限中心只读查询)。</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th align="center">OPERATOR 业务操作员</th>
+<th align="center">MANAGER 业务主管</th>
+<th align="center">ADMIN 平台管理员</th>
+<th align="center">AUDITOR 审计员</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作台/任务中心查看</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓(只读)</td>
+</tr>
+<tr>
+<td>字段修正(留痕)</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>安全重跑(整单/节点/批量)</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>不可逆重跑 / 对外动作确认</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>缺件补传</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>列表导出</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>邮件规则编辑/发布</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>模板/对应表/调度配置</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td>审计日志/证据查询</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+</tbody></table>
+<p><strong>职责分离</strong>:主管无字段修正权,操作员无对外确认权;UC34 全场景修正仅留痕、无人工审批节点。</p>
+<hr>
+<h1>第四部分:术语定义</h1>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AVIS</td>
+<td>船公司(OOCL)到货通知单 PDF,含 AVIS No.(Shippers Ref)、Customer code、ETA 等</td>
+</tr>
+<tr>
+<td>BL / 提单</td>
+<td>Bill of Lading;GLC 线 BL 号前需加 &quot;OOLU&quot; 前缀</td>
+</tr>
+<tr>
+<td>Shipper / Shippers_Decl</td>
+<td>危险品申报单;<strong>能否搜到该文件是 DG 货物判定标准</strong></td>
+</tr>
+<tr>
+<td>DG</td>
+<td>Dangerous Goods 危险品货物;DG 票需处理 FOB Charges 并给文件夹加 DG 后缀</td>
+</tr>
+<tr>
+<td>PDC</td>
+<td>货物目的地仓,由 AVIS 中 Customer code 经配置表映射</td>
+</tr>
+<tr>
+<td>gvShipLog</td>
+<td>美国 Central Warehouse 网站导出的 Shipping Log 大表 Excel</td>
+</tr>
+<tr>
+<td>大表 / AVIS BL status report</td>
+<td>业务状态跟踪表(Sheet3),GLC/MBUSI 分 sheet;平台双写回写 G/H/J/K/L/M/N/P 列</td>
+</tr>
+<tr>
+<td>IES+</td>
+<td>进口管理系统:发票信息、批量导入、预报、集装箱信息、台账、文档上传</td>
+</tr>
+<tr>
+<td>Task / Run</td>
+<td>任务(业务单据,票粒度=BL 号)/ 执行实例(不可变,重跑生成 R#N+1)</td>
+</tr>
+<tr>
+<td>暂存库 / 附件台账</td>
+<td>命中邮件附件按 BL 号归并的暂存区及其登记台账(pending/processed)</td>
+</tr>
+<tr>
+<td>齐套</td>
+<td>本票 AVIS + BL(DG 票另加 Shipper)均按 BL 号归并到手</td>
+</tr>
+<tr>
+<td>WORM</td>
+<td>Write Once Read Many,证据防篡改存储</td>
+</tr>
+<tr>
+<td>MBZ / BOL</td>
+<td>IES+ 发票查询单号 / 提单号查询字段</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第五部分:用户故事</h1>
+<h3>US-001:每周定时批量自动处理</h3>
+<p><strong>作为</strong> 业务操作员
+<strong>在</strong> 每周一 09:00(调度时间可配置)定时任务运行后
+<strong>于</strong> 工作台 / 任务中心
+<strong>我想要</strong> 查看 GLC/MBUSI 两线上一周(周一至周日)的自动处理结果总览
+<strong>以便于</strong> 只把注意力投向&quot;待人工处理&quot;的票</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 系统按可配置调度时间(默认每周一 09:00)自动触发两线流程,处理窗口为上周一至周日。</li>
+<li>AC2: 工作台按线路展示总任务数/已完成/执行中/待人工处理 4 张统计卡,以 BL No. 为票粒度。</li>
+<li>AC3: 点击统计卡跳转任务中心并带上线路+状态筛选。</li>
+<li>AC4: 每票生成 Task 与 R#1,节点轨迹完整(GLC 7 节点 / MBUSI 10 节点)。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 调度时间恰逢系统维护 → 支持手动触发补跑,数据窗口不变(去重防重,R7.1)。</li>
+<li>E2: 当周公邮无任何新邮件 → 正常结束,工作台显示 0 票,不报错。</li>
+</ul>
+<hr>
+<h3>US-002:差异票字段修正与重跑</h3>
+<p><strong>作为</strong> 业务操作员
+<strong>在</strong> 某票 Run 状态为&quot;有差异(DIFF_PENDING)&quot;时
+<strong>于</strong> 任务详情页
+<strong>我想要</strong> 对照 PDF 原文逐字段核对识别结果,对错误字段行内修正(留痕),然后重跑该票
+<strong>以便于</strong> 不改源文件即可让系统携带修正值完成后续节点</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 差异票在任务中心和详情页头部均有标识,横幅展示差异说明,可一键定位差异字段(金色高亮)。</li>
+<li>AC2: &quot;当前识别数据&quot;展示字段名/值/来源(OCR/规则)/置信度/质量等级;低置信字段突出显示。</li>
+<li>AC3: 点击&quot;定位&quot;在原文预览中跳到对应 PDF 页;行内修正记录修正人/时间/原值/新值,仅留痕不审批。</li>
+<li>AC4: 重跑生成 R#N+1 并携带修正值;历史 Run 只读不可变。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 修正值为空或格式非法 → 阻断保存并提示。</li>
+<li>E2: 非 OPERATOR 角色尝试修正(如主管)→ 无入口(E5001),符合职责分离。</li>
+</ul>
+<hr>
+<h3>US-003:缺件票补传与挂起解除</h3>
+<p><strong>作为</strong> 业务操作员
+<strong>在</strong> 某票因缺件(如 AVIS 未到)处于&quot;待上传(WAIT_INPUT)&quot;时
+<strong>于</strong> 任务详情页
+<strong>我想要</strong> 查看缺少哪些必需附件,人工补传后让流程继续
+<strong>以便于</strong> 不必整单重来</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 缺件票横幅列出缺失的附件角色(avis/shipper_decl/bl/shipping_log)。</li>
+<li>AC2: 补传后系统校验附件角色齐全,自动生成新 Run 续跑。</li>
+<li>AC3: GLC 缺 AVIS 票:单列一行,P 列记&quot;未找到对应 AVIS,请确认是否漏发&quot;,人工确认后再跑。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 补传文件类型/命名不符角色正则 → 拒收并提示期望格式。</li>
+<li>E2: 同 BL 重复上传 → 保留最新版(附件台账 R1.3)。</li>
+</ul>
+<hr>
+<h3>US-004:邮件监听规则配置与试运行</h3>
+<p><strong>作为</strong> 平台管理员
+<strong>在</strong> 业务调整邮件口径(如更换发件人、主题关键词)时
+<strong>于</strong> 邮件中心 / 规则编辑器
+<strong>我想要</strong> 修改监听规则并先用 dry-run 对样本邮件验证命中效果
+<strong>以便于</strong> 不发版、不产生任务即可安全上线规则变更</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 规则支持监听邮箱、发件人白名单(支持 <code>*@域名</code>)、To/Cc、主题/正文关键词、附件数量区间。</li>
+<li>AC2: 附件要求按角色录入(avis/shipper_decl/bl/shipping_log + 文件名正则 + 必需/多份)。</li>
+<li>AC3: 流程绑定支持 case-2-glc / case-2-glc-dg / case-2-mbusi,含汇聚策略、OCR Schema、去重键、优先级、启停。</li>
+<li>AC4: dry-run 对样本邮件真实匹配并展示命中/未命中原因,不产生任务;规则保存后下次调度生效。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 规则字段校验失败(正则错误/必需角色缺失)→ 阻断保存(E1001)。</li>
+<li>E2: 多规则同时命中一票 → 按优先级与去重键归并,不重复建任务。</li>
+</ul>
+<hr>
+<h3>US-005:导入模板与对应表维护</h3>
+<p><strong>作为</strong> 平台管理员
+<strong>在</strong> IES+ 模板格式变更或 PDC/港口映射调整时
+<strong>于</strong> 配置中心
+<strong>我想要</strong> 上传新版模板 / 维护 PDC-Customer Code 与 IES Port 对应表
+<strong>以便于</strong> 业务变更无需改代码</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 模板按线路分组管理(AVIS 7 列、BL 9 列、Shipping Log 7 列、IES Port 对应表),上传校验扩展名与 ≤20MB,版本 +1,历史可查。</li>
+<li>AC2: 对应表维护后立即生效;Customer code 未命中时建 Other 文件夹并记异常(R2.1),不阻断流程。</li>
+<li>AC3: 调度时间(默认每周一 09:00)可配置。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 模板版本与流程不兼容 → 阻断并提示回退(E2002)。</li>
+<li>E2: 对应表误删在用映射 → 受影响票走 Other 文件夹 + 异常反馈,可修复后重跑。</li>
+</ul>
+<hr>
+<h3>US-006:美表漏数票挂起与续跑(MBUSI)</h3>
+<p><strong>作为</strong> 业务操作员
+<strong>在</strong> 平台收到 CMA CGM 提单邮件但美国大表未登记该 BL 时
+<strong>于</strong> 任务中心 / 任务详情
+<strong>我想要</strong> 看到该票以 pending 挂起并进入异常反馈,待美表补登记后在下一轮自动续跑
+<strong>以便于</strong> 漏数票不丢、不重、无需人工盯办</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 邮件附件一律先按 BL 号入暂存库、台账记 pending;未匹配大表的票不删除不处理。</li>
+<li>AC2: 美表补登会更新 created 字段(不回溯),下一轮按 created 筛选捕获后,从台账取回附件续跑。</li>
+<li>AC3: 补登后若 IES 已有旧预报,按 BRD 异常流程由人工删除预报并线下确认后,经平台手动触发重跑。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 多轮仍未补登 → 保持 pending,每轮在异常反馈中可见,不 escalating 删除。</li>
+<li>E2: 同 BL 收到新版提单邮件 → 台账保留最新版(R1.3)。</li>
+</ul>
+<hr>
+<h3>US-007:归档浏览与取证</h3>
+<p><strong>作为</strong> 业务操作员 / 审计员
+<strong>在</strong> 需要回溯某票的原始文件与过程证据时
+<strong>于</strong> SharePoint 归档页 / 任务详情证据区
+<strong>我想要</strong> 按目录层级浏览归档文件、查看节点级证据
+<strong>以便于</strong> 快速取证与核对</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 归档层级 <code>&lt;归档根&gt;\&lt;PDC&gt;\&lt;GLC|MBUSI&gt;\&lt;运行周&gt;\&lt;票文件夹&gt;</code>,归档根默认 SharePoint、可配置 T 盘。</li>
+<li>AC2: GLC 票文件夹内含 AVIS、BL、Shipper(DG)原件及填好的 AVIS/BL 模板;MBUSI 含 BL 模板/Shipping Log/单票 Excel/BL PDF 四件套。</li>
+<li>AC3: 节点证据(email/ocr/screen/table/file)可内联预览,标注 WORM 防篡改。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: PDC/ETA 缺失 → 不创建不明确文件夹,转人工(E4003)。</li>
+<li>E2: 归档根切换(T 盘→SharePoint)→ 历史目录保持可读,新票写入新根。</li>
+</ul>
+<hr>
+<h3>US-008:主管审批导出与审计</h3>
+<p><strong>作为</strong> 业务主管 / 审计员
+<strong>在</strong> 周度复盘或审计检查时
+<strong>于</strong> 任务中心 / 治理运营台
+<strong>我想要</strong> 导出任务清单、检索审计日志与证据
+<strong>以便于</strong> 复核自动化质量与合规性</p>
+<p><strong>验收标准</strong>:</p>
+<ul>
+<li>AC1: 任务列表可按当前筛选导出 CSV(仅 MANAGER)。</li>
+<li>AC2: 审计日志记录时间/操作人/动作/对象/入口,可检索;证据带 hash 防篡改。</li>
+<li>AC3: 治理运营台展示 DAG 运行、失败率、调度延迟、模型调用成本、证据总量。</li>
+</ul>
+<p><strong>异常/边缘场景</strong>:</p>
+<ul>
+<li>E1: 越权导出(操作员)→ 拒绝并审计记录(E5001)。</li>
+<li>E2: 审计检索时间跨度过大 → 分页 + 时间窗限制提示。</li>
+</ul>
+<hr>
+<h1>第六部分:业务流程</h1>
+<h2>6.1 整体流程(To-Be)— 跨职能泳道流程图</h2>
+<p>泳道:触发与人工 / MBPTS 平台 / IES+ 系统 / 邮件·归档·大表。节点编号与 2026-09-27 版业务流程图一致。</p>
+<p><strong>GLC 欧线(OOCL):</strong></p>
+<p><img src="./images/%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE_GLC.png" alt="业务流程图 GLC"></p>
+<p><strong>MBUSI 美线(CMA CGM):</strong></p>
+<p><img src="./images/%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE_MBUSI.png" alt="业务流程图 MBUSI"></p>
+<blockquote>
+<p><strong>源文件</strong>:<a href="./UC34-Case2_%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE.drawio">UC34-Case2_业务流程图.drawio</a>(draw.io 打开编辑,GLC/MBUSI 两页)</p>
+</blockquote>
+<h3>分阶段说明</h3>
+<ul>
+<li><strong>GLC</strong>:触发(T01)→ 统一收单(R01/R02)→ 配置判断(D01/E01)→ 齐套判断(D02/E02/H01)→ 组装与填模板(R05/R06)→ IES 导入 AVIS(R07)→ DG 分支(D03/R08/D04/R09/E03/R10)→ 预报与 BL 导入(R11/R12/D05/E04)→ 附件上传(R13)→ 输出(O01 台账 / O02 回写 / O03 归档)。详见设计说明书 1.2。</li>
+<li><strong>MBUSI</strong>:触发(T11)→ 大表导出登记(M01/M02/M03)→ 邮件取单与匹配(M04/DM1)→ 漏数挂起(ME1)→ 填模板(M05/M06)→ 归档(M07)→ IES 导入(M08/M09/M10)→ 差异处理(DM2/ME2)→ 上传保存(M11)→ 输出(O11/O12/O13)。详见设计说明书 1.3。</li>
+</ul>
+<h2>6.2 系统交互时序</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant SCH as 调度器(周一09:00可配置)
+    participant MB as Portal公邮/网站
+    participant PF as MBPTS平台
+    participant STG as 暂存库+附件台账
+    participant IES as IES+
+    participant SP as 归档(SharePoint/T盘)
+    participant RPT as AVIS BL status report
+
+    SCH-&gt;&gt;PF: 触发(上周一至周日窗口)
+    PF-&gt;&gt;MB: 按规则扫描邮件/导出gvShipLog
+    MB--&gt;&gt;PF: 命中邮件+附件 / 大表Excel
+    PF-&gt;&gt;STG: 附件按BL号归并,台账记pending
+    PF-&gt;&gt;PF: OCR识别+交叉核对+齐套判断
+    alt 不齐套/漏数/无配置
+        PF-&gt;&gt;RPT: 异常反馈列记录(P列)
+        PF--&gt;&gt;SCH: 挂起,待人工确认/下轮补登续跑
+    else 齐套
+        PF-&gt;&gt;STG: 取件组装文件包
+        PF-&gt;&gt;PF: 填AVIS/BL/Shipping Log模板
+        PF-&gt;&gt;IES: 批量导入(绿灯校验)→预报→集装箱导入
+        alt IES差异弹窗
+            IES--&gt;&gt;PF: 差异明细
+            PF-&gt;&gt;RPT: 回写L列 BL different,转人工
+        end
+        PF-&gt;&gt;IES: 上传附件(AVIS类别=Other)
+        PF-&gt;&gt;SP: 按PDC/线路/运行周归档
+        PF-&gt;&gt;RPT: 双写回写G/H/J/K/M/N列,J列BL Creation
+    end
+</code></pre>
+<hr>
+<h1>第七部分:功能设计</h1>
+<h2>7.1 功能清单</h2>
+<p>原型基线:<code>C:\MBPTS\case2页面demo\</code>(本地打开对应 HTML 可交互)。</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>功能</th>
+<th>优先级</th>
+<th>原型/截图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F001</td>
+<td>工作台双线总览</td>
+<td>P0</td>
+<td><a href="./images/index.png">index.png</a></td>
+</tr>
+<tr>
+<td>F002</td>
+<td>任务中心(筛选/批量重跑/导出/新建)</td>
+<td>P0</td>
+<td><a href="./images/tasks.png">tasks.png</a></td>
+</tr>
+<tr>
+<td>F003</td>
+<td>任务详情(Run 切换/节点轨迹)</td>
+<td>P0</td>
+<td><a href="./images/task-detail.png">task-detail.png</a></td>
+</tr>
+<tr>
+<td>F004</td>
+<td>字段修正留痕 + PDF 原文定位</td>
+<td>P0</td>
+<td><a href="./images/task-detail.png">task-detail.png</a></td>
+</tr>
+<tr>
+<td>F005</td>
+<td>节点证据预览(WORM)</td>
+<td>P1</td>
+<td><a href="./images/task-detail-mbusi.png">task-detail-mbusi.png</a></td>
+</tr>
+<tr>
+<td>F006</td>
+<td>邮件监听规则管理</td>
+<td>P0</td>
+<td><a href="./images/rules.png">rules.png</a></td>
+</tr>
+<tr>
+<td>F007</td>
+<td>规则编辑器(三段式 + dry-run)</td>
+<td>P0</td>
+<td><a href="./images/rule-edit.png">rule-edit.png</a></td>
+</tr>
+<tr>
+<td>F008</td>
+<td>配置中心(模板/对应表/调度)</td>
+<td>P0</td>
+<td><a href="./images/config.png">config.png</a></td>
+</tr>
+<tr>
+<td>F009</td>
+<td>SharePoint 归档浏览</td>
+<td>P1</td>
+<td><a href="./images/sharepoint.png">sharepoint.png</a></td>
+</tr>
+<tr>
+<td>F010</td>
+<td>站内提醒</td>
+<td>P1</td>
+<td><a href="./images/notify.png">notify.png</a></td>
+</tr>
+<tr>
+<td>F011</td>
+<td>治理运营台(平台引用)</td>
+<td>P2</td>
+<td><a href="./images/govern.png">govern.png</a></td>
+</tr>
+<tr>
+<td>F012</td>
+<td>权限中心(平台引用,只读)</td>
+<td>P2</td>
+<td><a href="./images/rbac.png">rbac.png</a></td>
+</tr>
+</tbody></table>
+<h2>7.2 核心业务规则</h2>
+<h3>R1 收单规则</h3>
+<ul>
+<li>R1.1 邮件按主题关键词分类:GLC 线「AVIS」/「Shippers_Decl」/「Bill of landing」;MBUSI 线「CMA CGM - 海运提单(Seaway Bill)可供使用」。</li>
+<li>R1.2 命中附件<strong>一律先按 BL 号入暂存库并写附件台账</strong>(pending),匹配成功即处理。</li>
+<li>R1.3 台账 key=BL 号(格式归一);<strong>同 BL 重复邮件保留最新版</strong>。</li>
+<li>R1.4 GLC:E 列记 AVIS No.;M 列记 Shipper(<strong>命中 Shipper 即判 DG</strong>)。</li>
+</ul>
+<h3>R2 归档规则</h3>
+<ul>
+<li>R2.1 PDC 由 Customer code 查配置表;<strong>未命中建 Other 文件夹</strong>并记异常,流程继续。</li>
+<li>R2.2 命名:GLC <code>Shippers Ref + OOLU + BL No. + ETA &lt;YYYY.MM.DD&gt; [+ DG]</code>;MBUSI <code>&lt;BL&gt; ETA &lt;YYYY.MM.DD&gt;</code>。</li>
+<li>R2.3 重命名:BL → <code>BL_&lt;BL号&gt;</code>;Shipper → <code>shippers_Decl_BL</code>。</li>
+<li>R2.4 归档根为配置项,默认 SharePoint,兼容 T 盘。</li>
+</ul>
+<h3>R3 齐套与挂起规则</h3>
+<ul>
+<li>R3.1 GLC 齐套 = AVIS + BL 均按 BL 号归并(DG 票另需 Shipper);<strong>BL 与 AVIS 有 2~3 周时差,必须跨周归并</strong>。</li>
+<li>R3.2 缺 AVIS:单列一行、P 列记&quot;未找到对应 AVIS,请确认是否漏发&quot;、挂起,人工确认后再跑。</li>
+<li>R3.3 MBUSI 漏数:<strong>不删除不处理</strong>,台账保持 pending;补登 created 更新不回溯,下轮捕获后从台账取回续跑。</li>
+</ul>
+<h3>R4 模板规则</h3>
+<ul>
+<li>R4.1 AVIS 模板字段<strong>均取自 AVIS</strong>;BL 模板字段取自 BL,<strong>Container Type 单位改 <code>&#39;</code></strong>。</li>
+<li>R4.2 Shipping Log 基础字段取自 gvShipLog,<strong>VOL(m³)/Load(KG) 取自 BL</strong>。</li>
+<li>R4.3 预报信息取自提单;港口经 <strong>IES Port 对应表</strong>转换;船名航次直接 COPY。</li>
+<li>R4.4 模板版本化,新版上传即生效,历史可查。</li>
+</ul>
+<h3>R5 IES 执行规则</h3>
+<ul>
+<li>R5.1 <strong>绿灯后方可上传</strong>;必填校验不过不上传。</li>
+<li>R5.2 DG 票 FOB 公式:<code>FOB = Total − Goods − Packing − Insurance − Freight − DGR</code>,<strong>差异≠0 即处理</strong>。</li>
+<li>R5.3 有 PDF 但金额不一致<strong>以 IES 导出值为准</strong>并记异常;未找到发票按差异值填并记&quot;未找到 xxx 发票&quot;。</li>
+<li>R5.4 差异弹窗<strong>完整捕获</strong>回写 L 列;MBUSI 有差异<strong>不生成台账</strong>。</li>
+<li>R5.5 附件类别:AVIS 选 <strong>Other</strong>;全部传完再保存。</li>
+</ul>
+<h3>R6 回写规则(平台台账为主,双写大表)</h3>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E</td>
+<td>AVIS No.</td>
+</tr>
+<tr>
+<td>G</td>
+<td>AVIS 上传成功</td>
+</tr>
+<tr>
+<td>H/K/N</td>
+<td>三类 PDF 上传成功 = Y</td>
+</tr>
+<tr>
+<td>J</td>
+<td>BL Creation(本票完成)</td>
+</tr>
+<tr>
+<td>L</td>
+<td>BL different(差异内容)</td>
+</tr>
+<tr>
+<td>M</td>
+<td>DG 标记(Shipper)</td>
+</tr>
+<tr>
+<td>P</td>
+<td>异常情况反馈</td>
+</tr>
+</tbody></table>
+<h3>R7 重跑规则</h3>
+<ul>
+<li>R7.1 重跑<strong>不得产生重复</strong>行/文件夹/上传。</li>
+<li>R7.2 Run 不可变;整单/节点/批量重跑生成 R#N+1,<strong>携带人工修正值</strong>;执行中任务跳过。</li>
+<li>R7.3 失败票支持从明确检查点受控续跑;美表漏数补登后下轮自动续跑。</li>
+</ul>
+<h3>R8 权限与审计规则</h3>
+<ul>
+<li>R8.1 四角色职责分离:主管无字段修正权,操作员无对外确认权。</li>
+<li>R8.2 修正仅留痕不审批,写入当前生效版本。</li>
+<li>R8.3 全操作审计;证据(trigger/process/operation)带 hash,<strong>WORM 防篡改</strong>。</li>
+<li>R8.4 邮箱/路径/重试/等待时间<strong>不得硬编码</strong>;凭证安全存储且不入日志。</li>
+</ul>
+<hr>
+<h2>7.3 原型及交互规则说明</h2>
+<blockquote>
+<p>原型基线为 <code>case2页面demo\</code> 高保真原型;截图取自静态演示态。</p>
+</blockquote>
+<h3>7.3.1 工作台(F001)</h3>
+<p><strong>页面名称</strong>:工作台 | <strong>用户角色</strong>:全部角色</p>
+<p><strong>功能说明</strong>:Case 2 总览,按 GLC(欧线·OOCL)/ MBUSI(美线·CMA CGM)分组展示每周处理概况,是异常票的入口。</p>
+<p><strong>前置条件</strong>:用户已被授予 case-2 数据范围。</p>
+<p><strong>功能原型图</strong></p>
+<p><img src="./images/index.png" alt="工作台"></p>
+<p><strong>页面操作说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能点</th>
+<th>功能描述&amp;操作说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>统计卡 ×4/线路</td>
+<td>总任务数/已完成/执行中/待人工处理,以 BL No. 为票粒度;点击带参跳任务中心(<code>from=workbench&amp;mode=&amp;status=</code>)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>侧栏导航</td>
+<td>工作台→任务中心→上传中心→邮件中心→配置中心→Share Point;任务中心徽标=当前任务数</td>
+</tr>
+<tr>
+<td>3</td>
+<td>顶栏</td>
+<td>提醒铃铛(未读红点)、主题切换、用户头像</td>
+</tr>
+</tbody></table>
+<p><strong>页面显示字段说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>可编辑</th>
+<th>填写方式</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>线路分组</td>
+<td>文本</td>
+<td>—</td>
+<td>否</td>
+<td>系统生成</td>
+<td>GLC 欧线·OOCL / MBUSI 美线·CMA CGM</td>
+</tr>
+<tr>
+<td>统计数值</td>
+<td>数字</td>
+<td>—</td>
+<td>否</td>
+<td>系统汇总</td>
+<td>实时统计</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>7.3.2 任务中心(F002)</h3>
+<p><strong>页面名称</strong>:任务中心 | <strong>用户角色</strong>:全部角色(操作按角色控制)</p>
+<p><strong>功能说明</strong>:两线任务的统一列表,任务=业务单据(票粒度),状态取最新 Run。</p>
+<p><strong>功能原型图</strong></p>
+<p><img src="./images/tasks.png" alt="任务中心"></p>
+<p><strong>页面操作说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能点</th>
+<th>功能描述&amp;操作说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>状态筛选 chip</td>
+<td>全部/执行中/待人工处理/待上传/有差异/失败/已完成</td>
+</tr>
+<tr>
+<td>2</td>
+<td>来源筛选</td>
+<td>定时调度/手动创建/手动触发</td>
+</tr>
+<tr>
+<td>3</td>
+<td>搜索</td>
+<td>按任务编号/BL No. 检索</td>
+</tr>
+<tr>
+<td>4</td>
+<td>导出列表</td>
+<td>CSV 导出(仅 MANAGER)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>新建任务</td>
+<td>选择线路(GLC/MBUSI),手动建票</td>
+</tr>
+<tr>
+<td>6</td>
+<td>批量重跑</td>
+<td>勾选后批量生成 R#N+1;执行中任务自动跳过</td>
+</tr>
+<tr>
+<td>7</td>
+<td>行点击</td>
+<td>进入任务详情</td>
+</tr>
+</tbody></table>
+<p><strong>页面显示字段说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>可编辑</th>
+<th>填写方式</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务编号</td>
+<td>文本</td>
+<td>—</td>
+<td>否</td>
+<td>系统生成(T-BL号)</td>
+<td>含 BL No.</td>
+</tr>
+<tr>
+<td>case / 用例</td>
+<td>文本</td>
+<td>—</td>
+<td>否</td>
+<td>系统生成</td>
+<td>AVIS 与 BL 创建(GLC)/ MBUSI Shipping Log 与 BL</td>
+</tr>
+<tr>
+<td>触发来源</td>
+<td>枚举</td>
+<td>—</td>
+<td>否</td>
+<td>系统生成</td>
+<td>定时调度/手动创建/手动触发</td>
+</tr>
+<tr>
+<td>状态(当前执行)</td>
+<td>枚举</td>
+<td>—</td>
+<td>否</td>
+<td>最新 Run 状态</td>
+<td>见 8.1 状态机</td>
+</tr>
+<tr>
+<td>执行次数</td>
+<td>数字</td>
+<td>—</td>
+<td>否</td>
+<td>Run 数量</td>
+<td></td>
+</tr>
+<tr>
+<td>最近执行开始</td>
+<td>时间</td>
+<td>—</td>
+<td>否</td>
+<td>系统记录</td>
+<td></td>
+</tr>
+<tr>
+<td>当前环节</td>
+<td>文本</td>
+<td>—</td>
+<td>否</td>
+<td>当前节点名</td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+<h3>7.3.3 任务详情(F003/F004/F005)</h3>
+<p><strong>页面名称</strong>:任务详情 | <strong>用户角色</strong>:全部角色(修正/重跑按角色控制)</p>
+<p><strong>功能说明</strong>:单票全生命周期视图:Run 切换、节点轨迹、识别字段核对与修正、PDF 原文定位、证据预览、重跑。严格区分 Task(单据)与 Run(执行实例)。</p>
+<p><strong>功能原型图</strong></p>
+<p><img src="./images/task-detail.png" alt="任务详情 GLC 差异票"></p>
+<p><img src="./images/task-detail-mbusi.png" alt="任务详情 MBUSI 漏数/差异票"></p>
+<p><strong>页面操作说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能点</th>
+<th>功能描述&amp;操作说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>头部操作</td>
+<td>失败时「整单重跑」;有差异时「上传文件/整单重跑」</td>
+</tr>
+<tr>
+<td>2</td>
+<td>三层横幅</td>
+<td>待上传缺件(列缺失角色)/ R#N 有差异(可定位差异字段)/ R#N 失败</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Run 切换</td>
+<td>R#1、R#2…历史只读;当前生效版本可操作</td>
+</tr>
+<tr>
+<td>4</td>
+<td>节点轨迹</td>
+<td>左轨节点列表(GLC 7 / MBUSI 10 节点)+ 右侧工作区</td>
+</tr>
+<tr>
+<td>5</td>
+<td>当前识别数据</td>
+<td>字段名/值/来源/置信度/质量等级;低置信金色高亮;<strong>行内修正留痕</strong>(修正仅留痕,写入当前生效版本)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PDF 原文定位</td>
+<td>字段行「定位」→ 原文预览跳对应页;预览支持翻页/缩放</td>
+</tr>
+<tr>
+<td>7</td>
+<td>步骤证据</td>
+<td>email/ocr/screen/table/file 五类,内联预览,WORM 标注</td>
+</tr>
+<tr>
+<td>8</td>
+<td>触发历史</td>
+<td>同 Case 兄弟任务、15 天热力图、成功率、平均耗时</td>
+</tr>
+<tr>
+<td>9</td>
+<td>操作日志</td>
+<td>任务级全操作留痕</td>
+</tr>
+</tbody></table>
+<p><strong>节点编排</strong>:</p>
+<ul>
+<li>GLC(7):下载 AVIS/Shipper/BL → OCR 识别(AVIS⇄BL 交叉核对)→ 写 AVIS 模板 → 写 BL 模板 → 导入 AVIS 模板(DG 含 FOB 核对)→ 导入 BL 模板(预报+集装箱+台账)→ 上传原始文件(回写大表)。</li>
+<li>MBUSI(10):下载 gvShipLog → 拆分 Booking No. 子表 → 填 Shipping Log → 下载邮件附件 → OCR 识别 → 填 BL 模板并回填 Shipping Log → 导入 Shipping Log → 生成预报 → 导入 BL 模板 → 导入 BL PDF 保存。</li>
+</ul>
+<p><strong>页面显示字段说明</strong>(当前识别数据区)</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>可编辑</th>
+<th>填写方式</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>字段名</td>
+<td>文本</td>
+<td>—</td>
+<td>否</td>
+<td>OCR Schema</td>
+<td>如 AVIS No.、Customer code、PDC、AWB/B/L No.、ETA</td>
+</tr>
+<tr>
+<td>当前有效值</td>
+<td>文本</td>
+<td>是</td>
+<td>是(OPERATOR)</td>
+<td>OCR/规则+人工修正</td>
+<td>修正留痕</td>
+</tr>
+<tr>
+<td>来源</td>
+<td>枚举</td>
+<td>—</td>
+<td>否</td>
+<td>系统</td>
+<td>OCR / 规则</td>
+</tr>
+<tr>
+<td>置信度</td>
+<td>百分比</td>
+<td>—</td>
+<td>否</td>
+<td>模型输出</td>
+<td>低置信高亮</td>
+</tr>
+<tr>
+<td>质量等级</td>
+<td>枚举</td>
+<td>—</td>
+<td>否</td>
+<td>系统判定</td>
+<td>高/中/低</td>
+</tr>
+<tr>
+<td>原文定位</td>
+<td>操作</td>
+<td>—</td>
+<td>—</td>
+<td>页码+坐标</td>
+<td>跳原文预览</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>7.3.4 邮件中心与规则编辑器(F006/F007)</h3>
+<p><strong>页面名称</strong>:邮件中心 / 规则编辑器 | <strong>用户角色</strong>:ADMIN(其他角色只读)</p>
+<p><strong>功能说明</strong>:管理四条监听规则与邮件模板;编辑器三段式配置 + dry-run 试运行。</p>
+<p><strong>功能原型图</strong></p>
+<p><img src="./images/rules.png" alt="邮件中心"></p>
+<p><img src="./images/rule-edit.png" alt="规则编辑器"></p>
+<p><strong>页面操作说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能点</th>
+<th>功能描述&amp;操作说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>规则列表</td>
+<td>按线路分组:规则、监听邮箱、优先级、绑定流程、累计命中、启用开关</td>
+</tr>
+<tr>
+<td>2</td>
+<td>新建/编辑</td>
+<td>进入规则编辑器</td>
+</tr>
+<tr>
+<td>3</td>
+<td>试运行 dry-run</td>
+<td>对样本邮件真实匹配,展示命中/未命中原因,不产生任务</td>
+</tr>
+<tr>
+<td>4</td>
+<td>邮件模板区</td>
+<td>Case 2 空态(结果回写大表,不发通知邮件)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>筛选条件段</td>
+<td>规则名、监听邮箱、发件人白名单(<code>*@域名</code>)、To/Cc、主题/正文关键词、附件数量上下限</td>
+</tr>
+<tr>
+<td>6</td>
+<td>附件要求段</td>
+<td>角色(avis/shipper_decl/bl/shipping_log)+ 文件名正则 + 类型 + 必需/多份</td>
+</tr>
+<tr>
+<td>7</td>
+<td>流程绑定段</td>
+<td>case-2-glc / case-2-glc-dg / case-2-mbusi、汇聚策略、OCR Schema、去重键、优先级、启停</td>
+</tr>
+</tbody></table>
+<p><strong>预置规则</strong>:R-GLC-AVIS(主题 AVIS)、R-GLC-SHIPPER(Shippers_Decl,发件人 <a href="mailto:mbox-006-gsp-lsa-vds2@mercedes-benz.com">mbox-006-gsp-lsa-vds2@mercedes-benz.com</a>,DG 判定)、R-GLC-BL(Bill of Landing)、R-MBUSI-BL(CMA CGM Seaway Bill,发件人 <a href="mailto:website-noreply@cma-cgm.com">website-noreply@cma-cgm.com</a>)。</p>
+<p><strong>页面显示字段说明</strong>(规则编辑器)</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>可编辑</th>
+<th>填写方式</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>规则名</td>
+<td>文本</td>
+<td>是</td>
+<td>是</td>
+<td>手输</td>
+<td></td>
+</tr>
+<tr>
+<td>监听邮箱</td>
+<td>邮箱</td>
+<td>是</td>
+<td>是</td>
+<td>选择</td>
+<td>如 <a href="mailto:ie-import@mb.cn">ie-import@mb.cn</a></td>
+</tr>
+<tr>
+<td>发件人白名单</td>
+<td>文本</td>
+<td>否</td>
+<td>是</td>
+<td>手输</td>
+<td>支持 <code>*@域名</code></td>
+</tr>
+<tr>
+<td>主题关键词</td>
+<td>文本</td>
+<td>是</td>
+<td>是</td>
+<td>手输</td>
+<td>如 AVIS</td>
+</tr>
+<tr>
+<td>附件数量区间</td>
+<td>数字×2</td>
+<td>否</td>
+<td>是</td>
+<td>手输</td>
+<td>min~max</td>
+</tr>
+<tr>
+<td>附件角色</td>
+<td>列表</td>
+<td>是</td>
+<td>是</td>
+<td>逐条录入</td>
+<td>角色+正则+必需+多份</td>
+</tr>
+<tr>
+<td>绑定流程</td>
+<td>枚举</td>
+<td>是</td>
+<td>是</td>
+<td>选择</td>
+<td>3 个流程</td>
+</tr>
+<tr>
+<td>去重键</td>
+<td>文本</td>
+<td>是</td>
+<td>是</td>
+<td>手输</td>
+<td>默认 BL 号</td>
+</tr>
+<tr>
+<td>优先级</td>
+<td>数字</td>
+<td>是</td>
+<td>是</td>
+<td>手输</td>
+<td>多规则命中时裁决</td>
+</tr>
+<tr>
+<td>启用</td>
+<td>开关</td>
+<td>—</td>
+<td>是</td>
+<td>点击</td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+<h3>7.3.5 配置中心(F008)</h3>
+<p><strong>页面名称</strong>:配置中心 | <strong>用户角色</strong>:ADMIN</p>
+<p><strong>功能说明</strong>:导入模板与对应表的版本化管理;调度配置;共享盘监听(平台预留,Case 2 置灰)。</p>
+<p><strong>功能原型图</strong></p>
+<p><img src="./images/config.png" alt="配置中心"></p>
+<p><strong>页面操作说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能点</th>
+<th>功能描述&amp;操作说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>模板配置</td>
+<td>按线路分组;查看/上传(扩展名 + ≤20MB 校验,版本+1)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>对应表维护</td>
+<td>PDC-Customer Code、IES Port 对应表在线维护,即时生效</td>
+</tr>
+<tr>
+<td>3</td>
+<td>调度配置</td>
+<td>每周一 09:00,可修改</td>
+</tr>
+<tr>
+<td>4</td>
+<td>共享盘监听</td>
+<td>Case 2 走邮件监听,字段留空置灰(平台能力预留)</td>
+</tr>
+</tbody></table>
+<p><strong>配置项清单</strong>:AVIS 导入模板(7 列)、BL 导入模板(9 列,GLC/MBUSI 各一)、Shipping Log 导入模板(7 列)、IES Port 对应表、PDC-Customer Code 对应表。</p>
+<p><strong>页面显示字段说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>可编辑</th>
+<th>填写方式</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>配置项</td>
+<td>文本</td>
+<td>—</td>
+<td>否</td>
+<td>系统预置</td>
+<td></td>
+</tr>
+<tr>
+<td>当前文件</td>
+<td>文件</td>
+<td>是</td>
+<td>是</td>
+<td>上传</td>
+<td>扩展名校验</td>
+</tr>
+<tr>
+<td>版本</td>
+<td>数字</td>
+<td>—</td>
+<td>否</td>
+<td>自动 +1</td>
+<td>历史可查</td>
+</tr>
+<tr>
+<td>更新时间</td>
+<td>时间</td>
+<td>—</td>
+<td>否</td>
+<td>系统记录</td>
+<td></td>
+</tr>
+<tr>
+<td>状态</td>
+<td>枚举</td>
+<td>—</td>
+<td>否</td>
+<td>系统判定</td>
+<td>生效/历史</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>7.3.6 SharePoint 归档浏览(F009)</h3>
+<p><strong>页面名称</strong>:Share Point | <strong>用户角色</strong>:全部角色</p>
+<p><strong>功能说明</strong>:过程文件归档的只读浏览与取证入口。</p>
+<p><strong>功能原型图</strong></p>
+<p><img src="./images/sharepoint.png" alt="SharePoint 归档"></p>
+<p><strong>页面操作说明</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能点</th>
+<th>功能描述&amp;操作说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>目录树</td>
+<td>层级:<code>&lt;归档根&gt;\&lt;PDC&gt;\&lt;GLC|MBUSI&gt;\&lt;运行周&gt;\&lt;票文件夹&gt;</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>文件列表</td>
+<td>名称/修改日期/类型/大小;面包屑;目录内搜索</td>
+</tr>
+<tr>
+<td>3</td>
+<td>文件抽屉</td>
+<td>元信息 + 下载/复制路径</td>
+</tr>
+</tbody></table>
+<p><strong>备注</strong>:归档根默认 SharePoint,可配置 T 盘过渡(Q4);票文件夹命名与内容清单见 R2 与 7.2。</p>
+<hr>
+<h3>7.3.7 平台能力引用(F010/F011/F012)</h3>
+<table>
+<thead>
+<tr>
+<th>页面</th>
+<th>截图</th>
+<th>本 Case 使用方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>提醒中心</td>
+<td><img src="./images/notify.png" alt="提醒中心"></td>
+<td>任务成功/异常自动生成站内提醒,点击跳任务详情;未读红点;Case 2 不外发邮件</td>
+</tr>
+<tr>
+<td>治理运营台</td>
+<td><img src="./images/govern.png" alt="治理运营台"></td>
+<td>DAG 监控、审计日志、模型调用成本、证据总量(WORM)</td>
+</tr>
+<tr>
+<td>权限中心</td>
+<td><img src="./images/rbac.png" alt="权限中心"></td>
+<td>四角色只读查询;身份与授权由 Alice 管理</td>
+</tr>
+<tr>
+<td>上传中心</td>
+<td><img src="./images/dim-tables.png" alt="上传中心"></td>
+<td>Case 2 空态(&quot;暂不涉及&quot;),按钮 disabled,平台能力预留</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第八部分:数据需求</h1>
+<h2>8.1 数据模型(逻辑模型)</h2>
+<table>
+<thead>
+<tr>
+<th>实体</th>
+<th>说明</th>
+<th>关键字段</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MailRule 邮件规则</td>
+<td>监听规则</td>
+<td>id、线路、监听邮箱、发件人白名单、主题/正文关键词、附件区间、附件角色[]、绑定流程、去重键、优先级、启停</td>
+</tr>
+<tr>
+<td>AttachmentLedger 附件台账</td>
+<td>暂存登记(key=BL号)</td>
+<td>BL 号(归一)、角色、文件名、来源邮件、接收时间、状态(pending/processed)、版本</td>
+</tr>
+<tr>
+<td>StagingFile 暂存文件</td>
+<td>暂存库引用</td>
+<td>BL 号、类型、路径、hash</td>
+</tr>
+<tr>
+<td>Task 任务</td>
+<td>业务单据(票粒度)</td>
+<td>任务号(T-BL号)、caseId、线路、BL/HAWB、触发来源、当前状态、当前 Run 号</td>
+</tr>
+<tr>
+<td>Run 执行实例</td>
+<td>一次执行(不可变)</td>
+<td>Run 号、起因、状态、起止、耗时、携带修正版本</td>
+</tr>
+<tr>
+<td>NodeExecution 节点执行</td>
+<td>节点轨迹</td>
+<td>Run id、节点序号/名称、状态、起止、输出摘要</td>
+</tr>
+<tr>
+<td>FieldResult 字段结果</td>
+<td>识别+修正</td>
+<td>字段名、原值、来源、置信度、质量等级、修正值/人/时间、原文定位</td>
+</tr>
+<tr>
+<td>Evidence 证据</td>
+<td>WORM 留痕</td>
+<td>类型/子类型、路径、hash、Run/节点关联</td>
+</tr>
+<tr>
+<td>ConfigTemplate 模板配置</td>
+<td>模板/对应表文件</td>
+<td>配置项、线路、当前文件、版本、状态、列定义</td>
+</tr>
+<tr>
+<td>RefTable 对应表</td>
+<td>PDC / IES Port</td>
+<td>类型、键、值、备注、版本</td>
+</tr>
+<tr>
+<td>WritebackRecord 回写记录</td>
+<td>大表双写</td>
+<td>BL 号、列(G/H/J/K/L/M/N/P)、值、时间、结果</td>
+</tr>
+<tr>
+<td>Notification 站内提醒</td>
+<td>成功/异常提醒</td>
+<td>类型、标题、关联任务、已读</td>
+</tr>
+<tr>
+<td>AuditLog 审计日志</td>
+<td>全操作留痕</td>
+<td>时间、操作人、动作、对象、入口</td>
+</tr>
+</tbody></table>
+<p><strong>关系</strong>:MailRule 1─n AttachmentLedger;Task 1─n Run 1─n NodeExecution 1─n FieldResult/Evidence;Task n─1 AttachmentLedger(BL 号);Task 1─n WritebackRecord。</p>
+<p><strong>状态机</strong>:</p>
+<ul>
+<li>Task:执行中 → 已完成 / 有差异(待人工)/ 待上传(缺件)/ 失败 →(人工处理+重跑)→ 执行中</li>
+<li>Run:PENDING → RUNNING → SUCCEEDED / DIFF_PENDING / WAIT_INPUT / FAILED</li>
+<li>AttachmentLedger:pending → processed(pending 可被下轮调度重新捕获)</li>
+</ul>
+<h2>8.2 API 接口(平台前后端)</h2>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/api/workbench/summary</td>
+<td>GET</td>
+<td>工作台统计卡(line)</td>
+</tr>
+<tr>
+<td>/api/tasks</td>
+<td>GET</td>
+<td>任务列表(status/src/keyword/line)</td>
+</tr>
+<tr>
+<td>/api/tasks</td>
+<td>POST</td>
+<td>新建任务(line、blNo、attachments[])</td>
+</tr>
+<tr>
+<td>/api/tasks/{id}</td>
+<td>GET</td>
+<td>任务详情(含 Runs/节点/字段/证据)</td>
+</tr>
+<tr>
+<td>/api/tasks/{id}/rerun</td>
+<td>POST</td>
+<td>重跑(scope=full/node/batch)</td>
+</tr>
+<tr>
+<td>/api/runs/{runId}/fields/{fieldId}/correct</td>
+<td>POST</td>
+<td>字段修正留痕</td>
+</tr>
+<tr>
+<td>/api/runs/{runId}/evidence</td>
+<td>GET</td>
+<td>证据列表/预览</td>
+</tr>
+<tr>
+<td>/api/tasks/{id}/attachments</td>
+<td>POST</td>
+<td>缺件补传(解除 WAIT_INPUT)</td>
+</tr>
+<tr>
+<td>/api/rules</td>
+<td>GET/POST</td>
+<td>规则列表/新建</td>
+</tr>
+<tr>
+<td>/api/rules/{id}</td>
+<td>PUT</td>
+<td>规则编辑</td>
+</tr>
+<tr>
+<td>/api/rules/{id}/toggle</td>
+<td>POST</td>
+<td>启停</td>
+</tr>
+<tr>
+<td>/api/rules/{id}/dry-run</td>
+<td>POST</td>
+<td>试运行(不产生任务)</td>
+</tr>
+<tr>
+<td>/api/configs</td>
+<td>GET</td>
+<td>模板配置查询</td>
+</tr>
+<tr>
+<td>/api/configs/{id}/versions</td>
+<td>POST</td>
+<td>上传新版本(≤20MB)</td>
+</tr>
+<tr>
+<td>/api/ref-tables/{type}</td>
+<td>GET/PUT</td>
+<td>对应表查询/维护(pdc/ies-port)</td>
+</tr>
+<tr>
+<td>/api/staging/{blNo}</td>
+<td>GET</td>
+<td>暂存与台账查询</td>
+</tr>
+<tr>
+<td>/api/staging/{blNo}/resume</td>
+<td>POST</td>
+<td>挂起票人工确认续跑</td>
+</tr>
+<tr>
+<td>/api/writeback</td>
+<td>GET</td>
+<td>回写状态查询(blNo)</td>
+</tr>
+<tr>
+<td>/api/archive/tree、/api/archive/files</td>
+<td>GET</td>
+<td>归档浏览</td>
+</tr>
+<tr>
+<td>/api/notifications、/api/notifications/read</td>
+<td>GET/POST</td>
+<td>提醒列表/已读</td>
+</tr>
+<tr>
+<td>/api/audit</td>
+<td>GET</td>
+<td>审计检索</td>
+</tr>
+<tr>
+<td>/api/export/tasks.csv</td>
+<td>GET</td>
+<td>任务列表导出(MANAGER)</td>
+</tr>
+</tbody></table>
+<p><strong>IES+ 侧能力要求</strong>(实现不限定):I1 发票查询(MBZ/BOL);I2 批量导入 AVIS/Shipping Log(绿灯校验);I3 invoice 级导出;I4 发票附件下载/修改(FOB 填 Others);I5 生成预报;I6 集装箱导入 BL 模板(<strong>差异弹窗可完整捕获</strong>,有差异不生成台账);I7 文档上传(类别含 Other)。</p>
+<h2>8.3 错误码</h2>
+<table>
+<thead>
+<tr>
+<th>错误码</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E1001</td>
+<td>规则校验失败(正则/附件角色缺失),阻断保存</td>
+</tr>
+<tr>
+<td>E1002</td>
+<td>dry-run 样本邮件不可用</td>
+</tr>
+<tr>
+<td>E2001</td>
+<td>模板上传校验失败(扩展名/&gt;20MB)</td>
+</tr>
+<tr>
+<td>E2002</td>
+<td>模板版本与流程不兼容</td>
+</tr>
+<tr>
+<td>E3001</td>
+<td>IES 导入差异(弹窗),捕获 → L 列 → 转人工</td>
+</tr>
+<tr>
+<td>E3002</td>
+<td>IES 上传失败/超时,支持检查点重试</td>
+</tr>
+<tr>
+<td>E4001</td>
+<td>暂存缺件(不齐套),任务挂起 WAIT_INPUT</td>
+</tr>
+<tr>
+<td>E4002</td>
+<td>重复 BL(去重命中),跳过并记录</td>
+</tr>
+<tr>
+<td>E4003</td>
+<td>PDC/ETA 缺失,不建不明确文件夹,转人工</td>
+</tr>
+<tr>
+<td>E5001</td>
+<td>权限不足,拒绝 + 审计</td>
+</tr>
+<tr>
+<td>E5002</td>
+<td>大表回写失败,入队重试 + 告警</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第九部分:非功能性需求</h1>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>指标</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>性能</td>
+<td>周批量时长</td>
+<td>双线合计 &lt;2 小时(建议值)</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>页面响应</td>
+<td>首屏 &lt;2s;任务列表万级分页流畅</td>
+</tr>
+<tr>
+<td>可靠性</td>
+<td>续跑</td>
+<td>失败票检查点续跑;重跑去重 100%;调度失败告警</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>凭证</td>
+<td>安全存储,不出现于日志</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>权限/审计</td>
+<td>RBAC 四角色;全操作审计;证据 WORM</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>浏览器</td>
+<td>Chrome / Edge 主流版本(PC Web)</td>
+</tr>
+<tr>
+<td>可配置</td>
+<td>配置化</td>
+<td>调度时间、邮箱、路径、重试、等待时间、模板、对应表均不硬编码</td>
+</tr>
+<tr>
+<td>可审计</td>
+<td>留痕</td>
+<td>每票保留源文件、输出、时间戳、状态、错误详情</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第十部分:约束与假设</h1>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>触发口径</td>
+<td>每周一 09:00(可配置),数据窗口固定为上周一至周日</td>
+</tr>
+<tr>
+<td>大表双写</td>
+<td>平台台账为主,必须同步回写 AVIS BL status report 保持业务习惯</td>
+</tr>
+<tr>
+<td>修正无审批</td>
+<td>UC34 全场景修正仅留痕,不设人工审批节点</td>
+</tr>
+<tr>
+<td>IES+ 实现</td>
+<td>交互方式不限定,但绿灯校验与差异弹窗捕获为硬性能力要求</td>
+</tr>
+<tr>
+<td>归档根</td>
+<td>默认 SharePoint,T 盘为兼容过渡</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>假设</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公邮接入</td>
+<td>平台可读取 Portal 公邮(MBUSI 提单邮件由业务配置自动 Forward 至平台公邮)</td>
+</tr>
+<tr>
+<td>权限接入</td>
+<td>美国 Central Warehouse 网站导出权限可用(否则业务下载放指定位置)</td>
+</tr>
+<tr>
+<td>大表可写</td>
+<td>AVIS BL status report 具备平台回写通道</td>
+</tr>
+<tr>
+<td>身份体系</td>
+<td>Alice 提供四角色授权与数据范围</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>第十一部分:风险与待确认</h1>
+<h2>风险</h2>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>风险</th>
+<th>等级</th>
+<th>应对</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RSK-1</td>
+<td>BL 与 AVIS 2~3 周时差导致齐套判断错误</td>
+<td>中</td>
+<td>跨周按 BL 号归并 + 挂起机制(R3.1/R3.2)</td>
+</tr>
+<tr>
+<td>RSK-2</td>
+<td>美表漏数补登不回溯,漏数票滞留</td>
+<td>中</td>
+<td>台账 pending + 下轮 created 捕获续跑(R3.3)+ 异常可见</td>
+</tr>
+<tr>
+<td>RSK-3</td>
+<td>IES+ 页面/模板变更导致导入失败</td>
+<td>中</td>
+<td>模板版本化 + 检查点续跑 + 失败告警</td>
+</tr>
+<tr>
+<td>RSK-4</td>
+<td>OCR 识别错误流入 IES</td>
+<td>高</td>
+<td>置信度分级 + 低置信强制人工修正 + 交叉核对</td>
+</tr>
+<tr>
+<td>RSK-5</td>
+<td>归档根迁移(T 盘→SharePoint)中断</td>
+<td>低</td>
+<td>配置切换 + 历史目录保持可读</td>
+</tr>
+</tbody></table>
+<h2>待确认</h2>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>问题</th>
+<th>影响</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OPEN-1</td>
+<td>成功指标建议值(≥80% 自动化率等)需业务确认</td>
+<td>验收口径</td>
+<td>待业务确认(Q5)</td>
+</tr>
+<tr>
+<td>OPEN-2</td>
+<td>邮箱清单、路径、模板版本、字段映射终稿</td>
+<td>配置初始化</td>
+<td>供应商待确认项(MBUSI BRD §11)</td>
+</tr>
+<tr>
+<td>OPEN-3</td>
+<td>重试/重跑/覆盖/通知规则的批准口径</td>
+<td>运维规则</td>
+<td>供应商待确认项</td>
+</tr>
+<tr>
+<td>OPEN-4</td>
+<td>测试账号、权限、样本文件、IES+ 测试环境</td>
+<td>测试就绪</td>
+<td>供应商待确认项</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>附录</h1>
+<h2>附录A:原型与截图清单</h2>
+<p>原型基线目录:<code>C:\MBPTS\case2页面demo\</code></p>
+<table>
+<thead>
+<tr>
+<th>页面</th>
+<th>原型文件</th>
+<th>截图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作台</td>
+<td>index.html</td>
+<td><a href="./images/index.png">index.png</a></td>
+</tr>
+<tr>
+<td>任务中心</td>
+<td>tasks.html</td>
+<td><a href="./images/tasks.png">tasks.png</a></td>
+</tr>
+<tr>
+<td>任务详情</td>
+<td>task-detail.html</td>
+<td><a href="./images/task-detail.png">task-detail.png</a>、<a href="./images/task-detail-mbusi.png">task-detail-mbusi.png</a></td>
+</tr>
+<tr>
+<td>邮件中心</td>
+<td>rules.html</td>
+<td><a href="./images/rules.png">rules.png</a></td>
+</tr>
+<tr>
+<td>规则编辑器</td>
+<td>rule-edit.html</td>
+<td><a href="./images/rule-edit.png">rule-edit.png</a></td>
+</tr>
+<tr>
+<td>配置中心</td>
+<td>config.html</td>
+<td><a href="./images/config.png">config.png</a></td>
+</tr>
+<tr>
+<td>Share Point</td>
+<td>sharepoint.html</td>
+<td><a href="./images/sharepoint.png">sharepoint.png</a></td>
+</tr>
+<tr>
+<td>提醒中心</td>
+<td>notify.html</td>
+<td><a href="./images/notify.png">notify.png</a></td>
+</tr>
+<tr>
+<td>上传中心(空态)</td>
+<td>dim-tables.html</td>
+<td><a href="./images/dim-tables.png">dim-tables.png</a></td>
+</tr>
+<tr>
+<td>权限中心</td>
+<td>rbac.html</td>
+<td><a href="./images/rbac.png">rbac.png</a></td>
+</tr>
+<tr>
+<td>治理运营台</td>
+<td>govern.html</td>
+<td><a href="./images/govern.png">govern.png</a></td>
+</tr>
+<tr>
+<td>业务流程图</td>
+<td>—</td>
+<td><a href="./images/%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE_GLC.png">业务流程图_GLC.png</a>、<a href="./images/%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE_MBUSI.png">业务流程图_MBUSI.png</a>、<a href="./UC34-Case2_%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%9B%BE.drawio">drawio 源文件</a></td>
+</tr>
+</tbody></table>
+<h2>附录B:相关文档</h2>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>【MBPTS-UC34】case 2:AVIS_BL_Automation_BRD_0920.docx/.md</code></td>
+<td>GLC 欧线 BRD(原始逐步截图流程)</td>
+</tr>
+<tr>
+<td><code>【MBPTS-UC34】case 2:MBUSI_Shipping_Log_BL_Automation_BRD_0920.docx</code></td>
+<td>MBUSI 正式 BRD(BRD-MBUSI-BL-002 V3):BR-01<del>10 / FR-01</del>06 / AC-01~08</td>
+</tr>
+<tr>
+<td><code>【MBPTS-UC34】Case 2:GLC&amp;MBUSI梳理.docx</code></td>
+<td>双线操作梳理(自用版)</td>
+</tr>
+<tr>
+<td><code>【UC34-Case2】GLC_MBUSI_业务流程图_20260927.html</code></td>
+<td>业务侧流程图(含 2026-09-27 设计确认点)</td>
+</tr>
+<tr>
+<td><a href="./UC34-Case2_%E9%9C%80%E6%B1%82%E6%BE%84%E6%B8%85%E6%96%87%E6%A1%A3.md">需求澄清文档</a></td>
+<td>Q1~Q14 澄清记录</td>
+</tr>
+<tr>
+<td><a href="./%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E%E4%B9%A6.md">设计说明书</a></td>
+<td>Stage 2 设计全文</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>文档版本</strong>:V1.0.0 | <strong>编写日期</strong>:2026-09-28 | <strong>审核人</strong>:待审核</p>
+</body></html>
