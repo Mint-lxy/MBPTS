@@ -1,0 +1,204 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC34 Case3 马来西亚发票与预报创建</title><style>:root{
+  --navy:#1c2e42;--navy2:#22415e;--navy3:#182c40;
+  --teal:#2f7480;--purple:#6b5f9e;--amber:#5b6cae;--deepamber:#454f86;
+  --green:#4a8a6d;--red:#b06058;--ink:#22303c;--muted:#6c7880;--line:#8b98a3;
+  --paper:#e9ebee;--stage:#fafbfc;--gold:#5b6cae;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+
+/* ---------- 顶部标题栏（与画布同宽的居中卡片） ---------- */
+.top{height:66px;max-width:1720px;margin:14px auto 0;padding:0 26px;background:linear-gradient(120deg,#f8fafc 0%,#eef2f7 100%);border:1px solid #d3dae2;border-radius:14px;color:var(--ink);display:flex;align-items:center;position:relative;box-shadow:0 4px 16px #1c2e4212}
+.top::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#36709e,#2f7480)}
+.top::after{content:"";position:absolute;inset:0;background:radial-gradient(520px 150px at 94% -50px,#36709e1f,transparent 70%);border-radius:inherit;pointer-events:none}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.mark{flex:0 0 auto;width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#22415e,#182c40);color:#a8c9e8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.03em;box-shadow:0 4px 10px #1c2e4233, inset 0 1px 0 #ffffff26}
+.tt small{display:block;color:#7d8b99;letter-spacing:.24em;font-weight:700;font-size:10.5px;margin-bottom:2px}
+.tt h1{font-size:19px;margin:0;letter-spacing:.02em;color:#1c2e42}
+.tt p{margin:2px 0 0;color:#7d8894;font-size:11.5px;letter-spacing:.03em}
+
+/* ---------- 图例 ---------- */
+.legend{height:40px;max-width:1720px;margin:10px auto;padding:0 22px;background:#eff2f6;border:1px solid #d6dde4;border-radius:11px;display:flex;gap:24px;align-items:center;color:#525a63;font-weight:600;font-size:12px;box-shadow:0 2px 8px #1c2e420a}
+.legend .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;box-shadow:inset 0 0 0 1px #00000014}
+.legend i.dia{transform:rotate(45deg);border-radius:3px}
+.legend .cap{color:#9aa5ae;font-weight:700;letter-spacing:.16em;font-size:11px;margin-right:-6px}
+
+/* ---------- 画布外壳 ---------- */
+.shell{height:calc(100vh - 140px);padding:0 14px 14px;margin-top:10px}
+.wrap{height:100%;overflow:auto;max-width:1720px;margin:auto;background:var(--paper);border:1px solid #ced5dc;border-radius:14px;box-shadow:0 18px 44px #1c2e421a,0 2px 8px #1c2e4210;position:relative}
+.holder{position:relative;margin:auto}
+.stage{position:relative;width:2550px;height:1800px;transform-origin:top left;background:var(--stage);background-image:radial-gradient(#d3d9df .8px,transparent .8px);background-size:22px 22px}
+
+/* 缩放工具 */
+.zoom{position:fixed;right:26px;bottom:24px;display:flex;gap:6px;padding:6px;background:#fffffff0;border:1px solid #d5dbe1;border-radius:12px;box-shadow:0 10px 26px #1c2e4226;z-index:50;backdrop-filter:blur(4px)}
+.zoom button{border:1px solid #dee3e9;background:#fff;color:#4c5760;font:700 12px/1 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;padding:8px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+.zoom button:hover{background:#eef2f6;border-color:#b7c2cc;color:#1c2e42}
+.zoom button:active{transform:translateY(1px)}
+
+/* ---------- 画布内标题 ---------- */
+.doc{position:absolute;left:46px;top:20px;z-index:7}
+.doc b{display:block;color:#1c2e42;font-size:24px;letter-spacing:.01em}
+.doc span{color:var(--muted);font-size:13px}
+
+/* ---------- 泳道 ---------- */
+.lane{position:absolute;left:45px;width:2460px;border:1px solid #d5dae0;border-radius:14px;background:#fcfdfd;overflow:hidden;z-index:0;box-shadow:0 1px 3px #1c2e420a}
+.portal{top:110px;height:170px;background:linear-gradient(180deg,#f8f9fc,#f5f6fa)}
+.rpa{top:305px;height:1190px;background:linear-gradient(180deg,#fbfcfc,#f9fbfb)}
+.output{top:1520px;height:220px;background:linear-gradient(180deg,#f2f7f4,#f0f5f1)}
+.lane h2{height:40px;margin:0;padding:9px 20px;font-size:13.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e5ea}
+.lane h2 .no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;color:#fff;font-size:11px;font-weight:800;letter-spacing:0}
+.portal h2{color:#58527e;border-left:6px solid var(--purple)}
+.portal h2 .no{background:var(--purple)}
+.rpa h2{color:#2a5a64;border-left:6px solid var(--teal)}
+.rpa h2 .no{background:var(--teal)}
+.output h2{color:#3e6a55;border-left:6px solid var(--green)}
+.output h2 .no{background:var(--green)}
+.lane h2 em{font-style:normal;color:#9099a1;font-weight:600;font-size:12px;margin-left:4px;letter-spacing:.03em}
+
+/* ---------- 阶段标签 ---------- */
+.phase{position:absolute;color:#3e5260;font-weight:800;font-size:12px;letter-spacing:.04em;z-index:1;display:flex;align-items:center;gap:8px}
+.phase::before{content:"";width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--teal),#93b3b6)}
+
+/* ---------- 分组框 ---------- */
+.group{position:absolute;border:1.4px dashed #c2cad2;border-radius:12px;background:#ffffff78;z-index:1;box-shadow:0 1px 4px #1c2e4208}
+.group h3{margin:0;padding:9px 15px;font-size:12.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.group h3::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.75}
+.nonset{left:75px;top:805px;width:1120px;height:285px}
+.nonset h3{background:linear-gradient(90deg,#e5eef0,#ecf2f3 70%,transparent);color:#2c6470;border-bottom:1px dashed #bfd0d3}
+.setgroup{left:1270px;top:805px;width:1190px;height:285px;border-color:#b7b4d9;background:#fafbfeea}
+.setgroup h3{background:linear-gradient(90deg,#e9e6f5,#f4f2fa 70%,transparent);color:#5a5290;border-bottom:1px dashed #c7c2e0}
+.setnote{position:absolute;left:1305px;top:1047px;color:#5f5890;font-size:11px;z-index:5;padding-left:20px}
+.setnote::before{content:"※";position:absolute;left:0;top:0;color:var(--amber);font-weight:700}
+.record{position:absolute;left:95px;top:1452px;width:2350px;height:30px;padding:6px 14px;border:1px solid #a4bcb2;border-radius:8px;background:linear-gradient(90deg,#ecf2ee,#f1f5f1);color:#48684f;font-size:11.5px;z-index:5;display:flex;align-items:center;gap:8px}
+.record::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #4a8a6d33;flex:0 0 auto}
+
+/* ---------- 节点卡片 ---------- */
+.node{--ac:var(--teal);position:absolute;min-height:80px;padding:12px 14px 11px;background:#fffefe;border:1px solid #dadfe4;border-top:3px solid var(--ac);border-radius:10px;box-shadow:0 2px 5px #1c2e420a,0 9px 22px #1c2e420e;z-index:6;transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+.node:hover{transform:translateY(-3px);box-shadow:0 6px 12px #1c2e4214,0 16px 34px #1c2e4218}
+.node .ttl{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.chip{font-style:normal;font-weight:800;font-size:10px;line-height:1;padding:4px 7px;border-radius:6px;background:var(--ac);color:#fff;letter-spacing:.04em;white-space:nowrap;box-shadow:0 2px 5px #1c2e422a}
+.node b{display:block;font-size:13px;color:var(--ink);line-height:1.35}
+.node span{display:block;font-size:10.5px;color:var(--muted);line-height:1.55}
+.node.portal-n{--ac:var(--purple);background:#fbfbfd}
+.node.rule{--ac:var(--amber);background:#fbfbfd}
+.node.bad{--ac:var(--red);background:#fdfaf9}
+.node.set{--ac:#66609e;background:#fafbfe}
+.node.out{--ac:var(--green);background:#fbfdfb}
+.node.merge{--ac:#67748a;background:#f0f3f5;text-align:center}
+.node.merge .ttl{justify-content:center}
+
+/* ---------- 菱形判断 ---------- */
+.diamond{position:absolute;width:106px;height:106px;transform:rotate(45deg);border-radius:12px;background:linear-gradient(135deg,#f8f9fd,#eef0f9);border:1.6px solid #8f9bd0;box-shadow:0 2px 5px #1c2e420a,0 10px 22px #5b6cae18;z-index:6;transition:box-shadow .18s}
+.diamond:hover{box-shadow:0 6px 14px #1c2e4218,0 16px 32px #5b6cae24}
+.diamond div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-45deg);padding:0 4px}
+.diamond b{font-size:11.5px;font-weight:800;color:#454f86;line-height:1.3;max-width:96px}
+.diamond small{font-size:9.5px;font-weight:500;color:#7a84aa;margin-top:3px;max-width:96px;line-height:1.35}
+
+/* ---------- 连线 ---------- */
+.edges{position:absolute;inset:0;width:2550px;height:1800px;z-index:3;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;marker-end:url(#arrow)}
+.edge.yes{stroke:#4f8a72}
+.edge.no{stroke:#b26a62}
+.edge.set{stroke:#5b6cae}
+.edge.fb{stroke:#8b96ad;stroke-dasharray:7 6}
+.label{font-size:10.5px;font-weight:600;fill:#4f5a64;paint-order:stroke;stroke:var(--stage);stroke-width:6px;stroke-linejoin:round}
+
+.dim{opacity:.16}
+.hit{stroke-width:3.2}
+.node.dim,.diamond.dim{opacity:.24}
+.node.focus,.diamond.focus{outline:3px solid var(--gold);outline-offset:3px}
+
+@media print{
+  .top,.legend,.zoom{display:none}
+  .shell{height:auto;padding:0}
+  .wrap{overflow:visible;max-width:none;border:0;box-shadow:none}
+  .holder{width:2550px!important;height:1800px!important}
+  .stage{transform:scale(.58)!important}
+  @page{size:A3 landscape;margin:5mm}
+}
+
+.stage,.edges{height:1300px}
+@media print{.holder{height:1300px!important}}
+.note-card{position:absolute;z-index:5;background:#f6f8fa;border:1px solid #d4dbe2;border-left:4px solid #70869a;border-radius:8px;padding:12px 16px;color:#4e5e6c;font-size:12px;line-height:1.55}.note-card b{display:block;color:#31455a;margin-bottom:2px}.separator{position:absolute;left:47px;width:2456px;height:1px;background:#cbd2d9;z-index:2}
+</style></head><body><header class="top"><div class="brand"><div class="mark">BRD</div><div class="tt"><small>MBPTS AI QUICK WIN · UC34 CASE 3</small><h1>UC34 Case3 马来西亚发票与预报创建</h1><p>MBUSI · IES+ 发票导入与进口预报 · BRD 梳理版 0927</p></div></div></header>
+<div class="legend"><span class="cap">LEGEND</span><span class="lg"><i style="background:var(--purple)"></i>Portal 操作</span><span class="lg"><i style="background:var(--teal)"></i>后台流程</span><span class="lg"><i class="dia" style="background:var(--amber)"></i>BRD 判断条件</span><span class="lg"><i style="background:var(--green)"></i>业务输出</span><span class="lg"><i style="background:var(--red)"></i>异常 / 排除</span></div>
+<main class="shell"><div class="wrap" id="wrap"><div class="holder" id="holder"><div class="stage" id="stage">
+<div class="doc" style="top:18px;left:46px"><b>马来西亚发票与预报创建 · 端到端流程</b><span>触发→收单归档→模板制作→导入发票→创建预报→回邮通知（证据见节点悬浮来源）</span></div>
+<section class="lane portal" style="top:110px;height:170px"><h2><span class="no">01</span>业务用户 / 触发来源<em>邮件入口与未决事项</em></h2></section>
+<section class="lane rpa" style="top:305px;height:700px"><h2><span class="no">02</span>后台自动流程与数据逻辑<em>IES+ 与 Portal 操作步骤</em></h2></section>
+<section class="lane output" style="top:1030px;height:240px"><h2><span class="no">03</span>业务输出<em>BRD 明确写出的最终产物</em></h2></section>
+<div class="phase" style="left:90px;top:352px">阶段一 · 收单归档与模板制作（BRD 步骤 1–2）</div>
+<div class="phase" style="left:90px;top:636px">阶段二 · 导入、预报与邮件通知（BRD 步骤 3–5）</div>
+<div class="note-card" title="BRD §导入发票" style="left:740px;top:852px;width:430px"><b>成功校验口径</b>已邮件确认无需 AI 再次校验发票 PDF 是否上传成功；Portal 留有是否执行操作的 Log。</div>
+<svg class="edges"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5 0 9Z" fill="context-stroke"/></marker></defs><g id="edgeLayer"></g></svg><div id="nodes"></div>
+</div></div></div></main><div class="zoom"><button data-z="out" title="缩小">−</button><button data-z="fit" title="适应窗口宽度">适应宽度</button><button data-z="full" title="原始尺寸">100%</button><button data-z="in" title="放大">＋</button></div><script>const stageHeight=1300;
+const N=[["p1", "portal-n", 150, 175, 320, "P1 监控收取预报邮件", "标题含 “MBPLAP Pre-alert” 且发件人后缀 @tvsscs.com，两条件同时满足", "BRD §触发条件：邮件触发与监控条件"], ["r1", "", 100, 405, 250, "R1 下载邮件附件", "四类：发票 / 分单 pre-alert / SDS / Shipper decl", "BRD §获取邮件附件、重命名并归档"], ["ru1", "rule", 380, 405, 260, "R2 按文件名识别种类", "发票=第二个数字字段以 1100 开头；分单含 HAWB；另含 SDS / shipper 关键字", "BRD §文件种类识别条件表"], ["d1", "diamond", 690, 392, 150, "关键字命中？", "未命中另有路径", "BRD：如关键字没查到以文件内容判断"], ["bc", "set", 870, 405, 230, "S1 按文件内容补判", "关键字均未查到，改以文件内容判断文件种类", "BRD：请以文件里面的内容来判断"], ["r3", "", 1140, 405, 260, "R3 按规则重命名", "发票=发票号；分单=HAWB_分单号（无则主单号）；如涉及 MSDS/Shipper 同取并存档", "BRD §重命名条目（1）–（3）"], ["r4", "portal-n", 1430, 405, 270, "R4 归档至 SharePoint", "Portal 按操作日期建一级文件夹、按 HAWB 建二级文件夹，存四类原件", "BRD §归档条目 4"], ["r5", "rule", 1740, 405, 280, "R5 填写 IES+ 导入模板", "蓝头必填、PDF 有值的选填必录；IES+ 仅接受 MBZ/DN No. 与 PID 一一对应；Customer NO. 按逻辑关系映射 PDC", "BRD §填写IES+系统发票导入模板 + 附件1 需求/逻辑关系"], ["r6", "portal-n", 2050, 405, 250, "R6 模板存分单文件夹", "制作完成后存 Portal SharePoint 对应分单文件夹", "BRD §填写模板末段"], ["r7", "", 100, 680, 270, "R7 导入发票模板", "IES+→进口管理→发票信息→导入→导入 INV&amp;DN→选择文件→上传", "BRD §导入发票 操作路径"], ["d2", "diamond", 450, 668, 150, "导入 Warning？", "异常与否", "BRD：如有 Warning 提示异常进行记录"], ["bad1", "bad", 435, 850, 240, "E1 记录导入异常", "Warning 信息登记附件3_运行结果；BRD 未指定恢复入口", "BRD：记录信息参见附件3_运行结果"], ["r8", "", 680, 680, 280, "R8 批量上传发票 PDF", "按发票号搜索→批量上传，PDF 挂至发票界面；成功校验以 Portal Log 为准", "BRD §发票信息创建完成后…批量上传"], ["r9", "", 1010, 680, 260, "R9 全选发票生成预报", "按分单全部发票号查询→100 条/页→全选→点击“生成预报”", "BRD §创建预报 步骤 1–3"], ["r10", "rule", 1310, 680, 290, "R10 填写预报字段", "按附件4 填 MAWB/HAWB、DG、Terminal WH、Freight 等；提单有 PDF/图片两种格式；点击确定", "BRD §创建预报 步骤 4 + 附件4"], ["d3", "diamond", 1650, 668, 150, "预报 Warning？", "异常与否", "BRD §创建预报 步骤 5"], ["bad2", "bad", 1635, 850, 240, "E2 记录预报异常", "Warning 信息登记附件3_运行结果；BRD 未指定恢复入口", "BRD §创建预报 步骤 5"], ["r11", "", 1880, 680, 300, "R11 上传预报文档资料", "预报修改→文档资料上传：分单（无→主单）=HAWB；MSDS（如有）=Others；Shipper（如有）=Shipper decl", "BRD §创建预报 步骤 6"], ["r12", "portal-n", 2220, 680, 260, "R12 回复原邮件通知", "在原邮件线程直接回复（收件人即原发件 Forwarder），仅含本次预报创建状态", "BRD §发送邮件通知；收件人口径：用户 2026-09-27 确认直接回复原发件人"], ["o1", "out", 150, 1090, 290, "O1 SharePoint 归档完成", "四类原件按 日期/HAWB 两级归档 + INV&amp;DN 导入模板存分单文件夹", "BRD §归档条目 4、§填写模板末段"], ["o2", "out", 490, 1090, 290, "O2 IES+ 发票信息已建", "INV&amp;DN 模板导入创建；发票 PDF 已批量上传挂接", "BRD §导入发票"], ["o3", "out", 830, 1090, 320, "O3 IES+ 进口预报已建", "按附件4 字段生成预报；分单/主单、MSDS、Shipper decl 已挂文档资料", "BRD §创建预报 步骤 4–6"], ["o4", "out", 1200, 1090, 290, "O4 状态邮件已回复", "原邮件线程直接回复原发件人，内容为本次预报创建状态", "BRD §发送邮件通知；用户 2026-09-27 确认口径"], ["o5", "out", 1540, 1090, 310, "O5 运行记录可查询", "附件3_运行结果登记各步异常 + Portal 执行 Log", "BRD §附件3、§导入发票 Log 说明"], ["o6", "out", 1900, 1090, 340, "O6 运行记录报告", "按业务给定表头逐票输出：Pre-alert receive date / PDC / HAWB NO. / Invoice NO. / Invoice &amp; Pre-alert 创建结果 / 各文件上传 Y/N（不涉及可标）/ Process date", "BRD 附件3_运行结果.xlsx 表头"]];
+const E=[["p1", "r1", "", "", [[310, 375], [225, 375]], "BRD §触发条件→§业务流程 顺序"], ["r1", "ru1", "", "", [], "BRD §获取附件 顺序：下载后识别"], ["ru1", "d1", "查关键字", "", [], "BRD §识别条件表→内容补判规则"], ["d1", "bc", "未命中", "set", [], "BRD：关键字没查到以文件内容判断"], ["bc", "r3", "", "fb", [], "BRD：内容判断后继续命名规则"], ["d1", "r3", "命中", "yes", [[765, 565], [1270, 565]], "BRD §识别条件表→§重命名条目"], ["r3", "r4", "", "", [], "BRD §条目（1）–（3）→第 4 条 顺序"], ["r4", "r5", "", "", [], "BRD 章节顺序：归档→填写模板"], ["r5", "r6", "", "", [], "BRD：制作完成后存入分单文件夹"], ["r6", "r7", "模板就绪", "", [[2175, 610], [100, 610]], "BRD 章节顺序：填写模板→导入发票"], ["r7", "d2", "", "", [], "BRD §导入发票 顺序"], ["d2", "bad1", "是 · 记录", "no", [], "BRD：如有 Warning 提示异常，进行记录"], ["d2", "r8", "创建完成后", "", [], "BRD：发票信息创建完成后…批量上传"], ["r8", "r9", "", "", [], "BRD 章节顺序：导入发票→创建预报"], ["r9", "r10", "", "", [], "BRD §创建预报 步骤 3→4"], ["r10", "d3", "", "", [], "BRD §创建预报 步骤 4→5"], ["d3", "bad2", "是 · 记录", "no", [], "BRD §创建预报 步骤 5"], ["d3", "r11", "确定后继续", "", [], "BRD §创建预报 步骤 5→6 顺序"], ["r11", "r12", "资料齐备", "", [], "BRD §发送邮件通知：以上所有步骤完成后"], ["bad1", "o5", "登记", "no", [[555, 970], [1515, 970], [1515, 1155]], "BRD：记录信息参见附件3_运行结果"], ["bad2", "o5", "登记", "no", [[1755, 985], [1695, 985]], "BRD §创建预报 步骤 5→附件3"], ["r12", "o1", "完成后可查询", "", [[2350, 1018], [290, 1018]], "BRD 全流程产物汇总"], ["o1", "o2", "", "", [], "BRD 产物顺序：归档→发票"], ["o2", "o3", "", "", [], "BRD 产物顺序：发票→预报"], ["o3", "o4", "", "", [], "BRD 产物顺序：预报→回邮"], ["o4", "o5", "", "", [], "BRD §附件3 运行结果 + Log"], ["o5", "o6", "", "", [], "BRD 附件3_运行结果.xlsx 汇总输出"]];
+const layer=document.getElementById('nodes'),edgeLayer=document.getElementById('edgeLayer'),stage=document.getElementById('stage'),wrap=document.getElementById('wrap'),holder=document.getElementById('holder');
+let scale=1;const by={};
+N.forEach(n=>{
+  let e=document.createElement('div');by[n[0]]=e;e.id=n[0];
+  // A diamond's JSON width reserves a horizontal slot. Keep its rendered
+  // shape square and centre it in that slot before applying the rotation.
+  e.style.left=(n[1]==='diamond'?n[2]+(n[4]-106)/2:n[2])+'px';
+  e.style.top=n[3]+'px';
+  e.style.width=(n[1]==='diamond'?106:n[4])+'px';
+  if(n[1]==='diamond'){
+    e.className='diamond';
+    e.innerHTML='<div><b>'+n[5]+'</b><small>'+n[6]+'</small></div>';
+  }else{
+    e.className='node '+n[1];
+    let m=n[5].match(/^([A-Za-z]{1,2}\d{0,2})\s+(.*)$/);
+    e.innerHTML=m?'<div class="ttl"><i class="chip">'+m[1]+'</i><b>'+m[2]+'</b></div><span>'+n[6]+'</span>'
+                 :'<div class="ttl"><b>'+n[5]+'</b></div><span>'+n[6]+'</span>';
+  }
+  e.title=n[7]||'';e.onmouseenter=()=>focus(n[0]);e.onmouseleave=()=>focus();
+  layer.append(e);
+});
+
+function box(id){let r=by[id].getBoundingClientRect(),s=stage.getBoundingClientRect();return{x:(r.left-s.left)/scale,y:(r.top-s.top)/scale,w:r.width/scale,h:r.height/scale}}
+function anchor(a,p){let c=[a.x+a.w/2,a.y+a.h/2],dx=p[0]-c[0],dy=p[1]-c[1];if(Math.abs(dx)>Math.abs(dy))return dx>0?[a.x+a.w,c[1]]:[a.x,c[1]];return dy>0?[c[0],a.y+a.h]:[c[0],a.y]}
+function orthogonal(points){let out=[points[0]];for(let i=1;i<points.length;i++){let a=out[out.length-1],b=points[i];if(a[0]!==b[0]&&a[1]!==b[1])out.push([b[0],a[1]]);out.push(b)}return out}
+function rounded(pts,r){let d='M'+pts[0][0]+' '+pts[0][1];for(let i=1;i<pts.length-1;i++){let a=pts[i-1],b=pts[i],c=pts[i+1],v1=[b[0]-a[0],b[1]-a[1]],v2=[c[0]-b[0],c[1]-b[1]],l1=Math.hypot(v1[0],v1[1]),l2=Math.hypot(v2[0],v2[1]);if(l1<.01||l2<.01||Math.abs(v1[0]*v2[1]-v1[1]*v2[0])<.01){d+=' L'+b[0]+' '+b[1];continue}let rr=Math.min(r,l1/2,l2/2);d+=' L'+(b[0]-v1[0]/l1*rr)+' '+(b[1]-v1[1]/l1*rr)+' Q'+b[0]+' '+b[1]+' '+(b[0]+v2[0]/l2*rr)+' '+(b[1]+v2[1]/l2*rr)}let e=pts[pts.length-1];d+=' L'+e[0]+' '+e[1];return d}
+
+function draw(){
+  edgeLayer.innerHTML='';
+  E.forEach((e,i)=>{
+    let a=box(e[0]),b=box(e[1]),ways=e[4]||[],
+        first=ways[0]||[b.x+b.w/2,b.y+b.h/2],
+        last=ways[ways.length-1]||[a.x+a.w/2,a.y+a.h/2],
+        s=anchor(a,first),t=anchor(b,last),
+        pts=orthogonal([s,...ways,t]),
+        d=rounded(pts,14),
+        path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d);path.setAttribute('class','edge '+e[3]);path.dataset.i=i;
+    edgeLayer.append(path);
+    if(e[2]){
+      let seg=pts.slice(1).map((p,j)=>({a:pts[j],b:p,l:Math.hypot(p[0]-pts[j][0],p[1]-pts[j][1])})).sort((x,y)=>y.l-x.l)[0],
+          q=document.createElementNS('http://www.w3.org/2000/svg','text');
+      q.setAttribute('x',(seg.a[0]+seg.b[0])/2);q.setAttribute('y',(seg.a[1]+seg.b[1])/2-7);
+      q.setAttribute('text-anchor','middle');q.setAttribute('class','label');q.dataset.i=i;q.textContent=e[2];
+      edgeLayer.append(q);
+    }
+  });
+}
+
+function focus(id){
+  N.forEach(n=>by[n[0]].classList.toggle('dim',!!id&&n[0]!==id&&!E.some(e=>(e[0]===id&&e[1]===n[0])||(e[1]===id&&e[0]===n[0]))));
+  [...edgeLayer.children].forEach(x=>{let e=E[+x.dataset.i],on=id&&(e[0]===id||e[1]===id);x.classList.toggle('dim',!!id&&!on);x.classList.toggle('hit',!!on)});
+  N.forEach(n=>by[n[0]].classList.toggle('focus',n[0]===id));
+}
+
+function apply(){stage.style.transform='scale('+scale+')';holder.style.width=(2550*scale)+'px';holder.style.height=(stageHeight*scale)+'px';draw()}
+function fit(){scale=Math.min(1,(wrap.clientWidth-6)/2550);apply()}
+document.querySelectorAll('.zoom button').forEach(btn=>btn.onclick=()=>{
+  let z=btn.dataset.z;
+  if(z==='fit')fit();
+  else if(z==='full'){scale=1;apply()}
+  else if(z==='in'){scale=Math.min(1.6,scale*1.18);apply()}
+  else if(z==='out'){scale=Math.max(.3,scale/1.18);apply()}
+});
+new ResizeObserver(fit).observe(wrap);onload=fit;onresize=fit;setTimeout(fit,80);
+</script></body></html>

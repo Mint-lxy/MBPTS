@@ -1,0 +1,235 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC34 Case 1｜危险品托运清单业务流程 V5</title>
+<style>
+:root{
+  --navy:#1c2e42;--navy2:#22415e;--navy3:#182c40;
+  --teal:#2f7480;--purple:#6b5f9e;--amber:#5b6cae;--deepamber:#454f86;
+  --green:#4a8a6d;--red:#b06058;--ink:#22303c;--muted:#6c7880;--line:#8b98a3;
+  --paper:#e9ebee;--stage:#fafbfc;--gold:#5b6cae;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+
+/* ---------- 顶部标题栏（与画布同宽的居中卡片） ---------- */
+.top{height:66px;max-width:1720px;margin:14px auto 0;padding:0 26px;background:linear-gradient(120deg,#f8fafc 0%,#eef2f7 100%);border:1px solid #d3dae2;border-radius:14px;color:var(--ink);display:flex;align-items:center;position:relative;box-shadow:0 4px 16px #1c2e4212}
+.top::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#36709e,#2f7480)}
+.top::after{content:"";position:absolute;inset:0;background:radial-gradient(520px 150px at 94% -50px,#36709e1f,transparent 70%);border-radius:inherit;pointer-events:none}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.mark{flex:0 0 auto;width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#22415e,#182c40);color:#a8c9e8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.03em;box-shadow:0 4px 10px #1c2e4233, inset 0 1px 0 #ffffff26}
+.tt small{display:block;color:#7d8b99;letter-spacing:.24em;font-weight:700;font-size:10.5px;margin-bottom:2px}
+.tt h1{font-size:19px;margin:0;letter-spacing:.02em;color:#1c2e42}
+.tt p{margin:2px 0 0;color:#7d8894;font-size:11.5px;letter-spacing:.03em}
+
+/* ---------- 图例 ---------- */
+.legend{height:40px;max-width:1720px;margin:10px auto;padding:0 22px;background:#eff2f6;border:1px solid #d6dde4;border-radius:11px;display:flex;gap:24px;align-items:center;color:#525a63;font-weight:600;font-size:12px;box-shadow:0 2px 8px #1c2e420a}
+.legend .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;box-shadow:inset 0 0 0 1px #00000014}
+.legend i.dia{transform:rotate(45deg);border-radius:3px}
+.legend .cap{color:#9aa5ae;font-weight:700;letter-spacing:.16em;font-size:11px;margin-right:-6px}
+
+/* ---------- 画布外壳 ---------- */
+.shell{height:calc(100vh - 140px);padding:0 14px 14px;margin-top:10px}
+.wrap{height:100%;overflow:auto;max-width:1720px;margin:auto;background:var(--paper);border:1px solid #ced5dc;border-radius:14px;box-shadow:0 18px 44px #1c2e421a,0 2px 8px #1c2e4210;position:relative}
+.holder{position:relative;margin:auto}
+.stage{position:relative;width:2550px;height:1800px;transform-origin:top left;background:var(--stage);background-image:radial-gradient(#d3d9df .8px,transparent .8px);background-size:22px 22px}
+
+/* 缩放工具 */
+.zoom{position:fixed;right:26px;bottom:24px;display:flex;gap:6px;padding:6px;background:#fffffff0;border:1px solid #d5dbe1;border-radius:12px;box-shadow:0 10px 26px #1c2e4226;z-index:50;backdrop-filter:blur(4px)}
+.zoom button{border:1px solid #dee3e9;background:#fff;color:#4c5760;font:700 12px/1 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;padding:8px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+.zoom button:hover{background:#eef2f6;border-color:#b7c2cc;color:#1c2e42}
+.zoom button:active{transform:translateY(1px)}
+
+/* ---------- 画布内标题 ---------- */
+.doc{position:absolute;left:46px;top:20px;z-index:7}
+.doc b{display:block;color:#1c2e42;font-size:24px;letter-spacing:.01em}
+.doc span{color:var(--muted);font-size:13px}
+
+/* ---------- 泳道 ---------- */
+.lane{position:absolute;left:45px;width:2460px;border:1px solid #d5dae0;border-radius:14px;background:#fcfdfd;overflow:hidden;z-index:0;box-shadow:0 1px 3px #1c2e420a}
+.portal{top:110px;height:170px;background:linear-gradient(180deg,#f8f9fc,#f5f6fa)}
+.rpa{top:305px;height:1190px;background:linear-gradient(180deg,#fbfcfc,#f9fbfb)}
+.output{top:1520px;height:220px;background:linear-gradient(180deg,#f2f7f4,#f0f5f1)}
+.lane h2{height:40px;margin:0;padding:9px 20px;font-size:13.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e5ea}
+.lane h2 .no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;color:#fff;font-size:11px;font-weight:800;letter-spacing:0}
+.portal h2{color:#58527e;border-left:6px solid var(--purple)}
+.portal h2 .no{background:var(--purple)}
+.rpa h2{color:#2a5a64;border-left:6px solid var(--teal)}
+.rpa h2 .no{background:var(--teal)}
+.output h2{color:#3e6a55;border-left:6px solid var(--green)}
+.output h2 .no{background:var(--green)}
+.lane h2 em{font-style:normal;color:#9099a1;font-weight:600;font-size:12px;margin-left:4px;letter-spacing:.03em}
+
+/* ---------- 阶段标签 ---------- */
+.phase{position:absolute;color:#3e5260;font-weight:800;font-size:12px;letter-spacing:.04em;z-index:1;display:flex;align-items:center;gap:8px}
+.phase::before{content:"";width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--teal),#93b3b6)}
+
+/* ---------- 分组框 ---------- */
+.group{position:absolute;border:1.4px dashed #c2cad2;border-radius:12px;background:#ffffff78;z-index:1;box-shadow:0 1px 4px #1c2e4208}
+.group h3{margin:0;padding:9px 15px;font-size:12.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.group h3::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.75}
+.nonset{left:75px;top:805px;width:1120px;height:285px}
+.nonset h3{background:linear-gradient(90deg,#e5eef0,#ecf2f3 70%,transparent);color:#2c6470;border-bottom:1px dashed #bfd0d3}
+.setgroup{left:1270px;top:805px;width:1190px;height:285px;border-color:#b7b4d9;background:#fafbfeea}
+.setgroup h3{background:linear-gradient(90deg,#e9e6f5,#f4f2fa 70%,transparent);color:#5a5290;border-bottom:1px dashed #c7c2e0}
+.setnote{position:absolute;left:1305px;top:1047px;color:#5f5890;font-size:11px;z-index:5;padding-left:20px}
+.setnote::before{content:"※";position:absolute;left:0;top:0;color:var(--amber);font-weight:700}
+.record{position:absolute;left:95px;top:1452px;width:2350px;height:30px;padding:6px 14px;border:1px solid #a4bcb2;border-radius:8px;background:linear-gradient(90deg,#ecf2ee,#f1f5f1);color:#48684f;font-size:11.5px;z-index:5;display:flex;align-items:center;gap:8px}
+.record::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #4a8a6d33;flex:0 0 auto}
+
+/* ---------- 节点卡片 ---------- */
+.node{--ac:var(--teal);position:absolute;min-height:80px;padding:12px 14px 11px;background:#fffefe;border:1px solid #dadfe4;border-top:3px solid var(--ac);border-radius:10px;box-shadow:0 2px 5px #1c2e420a,0 9px 22px #1c2e420e;z-index:6;transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+.node:hover{transform:translateY(-3px);box-shadow:0 6px 12px #1c2e4214,0 16px 34px #1c2e4218}
+.node .ttl{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.chip{font-style:normal;font-weight:800;font-size:10px;line-height:1;padding:4px 7px;border-radius:6px;background:var(--ac);color:#fff;letter-spacing:.04em;white-space:nowrap;box-shadow:0 2px 5px #1c2e422a}
+.node b{display:block;font-size:13px;color:var(--ink);line-height:1.35}
+.node span{display:block;font-size:10.5px;color:var(--muted);line-height:1.55}
+.node.portal-n{--ac:var(--purple);background:#fbfbfd}
+.node.rule{--ac:var(--amber);background:#fbfbfd}
+.node.bad{--ac:var(--red);background:#fdfaf9}
+.node.set{--ac:#66609e;background:#fafbfe}
+.node.out{--ac:var(--green);background:#fbfdfb}
+.node.merge{--ac:#67748a;background:#f0f3f5;text-align:center}
+.node.merge .ttl{justify-content:center}
+
+/* ---------- 菱形判断 ---------- */
+.diamond{position:absolute;width:106px;height:106px;transform:rotate(45deg);border-radius:12px;background:linear-gradient(135deg,#f8f9fd,#eef0f9);border:1.6px solid #8f9bd0;box-shadow:0 2px 5px #1c2e420a,0 10px 22px #5b6cae18;z-index:6;transition:box-shadow .18s}
+.diamond:hover{box-shadow:0 6px 14px #1c2e4218,0 16px 32px #5b6cae24}
+.diamond div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-45deg);padding:0 4px}
+.diamond b{font-size:11.5px;font-weight:800;color:#454f86;line-height:1.3;max-width:96px}
+.diamond small{font-size:9.5px;font-weight:500;color:#7a84aa;margin-top:3px;max-width:96px;line-height:1.35}
+
+/* ---------- 连线 ---------- */
+.edges{position:absolute;inset:0;width:2550px;height:1800px;z-index:3;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;marker-end:url(#arrow)}
+.edge.yes{stroke:#4f8a72}
+.edge.no{stroke:#b26a62}
+.edge.set{stroke:#5b6cae}
+.edge.fb{stroke:#8b96ad;stroke-dasharray:7 6}
+.label{font-size:10.5px;font-weight:600;fill:#4f5a64;paint-order:stroke;stroke:var(--stage);stroke-width:6px;stroke-linejoin:round}
+
+.dim{opacity:.16}
+.hit{stroke-width:3.2}
+.node.dim,.diamond.dim{opacity:.24}
+.node.focus,.diamond.focus{outline:3px solid var(--gold);outline-offset:3px}
+
+@media print{
+  .top,.legend,.zoom{display:none}
+  .shell{height:auto;padding:0}
+  .wrap{overflow:visible;max-width:none;border:0;box-shadow:none}
+  .holder{width:2550px!important;height:1800px!important}
+  .stage{transform:scale(.58)!important}
+  @page{size:A3 landscape;margin:5mm}
+}
+</style></head><body>
+<header class="top">
+  <div class="brand">
+    <div class="mark">UC34</div>
+    <div class="tt">
+      <small>PROCESS MAP · UC34 CASE 01</small>
+      <h1>危险品托运清单自动生成</h1>
+      <p>Portal 前台　/　后台 RPA 与数据逻辑　/　业务输出</p>
+    </div>
+  </div>
+</header>
+<div class="legend">
+  <span class="cap">LEGEND</span>
+  <span class="lg"><i style="background:var(--purple)"></i>Portal 操作</span>
+  <span class="lg"><i style="background:var(--teal)"></i>RPA 操作 IES</span>
+  <span class="lg"><i class="dia" style="background:var(--amber)"></i>判断与 SET 特殊逻辑</span>
+  <span class="lg"><i style="background:var(--green)"></i>业务输出</span>
+  <span class="lg"><i style="background:var(--red)"></i>排除 / 异常</span>
+</div>
+<main class="shell"><div class="wrap" id="wrap"><div class="holder" id="holder"><div class="stage" id="stage">
+  <div class="doc"><b>UC34 Case 1 · 端到端业务流程</b><span>主线、异常线与分支汇聚线分区布置；仅 SET 为一对多特殊路径</span></div>
+
+  <section class="lane portal"><h2><span class="no">01</span>业务用户 / Portal<em>任务入口 · 状态感知 · 异常修正后重新提交</em></h2></section>
+  <section class="lane rpa"><h2><span class="no">02</span>后台 RPA + 数据逻辑<em>操作 IES · 读取文件 · 匹配字段 · 执行判断</em></h2></section>
+  <section class="lane output"><h2><span class="no">03</span>业务输出<em>持续记录 → 生成托运清单 → 回传 IES → 邮件发送 IO 同事</em></h2></section>
+
+  <div class="phase" style="left:90px;top:355px">阶段 1　数据准备、UN 初筛与 Shippers_Decl 获取</div>
+  <div class="phase" style="left:90px;top:605px">阶段 2　表头填写与明细路径识别</div>
+
+  <div class="group nonset"><h3>非 SET 明细处理路径 · Part List UN No. 一一对应</h3></div>
+  <div class="group setgroup"><h3>SET 套装特殊核验 · 逐个 UN No. 重新识别 Type 1–4 并执行对应规则</h3></div>
+  <div class="setnote">套装内每个 UN No. 均独立识别 Type，并按对应规则分别得出“是否制作”及“如何制作”的结论。</div>
+  <div class="record"><b>实时运行记录：</b>贯穿全部后台步骤，每一步完成、异常及处理结果均即时写入。</div>
+
+  <svg class="edges"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5 0 9Z" fill="context-stroke"/></marker></defs><g id="edgeLayer"></g></svg>
+  <div id="nodes"></div>
+</div></div></div></main>
+
+<div class="zoom">
+  <button data-z="out" title="缩小">−</button>
+  <button data-z="fit" title="适应窗口宽度">适应宽度</button>
+  <button data-z="full" title="原始尺寸">100%</button>
+  <button data-z="in" title="放大">＋</button>
+</div>
+
+<script>
+const N=[['p1','portal-n',150,175,250,'P1 任务触发','定时任务；查看空运/海运处理范围'],['p2','portal-n',1110,175,270,'P2 看板与任务状态','执行中 / 成功 / 失败'],['p3','portal-n',2110,175,270,'P3 异常修正后重提','查看原因，在 IES 修正后重新提交'],['r1','',100,405,240,'R1 筛选并导出预报','空运 DGR+当天；海运 Sea+四库+上周区间'],['r2','',390,405,230,'R2 导出 Part List','按 HAWB / BL No. 批量查询'],['r3','rule',680,405,250,'R3 UN 匹配初筛','AN列 UN Number → 附表4 B/I列 → AR'],['d1','diamond',995,392,106,'AR 判断','是否进入后续？'],['r4','bad',925,535,250,'R4 初筛排除货物行','不进入危险货物明细；保留票级判断'],['r5','',1190,405,250,'R5 下载 Shippers_Decl','按 BL/HAWB 搜索 PDF；成功和失败均记录'],['d2','diamond',1505,392,106,'下载成功？','Y / N'],['r6','bad',1710,405,240,'R6 记录缺失','Remark = Not found shippers_ Decl'],['r7','',1460,650,260,'R7 填写清单表头','PDC + Invoice Type + Terminal WH 三键匹配'],['r8','rule',1120,650,260,'R8 分支判断','Type 1 / Type 2 / Type 3 / Type 4'],['sd','diamond',900,636,106,'Part List','UN No. = SET？'],['ns','diamond',590,636,106,'非 SET','按类型分流'],['b1','',115,870,235,'B1 Type 1 · Y','单个 UN No. 一一对应，填写表体'],['b2','',390,870,235,'B2 Type 2 · Y｜SDS第14章','取 MSDS 第14部分；其他字段同 Type 1'],['b3','rule',665,870,235,'B3 Type 3 · 待定｜IES+Hazmat','Y：纳入并查 SDS；N：不纳入'],['b4','rule',940,870,235,'B4 Type 4 · 待定｜包装/净重','AJ≤4kg 不纳入；AJ>4kg 继续'],['s1','set',1310,870,245,'S1 读取 Shipper','SET = Y 仅表示需要继续核验'],['s2','set',1590,870,250,'S2 提取全部 UN No.','一个 SET 可包含多个危险品 / UN No.'],['s3','set',1875,870,260,'S3 逐个 UN No. 识别 Type','分别匹配 Type 1 / Type 2 / Type 3 / Type 4'],['s4','diamond',2240,856,106,'执行对应 Type 规则','是否制作 / 如何制作'],['merge','merge',1110,1165,280,'明细处理结果汇聚','汇总各 UN No. 的纳入/排除及制单方式'],['d3','diamond',1195,1265,106,'票级判断','是否存在纳入明细？'],['r9','',780,1380,250,'R9 生成托运清单','一票一份；完成表头与危险货物明细'],['r10','',1100,1380,250,'R10 命名并上传','道路运输危险货物托运清单_BL/HAWB'],['r11','bad',1420,1380,270,'R11 无需制作','Consignment list upload = N_ Not required'],['r12','rule',1840,1380,310,'R12 汇总本次运行','Shippers_Decl / 清单状态 / Remark / Process date'],['o1','out',150,1605,270,'O1 持续记录运行过程','每步完成、异常及处理结果即时写入'],['o2','out',760,1605,260,'O2 生成托运清单','一票一份；表头 + 危险货物明细'],['o3','out',1370,1605,260,'O3 回传 IES 系统','命名后上传至 IES 文档资料'],['o4','out',1980,1605,260,'O4 邮件发送 IO 同事','发送本次运行状态表']];
+const E=[
+['p1','r1','','',[[275,280],[275,365],[220,365]]],['r1','r2','预报清单',''],['r2','r3','Part List',''],['r3','d1','AR 结果',''],['d1','r5','Y / SET / 其他候选','yes'],['d1','r4','N / #N/A','no'],['r5','d2','',''],['d2','r6','N','no'],['d2','r7','Y：读取 Shippers_Decl 字段','yes',[[1558,535],[1590,535],[1590,620]]],['r7','r8','',''],['r8','sd','',''],['sd','s1','是 · SET','set',[[953,790],[1432,790]]],['sd','ns','否 · 非 SET',''],['ns','b1','Type 1 · Y','yes',[[643,810],[232,810]]],['ns','b2','Type 2 · Y · SDS第14章','',[[643,825],[507,825]]],['ns','b3','Type 3 · 待定 · IES+Hazmat','',[[643,840],[782,840]]],['ns','b4','Type 4 · 待定 · 包装/净重','',[[643,855],[1057,855]]],['s1','s2','','set'],['s2','s3','','set'],['s3','s4','识别 Type','set'],
+['b1','merge','','yes',[[232,1095],[1250,1095]]],['b2','merge','','yes',[[507,1115],[1250,1115]]],['b3','merge','Y 纳入 / N 排除','',[[782,1135],[1250,1135]]],['b4','merge','>4kg 继续 / ≤4kg 排除','',[[1057,1150],[1250,1150]]],['s4','merge','逐条制作结论','set',[[2293,1125],[1430,1125],[1430,1204]]],['r4','merge','排除结果参与票级汇总','no',[[1050,620],[60,620],[60,1204]]],['merge','d3','',''],['d3','r9','是','yes',[[1248,1350],[905,1350]]],['d3','r11','否','no',[[1248,1365],[1555,1365]]],['r9','r10','完成清单','yes'],['r10','r12','上传结果','yes',[[1350,1500],[1770,1500],[1770,1419]]],['r11','r12','无需制作状态','no'],['r6','r12','缺失记录','no',[[1970,444],[2440,444],[2440,1418],[2150,1418]]],['r12','p2','任务状态反馈','fb',[[2180,1365],[2475,1365],[2475,295],[1245,295],[1245,253]]],['p2','p3','失败任务','fb'],['p3','p1','修正后重新提交','fb',[[2245,95],[275,95]]],['r12','o1','','',[[1995,1498],[1995,1510],[285,1510],[285,1575]]],['o1','o2','生成','yes'],['o2','o3','回传','yes'],['o3','o4','通知','yes']];
+
+const layer=document.getElementById('nodes'),edgeLayer=document.getElementById('edgeLayer'),stage=document.getElementById('stage'),wrap=document.getElementById('wrap'),holder=document.getElementById('holder');
+let scale=1;const by={};
+N.forEach(n=>{
+  let e=document.createElement('div');by[n[0]]=e;e.id=n[0];
+  e.style.left=n[2]+'px';e.style.top=n[3]+'px';e.style.width=n[4]+'px';
+  if(n[1]==='diamond'){
+    e.className='diamond';
+    e.innerHTML='<div><b>'+n[5]+'</b><small>'+n[6]+'</small></div>';
+  }else{
+    e.className='node '+n[1];
+    let m=n[5].match(/^([A-Za-z]{1,2}\d{0,2})\s+(.*)$/);
+    e.innerHTML=m?'<div class="ttl"><i class="chip">'+m[1]+'</i><b>'+m[2]+'</b></div><span>'+n[6]+'</span>'
+                 :'<div class="ttl"><b>'+n[5]+'</b></div><span>'+n[6]+'</span>';
+  }
+  e.onmouseenter=()=>focus(n[0]);e.onmouseleave=()=>focus();
+  layer.append(e);
+});
+
+function box(id){let r=by[id].getBoundingClientRect(),s=stage.getBoundingClientRect();return{x:(r.left-s.left)/scale,y:(r.top-s.top)/scale,w:r.width/scale,h:r.height/scale}}
+function anchor(a,p){let c=[a.x+a.w/2,a.y+a.h/2],dx=p[0]-c[0],dy=p[1]-c[1];if(Math.abs(dx)>Math.abs(dy))return dx>0?[a.x+a.w,c[1]]:[a.x,c[1]];return dy>0?[c[0],a.y+a.h]:[c[0],a.y]}
+function orthogonal(points){let out=[points[0]];for(let i=1;i<points.length;i++){let a=out[out.length-1],b=points[i];if(a[0]!==b[0]&&a[1]!==b[1])out.push([b[0],a[1]]);out.push(b)}return out}
+function rounded(pts,r){let d='M'+pts[0][0]+' '+pts[0][1];for(let i=1;i<pts.length-1;i++){let a=pts[i-1],b=pts[i],c=pts[i+1],v1=[b[0]-a[0],b[1]-a[1]],v2=[c[0]-b[0],c[1]-b[1]],l1=Math.hypot(v1[0],v1[1]),l2=Math.hypot(v2[0],v2[1]);if(l1<.01||l2<.01||Math.abs(v1[0]*v2[1]-v1[1]*v2[0])<.01){d+=' L'+b[0]+' '+b[1];continue}let rr=Math.min(r,l1/2,l2/2);d+=' L'+(b[0]-v1[0]/l1*rr)+' '+(b[1]-v1[1]/l1*rr)+' Q'+b[0]+' '+b[1]+' '+(b[0]+v2[0]/l2*rr)+' '+(b[1]+v2[1]/l2*rr)}let e=pts[pts.length-1];d+=' L'+e[0]+' '+e[1];return d}
+
+function draw(){
+  edgeLayer.innerHTML='';
+  E.forEach((e,i)=>{
+    let a=box(e[0]),b=box(e[1]),ways=e[4]||[],
+        first=ways[0]||[b.x+b.w/2,b.y+b.h/2],
+        last=ways[ways.length-1]||[a.x+a.w/2,a.y+a.h/2],
+        s=anchor(a,first),t=anchor(b,last),
+        pts=orthogonal([s,...ways,t]),
+        d=rounded(pts,14),
+        path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d);path.setAttribute('class','edge '+e[3]);path.dataset.i=i;
+    edgeLayer.append(path);
+    if(e[2]){
+      let seg=pts.slice(1).map((p,j)=>({a:pts[j],b:p,l:Math.hypot(p[0]-pts[j][0],p[1]-pts[j][1])})).sort((x,y)=>y.l-x.l)[0],
+          q=document.createElementNS('http://www.w3.org/2000/svg','text');
+      q.setAttribute('x',(seg.a[0]+seg.b[0])/2);q.setAttribute('y',(seg.a[1]+seg.b[1])/2-7);
+      q.setAttribute('text-anchor','middle');q.setAttribute('class','label');q.dataset.i=i;q.textContent=e[2];
+      edgeLayer.append(q);
+    }
+  });
+}
+
+function focus(id){
+  N.forEach(n=>by[n[0]].classList.toggle('dim',!!id&&n[0]!==id&&!E.some(e=>(e[0]===id&&e[1]===n[0])||(e[1]===id&&e[0]===n[0]))));
+  [...edgeLayer.children].forEach(x=>{let e=E[+x.dataset.i],on=id&&(e[0]===id||e[1]===id);x.classList.toggle('dim',!!id&&!on);x.classList.toggle('hit',!!on)});
+  N.forEach(n=>by[n[0]].classList.toggle('focus',n[0]===id));
+}
+
+function apply(){stage.style.transform='scale('+scale+')';holder.style.width=(2550*scale)+'px';holder.style.height=(1800*scale)+'px';draw()}
+function fit(){scale=Math.min(1,(wrap.clientWidth-6)/2550);apply()}
+document.querySelectorAll('.zoom button').forEach(btn=>btn.onclick=()=>{
+  let z=btn.dataset.z;
+  if(z==='fit')fit();
+  else if(z==='full'){scale=1;apply()}
+  else if(z==='in'){scale=Math.min(1.6,scale*1.18);apply()}
+  else if(z==='out'){scale=Math.max(.3,scale/1.18);apply()}
+});
+new ResizeObserver(fit).observe(wrap);onload=fit;onresize=fit;setTimeout(fit,80);
+</script></body></html>

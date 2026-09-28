@@ -1,0 +1,240 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC34 Case 2 · GLC / MBUSI 业务流程图</title><style>:root{
+  --navy:#1c2e42;--navy2:#22415e;--navy3:#182c40;
+  --teal:#2f7480;--purple:#6b5f9e;--amber:#5b6cae;--deepamber:#454f86;
+  --green:#4a8a6d;--red:#b06058;--ink:#22303c;--muted:#6c7880;--line:#8b98a3;
+  --paper:#e9ebee;--stage:#fafbfc;--gold:#5b6cae;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+
+/* ---------- 顶部标题栏（与画布同宽的居中卡片） ---------- */
+.top{height:66px;max-width:1720px;margin:14px auto 0;padding:0 26px;background:linear-gradient(120deg,#f8fafc 0%,#eef2f7 100%);border:1px solid #d3dae2;border-radius:14px;color:var(--ink);display:flex;align-items:center;position:relative;box-shadow:0 4px 16px #1c2e4212}
+.top::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#36709e,#2f7480)}
+.top::after{content:"";position:absolute;inset:0;background:radial-gradient(520px 150px at 94% -50px,#36709e1f,transparent 70%);border-radius:inherit;pointer-events:none}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.mark{flex:0 0 auto;width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#22415e,#182c40);color:#a8c9e8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.03em;box-shadow:0 4px 10px #1c2e4233, inset 0 1px 0 #ffffff26}
+.tt small{display:block;color:#7d8b99;letter-spacing:.24em;font-weight:700;font-size:10.5px;margin-bottom:2px}
+.tt h1{font-size:19px;margin:0;letter-spacing:.02em;color:#1c2e42}
+.tt p{margin:2px 0 0;color:#7d8894;font-size:11.5px;letter-spacing:.03em}
+
+/* ---------- 图例 ---------- */
+.legend{height:40px;max-width:1720px;margin:10px auto;padding:0 22px;background:#eff2f6;border:1px solid #d6dde4;border-radius:11px;display:flex;gap:24px;align-items:center;color:#525a63;font-weight:600;font-size:12px;box-shadow:0 2px 8px #1c2e420a}
+.legend .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;box-shadow:inset 0 0 0 1px #00000014}
+.legend i.dia{transform:rotate(45deg);border-radius:3px}
+.legend .cap{color:#9aa5ae;font-weight:700;letter-spacing:.16em;font-size:11px;margin-right:-6px}
+
+/* ---------- 画布外壳 ---------- */
+.shell{height:calc(100vh - 140px);padding:0 14px 14px;margin-top:10px}
+.wrap{height:100%;overflow:auto;max-width:1720px;margin:auto;background:var(--paper);border:1px solid #ced5dc;border-radius:14px;box-shadow:0 18px 44px #1c2e421a,0 2px 8px #1c2e4210;position:relative}
+.holder{position:relative;margin:auto}
+.stage{position:relative;width:2550px;height:1800px;transform-origin:top left;background:var(--stage);background-image:radial-gradient(#d3d9df .8px,transparent .8px);background-size:22px 22px}
+
+/* 缩放工具 */
+.zoom{position:fixed;right:26px;bottom:24px;display:flex;gap:6px;padding:6px;background:#fffffff0;border:1px solid #d5dbe1;border-radius:12px;box-shadow:0 10px 26px #1c2e4226;z-index:50;backdrop-filter:blur(4px)}
+.zoom button{border:1px solid #dee3e9;background:#fff;color:#4c5760;font:700 12px/1 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;padding:8px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+.zoom button:hover{background:#eef2f6;border-color:#b7c2cc;color:#1c2e42}
+.zoom button:active{transform:translateY(1px)}
+
+/* ---------- 画布内标题 ---------- */
+.doc{position:absolute;left:46px;top:20px;z-index:7}
+.doc b{display:block;color:#1c2e42;font-size:24px;letter-spacing:.01em}
+.doc span{color:var(--muted);font-size:13px}
+
+/* ---------- 泳道 ---------- */
+.lane{position:absolute;left:45px;width:2460px;border:1px solid #d5dae0;border-radius:14px;background:#fcfdfd;overflow:hidden;z-index:0;box-shadow:0 1px 3px #1c2e420a}
+.portal{top:110px;height:170px;background:linear-gradient(180deg,#f8f9fc,#f5f6fa)}
+.rpa{top:305px;height:1190px;background:linear-gradient(180deg,#fbfcfc,#f9fbfb)}
+.output{top:1520px;height:220px;background:linear-gradient(180deg,#f2f7f4,#f0f5f1)}
+.lane h2{height:40px;margin:0;padding:9px 20px;font-size:13.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e5ea}
+.lane h2 .no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;color:#fff;font-size:11px;font-weight:800;letter-spacing:0}
+.portal h2{color:#58527e;border-left:6px solid var(--purple)}
+.portal h2 .no{background:var(--purple)}
+.rpa h2{color:#2a5a64;border-left:6px solid var(--teal)}
+.rpa h2 .no{background:var(--teal)}
+.output h2{color:#3e6a55;border-left:6px solid var(--green)}
+.output h2 .no{background:var(--green)}
+.lane h2 em{font-style:normal;color:#9099a1;font-weight:600;font-size:12px;margin-left:4px;letter-spacing:.03em}
+
+/* ---------- 阶段标签 ---------- */
+.phase{position:absolute;color:#3e5260;font-weight:800;font-size:12px;letter-spacing:.04em;z-index:1;display:flex;align-items:center;gap:8px}
+.phase::before{content:"";width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--teal),#93b3b6)}
+
+/* ---------- 分组框 ---------- */
+.group{position:absolute;border:1.4px dashed #c2cad2;border-radius:12px;background:#ffffff78;z-index:1;box-shadow:0 1px 4px #1c2e4208}
+.group h3{margin:0;padding:9px 15px;font-size:12.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.group h3::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.75}
+.nonset{left:75px;top:805px;width:1120px;height:285px}
+.nonset h3{background:linear-gradient(90deg,#e5eef0,#ecf2f3 70%,transparent);color:#2c6470;border-bottom:1px dashed #bfd0d3}
+.setgroup{left:1270px;top:805px;width:1190px;height:285px;border-color:#b7b4d9;background:#fafbfeea}
+.setgroup h3{background:linear-gradient(90deg,#e9e6f5,#f4f2fa 70%,transparent);color:#5a5290;border-bottom:1px dashed #c7c2e0}
+.setnote{position:absolute;left:1305px;top:1047px;color:#5f5890;font-size:11px;z-index:5;padding-left:20px}
+.setnote::before{content:"※";position:absolute;left:0;top:0;color:var(--amber);font-weight:700}
+.record{position:absolute;left:95px;top:1452px;width:2350px;height:30px;padding:6px 14px;border:1px solid #a4bcb2;border-radius:8px;background:linear-gradient(90deg,#ecf2ee,#f1f5f1);color:#48684f;font-size:11.5px;z-index:5;display:flex;align-items:center;gap:8px}
+.record::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #4a8a6d33;flex:0 0 auto}
+
+/* ---------- 节点卡片 ---------- */
+.node{--ac:var(--teal);position:absolute;min-height:80px;padding:12px 14px 11px;background:#fffefe;border:1px solid #dadfe4;border-top:3px solid var(--ac);border-radius:10px;box-shadow:0 2px 5px #1c2e420a,0 9px 22px #1c2e420e;z-index:6;transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+.node:hover{transform:translateY(-3px);box-shadow:0 6px 12px #1c2e4214,0 16px 34px #1c2e4218}
+.node .ttl{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.chip{font-style:normal;font-weight:800;font-size:10px;line-height:1;padding:4px 7px;border-radius:6px;background:var(--ac);color:#fff;letter-spacing:.04em;white-space:nowrap;box-shadow:0 2px 5px #1c2e422a}
+.node b{display:block;font-size:13px;color:var(--ink);line-height:1.35}
+.node span{display:block;font-size:10.5px;color:var(--muted);line-height:1.55}
+.node.portal-n{--ac:var(--purple);background:#fbfbfd}
+.node.rule{--ac:var(--amber);background:#fbfbfd}
+.node.bad{--ac:var(--red);background:#fdfaf9}
+.node.set{--ac:#66609e;background:#fafbfe}
+.node.out{--ac:var(--green);background:#fbfdfb}
+.node.merge{--ac:#67748a;background:#f0f3f5;text-align:center}
+.node.merge .ttl{justify-content:center}
+
+/* ---------- 菱形判断 ---------- */
+.diamond{position:absolute;width:106px;height:106px;transform:rotate(45deg);border-radius:12px;background:linear-gradient(135deg,#f8f9fd,#eef0f9);border:1.6px solid #8f9bd0;box-shadow:0 2px 5px #1c2e420a,0 10px 22px #5b6cae18;z-index:6;transition:box-shadow .18s}
+.diamond:hover{box-shadow:0 6px 14px #1c2e4218,0 16px 32px #5b6cae24}
+.diamond div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-45deg);padding:0 4px}
+.diamond b{font-size:11.5px;font-weight:800;color:#454f86;line-height:1.3;max-width:96px}
+.diamond small{font-size:9.5px;font-weight:500;color:#7a84aa;margin-top:3px;max-width:96px;line-height:1.35}
+
+/* ---------- 连线 ---------- */
+.edges{position:absolute;inset:0;width:2550px;height:1800px;z-index:3;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;marker-end:url(#arrow)}
+.edge.yes{stroke:#4f8a72}
+.edge.no{stroke:#b26a62}
+.edge.set{stroke:#5b6cae}
+.edge.fb{stroke:#8b96ad;stroke-dasharray:7 6}
+.label{font-size:10.5px;font-weight:600;fill:#4f5a64;paint-order:stroke;stroke:var(--stage);stroke-width:6px;stroke-linejoin:round}
+
+.dim{opacity:.16}
+.hit{stroke-width:3.2}
+.node.dim,.diamond.dim{opacity:.24}
+.node.focus,.diamond.focus{outline:3px solid var(--gold);outline-offset:3px}
+
+@media print{
+  .top,.legend,.zoom{display:none}
+  .shell{height:auto;padding:0}
+  .wrap{overflow:visible;max-width:none;border:0;box-shadow:none}
+  .holder{width:2550px!important;height:1800px!important}
+  .stage{transform:scale(.58)!important}
+  @page{size:A3 landscape;margin:5mm}
+}
+
+.note-card{position:absolute;z-index:5;background:#f6f8fa;border:1px solid #d4dbe2;border-left:4px solid #70869a;border-radius:8px;padding:12px 16px;color:#4e5e6c;font-size:12px;line-height:1.55}
+.note-card b{display:block;color:#31455a;margin-bottom:2px}
+.separator{position:absolute;left:47px;width:2456px;height:1px;background:#cbd2d9;z-index:2}
+/* ---- header/tabs aligned to canvas width ---- */
+.top{max-width:1720px}
+.legend{max-width:1720px}
+.tabs{max-width:1720px;margin:12px auto 0;padding:0;display:flex;gap:10px;align-items:stretch}
+.tab{border:1px solid #c9d3dc;background:#ffffffe8;color:#4c5760;font:700 13px/1.2 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;
+     padding:10px 26px;border-radius:11px 11px 0 0;border-bottom:none;cursor:pointer;transition:.15s;letter-spacing:.02em}
+.tab small{display:block;font-weight:600;font-size:10.5px;color:#8a949e;margin-top:3px;letter-spacing:.04em}
+.tab:hover{background:#f2f6fa;border-color:#a9b8c6;color:#1c2e42}
+.tab.active{background:linear-gradient(145deg,#22415e,#182c40);color:#eaf2fa;border-color:#22415e;box-shadow:0 6px 16px #1c2e4240}
+.tab.active small{color:#a8c9e8}
+.pane{display:none}
+.pane.active{display:block}
+.shell{height:calc(100vh - 232px);margin-top:6px}
+@media print{.tabs{display:none}.pane{display:none}.pane.active{display:block}.shell{height:auto}}
+</style></head><body><header class="top"><div class="brand"><div class="mark">UC34</div><div class="tt"><small>MBPTS AI QUICK WIN · UC34 CASE 2</small><h1>进口提单处理流程</h1><p>每周一 09:00 定时触发 · 来源：【MBPTS-UC34】Case 2：GLC&MBUSI梳理.docx</p></div></div></header><nav class="tabs"><button class="tab active" data-pane="glc">GLC<small>Portal 公邮 → IES 台账</small></button><button class="tab" data-pane="mbusi">MBUSI 美线<small>Shipping Log → IES 台账</small></button></nav><div class="legend"><span class="cap">LEGEND</span><span class="lg"><i style="background:var(--purple)"></i>触发 / 人工节点</span><span class="lg"><i style="background:var(--teal)"></i>业务执行步骤</span><span class="lg"><i class="dia" style="background:var(--amber)"></i>BRD 判断条件</span><span class="lg"><i style="background:var(--green)"></i>业务输出</span><span class="lg"><i style="background:var(--red)"></i>异常单独处理</span><span class="lg"><i style="background:transparent;border:1.5px dashed #8b96ad;width:22px;border-top:none;border-left:none;border-right:none;height:0"></i>人工/下轮回馈线</span></div><div class="pane active" id="pane-glc"><main class="shell"><div class="wrap fl-wrap"><div class="holder fl-holder"><div class="stage fl-stage" style="height:1305px"><div class="doc" style="top:20px;left:46px"><b>GLC · 进口单证处理流程</b><span>统一收单入库 → 齐套判断 → IES 预报 / 台账 / 附件上传 · 每周一 09:00 批量触发</span></div><section class="lane portal" style="top:110px;height:150px"><h2><span class="no">A</span>触发 / 人工节点<em>定时任务与人工确认</em></h2></section><section class="lane rpa" style="top:290px;height:810px"><h2><span class="no">B</span>业务执行链<em>收单入库 → 齐套判断 → 逐票处理（模板 · 差异 · 预报 · 附件）</em></h2></section><section class="lane output" style="top:1120px;height:170px"><h2><span class="no">C</span>业务输出<em>BRD 明确的最终产物与可查询结果</em></h2></section><svg class="edges" style="width:2550px;height:1305px"><g class="fl-layer"></g></svg><div class="fl-nodes"></div></div></div></div></main></div><div class="pane" id="pane-mbusi"><main class="shell"><div class="wrap fl-wrap"><div class="holder fl-holder"><div class="stage fl-stage" style="height:1170px"><div class="doc" style="top:20px;left:46px"><b>MBUSI 美线 · 进口单证处理流程</b><span>美国 Shipping Log → IES 预报 / 台账 → SharePoint 归档 · 每周一 09:00 批量触发</span></div><section class="lane portal" style="top:110px;height:150px"><h2><span class="no">A</span>触发来源<em>定时任务</em></h2></section><section class="lane rpa" style="top:290px;height:670px"><h2><span class="no">B</span>业务执行链<em>大表导出登记 → 邮件取 BL → 填表归档 → IES 导入 → 差异处理</em></h2></section><section class="lane output" style="top:980px;height:170px"><h2><span class="no">C</span>业务输出<em>BRD 明确的最终产物与可查询结果</em></h2></section><div class="note-card" title="MBUSI › 搜索BL PDF ·（3）注 ＋ 2026-09-27 与用户确认的暂存库设计" style="left:777px;top:505px;width:560px"><b>暂存库与附件台账</b>命中邮件的附件一律先按 BL 号入暂存库并写台账（pending）；匹配成功即处理，漏数的保持 pending 等补登记——补登会更新 Created（不回溯），下轮筛选捕获后从台账取回附件继续流程；台账 key=BL 号，注意格式归一，同 BL 重复邮件保留最新版</div><svg class="edges" style="width:2550px;height:1170px"><g class="fl-layer"></g></svg><div class="fl-nodes"></div></div></div></div></main></div><svg width="0" height="0" style="position:absolute"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5 0 9Z" fill="context-stroke"/></marker></defs></svg><div class="zoom"><button data-z="out" title="缩小">−</button><button data-z="fit" title="适应窗口宽度">适应宽度</button><button data-z="full" title="原始尺寸">100%</button><button data-z="in" title="放大">＋</button></div><script>const CFG_glc={pane:'pane-glc',H:1305,N:[["T01", "portal-n", 85, 168, 319, "T01 定时触发：每周一 09:00", "处理上周一至周日的数据（具体运行时间以系统为准）", "GLC › 触发机制"], ["H01", "portal-n", 2161, 168, 319, "H01 人工确认缺 AVIS", "P 列已标记的提单由人工确认，确认后再跑该票", "GLC › 下载BL记录并归档 · 记录"], ["R01", "", 85, 350, 319, "R01 扫描公邮 · 分类收单", "上周邮件按主题分类：「AVIS」/「Shippers_Decl」/「Bill of landing」，解析单证与本票 BL 号", "GLC › 下载AVIS/Shipper/BL 记录并归档 · 监控邮件 ＋ 2026-09-27 设计确认（统一收单）"], ["R02", "", 431, 350, 319, "R02 附件入暂存库 · 台账登记", "按 BL 号归入 PDC&gt;GLC\\运行周\\该票文件夹；台账按 BL 号 upsert：E 列记 AVIS No.、M 列记 Shipper（即 DG）", "GLC › 下载AVIS/Shipper/BL 记录并归档 · 归档/记录 ＋ 2026-09-27 设计确认（按 BL 归并）"], ["D01", "diamond", 852, 352, 170, "Customer code 在配置表？", "提自 AVIS PDF，PDC 对应表可配置维护", "GLC › 下载AVIS记录并归档 ·（2）"], ["D02", "diamond", 1198, 352, 170, "本票 AVIS 与 BL 齐备？", "均以 BL 号归并判断", "GLC › 下载BL记录并归档 · 记录 ＋ 2026-09-27 设计确认（齐套判断）"], ["R05", "", 1469, 350, 319, "R05 取件组装文件包", "从暂存库取本票 AVIS + BL（DG 时另加 Shipper），配齐 AVIS 导入模板 + BL 导入模板", "GLC › 准备需导入IES系统的文件"], ["R06", "", 1815, 350, 319, "R06 填写两张导入模板", "AVIS 模板字段均可从 AVIS 获取；BL 模板字段取自 BL，Container Type 单位改为「&#x27;」", "GLC › 填AVIS模板 / 填BL模板 / 填入BL信息"], ["R07", "", 2161, 350, 319, "R07 IES 导入 AVIS + 回写 G 列", "发票信息查 MBZ → 批量导入 AVIS → 绿灯后上传；上传成功回写大表 G 列", "GLC › 导入AVIS模板"], ["E01", "bad", 777, 505, 319, "E01 无配置：建 Other 文件夹", "该票文件存入 Other 文件夹并在「异常反馈」列记录该错误，流程继续", "GLC › 下载AVIS记录并归档 ·（2）"], ["E02", "bad", 1123, 505, 319, "E02 不齐：缺 AVIS 等 · 挂起", "未收到 AVIS（或疑国外漏发）：单列一行、P 列记「未找到对应AVIS，请确认是否漏发」；附件保留暂存库，该票挂起", "GLC › 下载BL记录并归档 · 记录 ＋ 2026-09-27 设计确认（pending 挂起）"], ["D03", "diamond", 2236, 662, 170, "是否 DG 货物？", "以收单时是否搜到 Shipper 为准", "GLC › 下载Shipper记录 · 危险品判断标准 / 如果是DG货物…"], ["R08", "", 1815, 660, 319, "R08 导出发票并算差异", "按 invoice 级模板全部导出，total amount 后加列写公式比对；差异≠0 即 FOB charges", "GLC › 如果是DG货物…（导出 / 公式比对）"], ["D04", "diamond", 1544, 662, 170, "找到对应发票 PDF？", "IES 批量下载附件核对", "GLC › 如果是DG货物…（批量下载 / 核对）"], ["R09", "", 1123, 660, 319, "R09 核对 FOB charge", "核对 PDF 与差异值无误；有 PDF 但金额不一致以 IES 导出值为准，并在异常反馈列记录", "GLC › 如果是DG货物…（核对）"], ["R10", "", 777, 660, 319, "R10 FOB 填入 Others 保存", "发票点「修改」→ FOB charge 填入 Others，涉及费用全部填完后保存", "GLC › 如果是DG货物…（保存）"], ["R11", "", 431, 660, 319, "R11 生成预报", "全选发票 → 生成预报；按提单信息（红字项）选择输入后确定", "GLC › 填入BL信息，生成预报"], ["R12", "", 85, 660, 319, "R12 导入 BL 模板", "进口预报查提单号 → 修改 → 集装箱信息导入 BL Excel → 绿灯后提示导入成功", "GLC › 导入BL模板"], ["E03", "bad", 1469, 815, 319, "E03 未找到发票 PDF", "按 Excel 中的差异值填写，并在异常结果反馈记「未找到xxx发票」（发票可能尚未上传）", "GLC › 如果是DG货物…（未下载到发票）"], ["D05", "diamond", 160, 972, 170, "提单与发票有差异？", "IES 差异弹窗", "GLC › 导入BL模板"], ["E04", "bad", 431, 970, 319, "E04 记录差异弹窗", "保存系统弹出的差异内容，回写大表 L 列「BL different」", "GLC › 导入BL模板（差异弹窗）"], ["R13", "", 777, 970, 319, "R13 上传三类附件并保存", "上传 AVIS / Shipper / BL 附件（AVIS 文件类别选 other），全部传完点保存，本票提单创建完成", "GLC › 上传所有AVIS/Shipper/BL文件"], ["O01", "out", 85, 1165, 319, "O01 IES 台账生成成功", "BL 导入无差异时系统提示「导入成功，生成台账成功」；有差异则经 E04 记录差异", "GLC › 导入BL模板"], ["O03", "out", 431, 1165, 319, "O03 当周归档文件夹齐备", "PDC&gt;GLC 按运行周的本票文件夹内齐备可查：AVIS、BL、Shipper（DG 时）原件及填写好的 AVIS / BL 导入模板", "GLC › 下载AVIS / Shipper / BL 记录并归档 · 归档 ＋ 2026-09-27 设计确认（含导入模板）"], ["O02", "out", 777, 1165, 319, "O02 大表状态回写", "PDF 均上传成功回写 H/K/N 列=Y；本票提单全部创建完成回写 J 列「BL Creation」", "GLC › 上传所有AVIS/Shipper/BL文件 ·（回写）"]],E:[["T01", "R01", "", "", [], "GLC › 触发机制 → 业务流程"], ["R01", "R02", "", "", [], "GLC › 监控邮件 → 归档/记录（统一收单）"], ["R02", "D01", "", "", [], "GLC › 下载AVIS记录并归档 ·（2）"], ["D01", "D02", "在配置表中", "yes", [], "GLC › 下载AVIS记录并归档 ·（2）"], ["D01", "E01", "不存在", "no", [], "GLC › 下载AVIS记录并归档 ·（2）"], ["E01", "D02", "继续齐套判断", "", [], "GLC › 下载AVIS记录并归档 ·（2）（同时继续下述流程）"], ["D02", "R05", "齐备", "yes", [], "GLC › 准备需导入IES系统的文件 ＋ 2026-09-27 设计确认（齐套）"], ["D02", "E02", "不齐（缺 AVIS 等）", "no", [], "GLC › 下载BL记录并归档 · 记录"], ["E02", "H01", "转人工", "", [[2492, 545], [2492, 228]], "GLC › 下载BL记录并归档 · 记录（人工确认后再跑）"], ["H01", "D02", "人工确认后再跑", "fb", [[2520, 218], [2520, 485], [1283, 485]], "GLC › 下载BL记录并归档 · 记录（人工确认后再跑）"], ["R05", "R06", "", "", [], "GLC › 准备需导入IES系统的文件 → 填模板"], ["R06", "R07", "", "", [], "GLC › 填模板 → 导入AVIS模板"], ["R07", "D03", "", "", [], "GLC › 导入AVIS模板 → 如果是DG货物…"], ["D03", "R08", "是（DG）", "yes", [], "GLC › 如果是DG货物…（导出比对）"], ["D03", "R11", "否（非 DG）", "no", [[2321, 790], [590, 790]], "GLC › 如果是DG货物…（仅 DG 需要填 FOB）"], ["R08", "D04", "", "", [], "GLC › 如果是DG货物…（批量下载附件）"], ["D04", "R09", "找到", "yes", [], "GLC › 如果是DG货物…（核对）"], ["D04", "E03", "未找到", "no", [], "GLC › 如果是DG货物…（未下载到发票）"], ["R09", "R10", "", "", [], "GLC › 如果是DG货物…（填入 Others 保存）"], ["E03", "R10", "按差异值填写", "", [], "GLC › 如果是DG货物…（未下载到发票）"], ["R10", "R11", "", "", [], "GLC › 填写完成 → 填入BL信息，生成预报"], ["R11", "R12", "", "", [], "GLC › 生成预报 → 导入BL模板"], ["R12", "D05", "", "", [], "GLC › 导入BL模板"], ["D05", "O01", "无差异·生成台账成功", "set", [], "GLC › 导入BL模板（生成台账成功）"], ["D05", "E04", "有差异", "no", [], "GLC › 导入BL模板（差异弹窗）"], ["D05", "R13", "否·继续上传附件", "", [[255, 1110], [935, 1110]], "GLC › 导入BL模板 → 上传所有文件"], ["E04", "R13", "记录后继续", "", [], "GLC › 导入BL模板（回写L列）→ 上传所有文件"], ["R13", "O02", "回写大表", "", [], "GLC › 上传所有AVIS/Shipper/BL文件 ·（回写 HKN / J 列）"], ["R02", "O03", "随收单落库", "", [[417, 395], [417, 1185]], "GLC › 下载AVIS / Shipper / BL · 归档 → PDC>GLC 周文件夹"]]};
+const CFG_mbusi={pane:'pane-mbusi',H:1170,N:[["T11", "portal-n", 85, 168, 319, "T11 定时触发：每周一 09:00", "处理上周一至周日的数据（具体运行时间以系统为准）", "MBUSI › 触发机制"], ["M01", "", 85, 350, 319, "M01 导出美国 Shipping Log", "登录 shipping log → MB China → Export to Excel，导出文件默认名「gvShipLog」", "MBUSI › 下载美国的大表 ·（1）"], ["M02", "", 431, 350, 319, "M02 筛选新增提单并登记", "按 O 列「created」筛上周一至周日新增提单，登记到 AVIS BL status report (Sheet3) 美线 sheet；D 列 booking number 即 BL 号", "MBUSI › 下载美国的大表 ·（2）"], ["M03", "", 777, 350, 319, "M03 单票行单独存 Excel", "将每个提单对应的行单独保存为一个 Excel，命名「Shipping log information_BL号」", "MBUSI › 下载美国的大表 ·（3）"], ["M04", "", 1123, 350, 319, "M04 监控邮件 · 附件入暂存库", "时间窗上周一至周日；标题含「CMA CGM - 海运提单(Seaway Bill)可供使用」；BL PDF 按 BL 号存暂存库，写附件台账（状态 pending）", "MBUSI › 搜索BL PDF ·（1）＋2026-09-27 设计确认（暂存库+台账）"], ["DM1", "diamond", 1544, 352, 170, "大表已登记该 BL？", "对匹大表 Booking Number", "MBUSI › 搜索BL PDF ·（2）"], ["M05", "", 1815, 350, 319, "M05 填写 Shipping Log", "根据美国大表和 BL PDF 填写；Container VOL(m³)、Container Load(KG) 取自提单 PDF", "MBUSI › 填写Shipping Log"], ["M06", "", 2161, 350, 319, "M06 填写 BL 模板", "根据 BL PDF 填写 BL Template 并保存，得到 BL 上传用的 Excel 文件", "MBUSI › 填写BL模板"], ["ME1", "bad", 1469, 505, 319, "ME1 美表漏数 · 挂起 pending", "邮箱收到 PDF 但大表无登记：附件保留在暂存库、台账保持 pending，进异常反馈；不删除不处理，等美表补登记", "MBUSI › 搜索BL PDF ·（2）＋2026-09-27 设计确认（pending 挂起）"], ["M07", "", 2161, 660, 319, "M07 归档至 SharePoint", "四类文件上传 Portal 的 SharePoint：①BL 导入模板 ②Shipping Log ③各 Booking No. 的单票 Excel ④邮件附件 BL PDF", "MBUSI › 归档保存文件至Portal的share Point"], ["M08", "", 1815, 660, 319, "M08 IES 批量导入 Shipping Log", "进口管理-发票信息-查 BOL 号码 → 导入 →「批量导入 shipping log」→ 选文件上传", "MBUSI › IES系统导入… ·（1）"], ["M09", "", 1469, 660, 319, "M09 全选发票生成预报", "预报信息来源于提单；对应关系参照 AVIS detail list (Sheet2) 中对应港口信息 sheet", "MBUSI › IES系统导入… ·（2）（3）"], ["M10", "", 1123, 660, 319, "M10 导入 BL 模板", "进口预报查提单号 → 修改 → 集装箱信息点导入 → 选择 BL excel 上传", "MBUSI › IES系统导入… ·（4）"], ["DM2", "diamond", 852, 662, 170, "导入有差异？", "IES 差异项弹窗", "MBUSI › IES系统导入…（生成台账判断）"], ["M11", "", 85, 660, 319, "M11 上传 BL PDF 并保存", "往下拉上传文件：点上传按钮 → 选择文件类别与文件 → 保存；都上传完毕后再点保存", "MBUSI › IES系统导入…（上传文件）"], ["ME2", "bad", 85, 815, 319, "ME2 差异弹窗 · 不生成台账", "如导入存在差异 IES 不生成台账；差异项弹窗内容填入「BL different」（与 AVIS 情形一致）", "MBUSI › IES系统导入…（差异处理）"], ["O13", "out", 431, 1025, 319, "O13 新增提单登记记录", "每周新增提单登记入 AVIS BL status report (Sheet3) 美线 sheet，可按 BL 号查询", "MBUSI › 下载美国的大表 ·（2）"], ["O11", "out", 777, 1025, 319, "O11 IES 台账生成成功", "BL 导入无问题时出现「生成台账成功」字样，台账可在 IES 查询；有差异则经 ME2 记录", "MBUSI › IES系统导入…（生成台账判断）"], ["O12", "out", 2161, 1025, 319, "O12 SharePoint 归档四件套", "BL 导入模板 / Shipping Log / 单票 Excel / BL PDF 四类文件齐备可查", "MBUSI › 归档保存文件至Portal的share Point"]],E:[["T11", "M01", "", "", [], "MBUSI › 触发机制 → 业务流程"], ["M01", "M02", "", "", [], "MBUSI › 下载美国的大表 ·（1）→（2）"], ["M02", "M03", "", "", [], "MBUSI › 下载美国的大表 ·（2）→（3）"], ["M03", "M04", "", "", [], "MBUSI › 下载美国的大表 ·（3）→ 搜索BL PDF"], ["M04", "DM1", "", "", [], "MBUSI › 搜索BL PDF ·（1）→（2）"], ["DM1", "M05", "匹配成功", "yes", [], "MBUSI › 搜索BL PDF ·（2）（匹配成功后继续创建BL）"], ["DM1", "ME1", "未匹配（美表漏数）", "no", [], "MBUSI › 搜索BL PDF ·（2）"], ["ME1", "T11", "补登记→下轮 created 捕获→台账取回附件续跑", "fb", [[1629, 645], [66, 645], [66, 208]], "MBUSI › 搜索BL PDF ·（3）注（补数更新 Created 不回溯）＋2026-09-27 设计确认（台账取回续跑）"], ["M05", "M06", "", "", [], "MBUSI › 填写Shipping Log → 填写BL模板"], ["M06", "M07", "", "", [], "MBUSI › 填写BL模板 → 归档保存文件"], ["M07", "M08", "", "", [], "MBUSI › 归档保存文件 → IES系统导入…"], ["M08", "M09", "", "", [], "MBUSI › IES系统导入… ·（1）→（2）"], ["M09", "M10", "", "", [], "MBUSI › IES系统导入… ·（3）→（4）"], ["M10", "DM2", "", "", [], "MBUSI › IES系统导入… ·（4）→ 生成台账判断"], ["DM2", "ME2", "有差异", "no", [[937, 795], [244, 795]], "MBUSI › IES系统导入…（差异弹窗→BL different）"], ["DM2", "M11", "无差异 · 继续上传", "yes", [], "MBUSI › IES系统导入…（生成台账成功 → 上传文件）"], ["DM2", "O11", "生成台账成功", "set", [], "MBUSI › IES系统导入…（生成台账成功）"], ["ME2", "M11", "记录后继续上传", "", [], "MBUSI › IES系统导入…（差异记录 → 往下拉上传文件）"], ["M07", "O12", "四类文件齐备", "", [], "MBUSI › 归档保存文件至Portal的share Point"], ["M02", "O13", "登记可查询", "", [], "MBUSI › 下载美国的大表 ·（2）"]]};
+
+function createFlow(cfg){
+  const root=document.getElementById(cfg.pane);
+  const wrap=root.querySelector('.fl-wrap'),holder=root.querySelector('.fl-holder'),
+        stage=root.querySelector('.fl-stage'),layer=root.querySelector('.fl-nodes'),
+        edgeLayer=root.querySelector('.fl-layer');
+  const N=cfg.N,E=cfg.E,stageHeight=cfg.H;
+  const by={};let scale=1;
+  N.forEach(n=>{
+    let e=document.createElement('div');by[n[0]]=e;e.id=n[0];
+    e.style.left=(n[1]==='diamond'?n[2]+(n[4]-106)/2:n[2])+'px';
+    e.style.top=n[3]+'px';
+    e.style.width=(n[1]==='diamond'?106:n[4])+'px';
+    if(n[1]==='diamond'){
+      e.className='diamond';
+      e.innerHTML='<div><b>'+n[5]+'</b><small>'+n[6]+'</small></div>';
+    }else{
+      e.className='node '+n[1];
+      let m=n[5].match(/^([A-Za-z]{1,2}\d{0,2})\s+(.*)$/);
+      e.innerHTML=m?'<div class="ttl"><i class="chip">'+m[1]+'</i><b>'+m[2]+'</b></div><span>'+n[6]+'</span>'
+                   :'<div class="ttl"><b>'+n[5]+'</b></div><span>'+n[6]+'</span>';
+    }
+    e.title=n[7]||'';e.onmouseenter=()=>focus(n[0]);e.onmouseleave=()=>focus();
+    layer.append(e);
+  });
+  function box(id){let r=by[id].getBoundingClientRect(),s=stage.getBoundingClientRect();
+    return{x:(r.left-s.left)/scale,y:(r.top-s.top)/scale,w:r.width/scale,h:r.height/scale}}
+  function anchor(a,p){let c=[a.x+a.w/2,a.y+a.h/2],dx=p[0]-c[0],dy=p[1]-c[1];
+    if(Math.abs(dx)>Math.abs(dy))return dx>0?[a.x+a.w,c[1]]:[a.x,c[1]];
+    return dy>0?[c[0],a.y+a.h]:[c[0],a.y]}
+  function orthogonal(points){let out=[points[0]];
+    for(let i=1;i<points.length;i++){let a=out[out.length-1],b=points[i];
+      if(a[0]!==b[0]&&a[1]!==b[1])out.push([b[0],a[1]]);out.push(b)}return out}
+  function rounded(pts,r){let d='M'+pts[0][0]+' '+pts[0][1];
+    for(let i=1;i<pts.length-1;i++){let a=pts[i-1],b=pts[i],c=pts[i+1],
+      v1=[b[0]-a[0],b[1]-a[1]],v2=[c[0]-b[0],c[1]-b[1]],
+      l1=Math.hypot(v1[0],v2[0]?0:0)||Math.hypot(v1[0],v1[1]),
+      l2=Math.hypot(v2[0],v2[1]);
+      if(l1<.01||l2<.01||Math.abs(v1[0]*v2[1]-v1[1]*v2[0])<.01){d+=' L'+b[0]+' '+b[1];continue}
+      let rr=Math.min(r,l1/2,l2/2);
+      d+=' L'+(b[0]-v1[0]/l1*rr)+' '+(b[1]-v1[1]/l1*rr)+' Q'+b[0]+' '+b[1]+' '+(b[0]+v2[0]/l2*rr)+' '+(b[1]+v2[1]/l2*rr)}
+    let e=pts[pts.length-1];d+=' L'+e[0]+' '+e[1];return d}
+  function draw(){
+    edgeLayer.innerHTML='';
+    E.forEach((e,i)=>{
+      let a=box(e[0]),b=box(e[1]),ways=e[4]||[],
+        first=ways[0]||[b.x+b.w/2,b.y+b.h/2],
+        last=ways[ways.length-1]||[a.x+a.w/2,a.y+a.h/2],
+        s=anchor(a,first),t=anchor(b,last),
+        pts=orthogonal([s,...ways,t]),
+        d=rounded(pts,14),
+        path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',d);path.setAttribute('class','edge '+e[3]);path.dataset.i=i;
+      edgeLayer.append(path);
+      if(e[2]){
+        let seg=pts.slice(1).map((p,j)=>({a:pts[j],b:p,l:Math.hypot(p[0]-pts[j][0],p[1]-pts[j][1])}))
+                     .sort((x,y)=>y.l-x.l)[0],
+            q=document.createElementNS('http://www.w3.org/2000/svg','text');
+        q.setAttribute('x',(seg.a[0]+seg.b[0])/2);q.setAttribute('y',(seg.a[1]+seg.b[1])/2-7);
+        q.setAttribute('text-anchor','middle');q.setAttribute('class','label');
+        q.dataset.i=i;q.textContent=e[2];
+        edgeLayer.append(q);
+      }
+    });
+  }
+  function focus(id){
+    N.forEach(n=>by[n[0]].classList.toggle('dim',!!id&&n[0]!==id&&!E.some(e=>(e[0]===id&&e[1]===n[0])||(e[1]===id&&e[0]===n[0]))));
+    [...edgeLayer.children].forEach(x=>{let e=E[+x.dataset.i],on=id&&(e[0]===id||e[1]===id);
+      x.classList.toggle('dim',!!id&&!on);x.classList.toggle('hit',!!on)});
+    N.forEach(n=>by[n[0]].classList.toggle('focus',n[0]===id));
+  }
+  function apply(){stage.style.transform='scale('+scale+')';
+    holder.style.width=(2550*scale)+'px';holder.style.height=(stageHeight*scale)+'px';draw()}
+  function fit(){if(wrap.clientWidth<10)return;scale=Math.min(1,(wrap.clientWidth-6)/2550);apply()}
+  function zoom(z){
+    if(z==='fit')fit();
+    else if(z==='full'){scale=1;apply()}
+    else if(z==='in'){scale=Math.min(1.6,scale*1.18);apply()}
+    else if(z==='out'){scale=Math.max(.3,scale/1.18);apply()}
+  }
+  return{fit:fit,apply:apply,zoom:zoom};
+}
+
+const flows={glc:createFlow(CFG_glc),mbusi:createFlow(CFG_mbusi)};
+let activeFlow=(location.hash.replace('#','') in {glc:1,mbusi:1})?location.hash.replace('#',''):'glc';
+function refit(){requestAnimationFrame(()=>flows[activeFlow].fit())}
+if(activeFlow!=='glc'){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.pane===activeFlow));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+activeFlow));
+}
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{
+  activeFlow=btn.dataset.pane;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===btn));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+btn.dataset.pane));
+  refit();
+});
+document.querySelectorAll('.zoom button').forEach(btn=>btn.onclick=()=>flows[activeFlow].zoom(btn.dataset.z));
+window.addEventListener('resize',refit);
+requestAnimationFrame(refit);setTimeout(refit,120);
+</script></body></html>

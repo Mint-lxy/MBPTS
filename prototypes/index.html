@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC34 Case1 · 原型导航</title>
+<style>
+body{margin:0;font:14px/1.6 "PingFang SC","Microsoft YaHei",sans-serif;background:#f4f6f8;color:#22303c}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 24px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:#6c7880;margin-bottom:24px}
+h2{font-size:15px;margin:28px 0 10px;color:#1c2e42;border-left:4px solid #2f7480;padding-left:10px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px #1c2e4212}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid #eef1f4;font-size:13px}
+th{background:#f0f3f6;color:#4c5760;font-weight:600}
+a{color:#0e9f8f;text-decoration:none}
+a:hover{text-decoration:underline}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}
+.ok{background:#e3f3ec;color:#2ea36b}
+.gap{background:#fdf0e4;color:#c07a1e}
+img{max-width:100%;border:1px solid #dfe4e9;border-radius:10px;margin-top:8px}
+.note{background:#fff8ec;border:1px solid #f0dcb4;border-radius:10px;padding:12px 16px;font-size:13px;color:#7a5c1e;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>UC34 Case 1 · 危险品托运清单自动生成 — 原型导航</h1>
+<div class="sub">PRD 配套原型索引 · 生成日期 2026-09-24 · 原型基线：Case1_Demo_Final 2（平台侧 PRD v1.0）</div>
+
+<h2>业务流程图</h2>
+<table>
+<tr><th>产物</th><th>路径</th></tr>
+<tr><td>业务流程图（PNG）</td><td><a href="images/业务流程图.png">images/业务流程图.png</a></td></tr>
+<tr><td>业务流程图（drawio 源文件）</td><td>docs/prd/Case1_危险品托运清单_业务流程图.drawio</td></tr>
+</table>
+<img src="images/业务流程图.png" alt="业务流程图">
+
+<h2>页面原型（复用现有 demo，点击查看交互）</h2>
+<table>
+<tr><th>模块</th><th>交互原型（HTML）</th><th>截图（PNG）</th><th>状态</th></tr>
+<tr><td>工作台</td><td><a href="../Case1_Demo_Final 2/页面demo/index.html">index.html</a></td><td><a href="images/home.png">home.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>任务中心</td><td><a href="../Case1_Demo_Final 2/页面demo/tasks.html">tasks.html</a></td><td><a href="images/tasks.png">tasks.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>任务详情</td><td><a href="../Case1_Demo_Final 2/页面demo/task-detail.html?id=T-DEMO-A001">task-detail.html</a></td><td><a href="images/task-detail.png">task-detail.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>邮件中心</td><td><a href="../Case1_Demo_Final 2/页面demo/rules.html">rules.html</a></td><td><a href="images/mail-center.png">mail-center.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>规则编辑</td><td><a href="../Case1_Demo_Final 2/页面demo/rule-edit.html?id=R-DG-CN">rule-edit.html</a></td><td><a href="images/rule-edit.png">rule-edit.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>上传中心</td><td><a href="../Case1_Demo_Final 2/页面demo/dim-tables.html">dim-tables.html</a></td><td><a href="images/dim-tables.png">dim-tables.png</a></td><td><span class="tag ok">已确认（Case1 范围为空）</span></td></tr>
+<tr><td>配置中心</td><td><a href="../Case1_Demo_Final 2/页面demo/config.html">config.html</a></td><td><a href="images/config.png">config.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>提醒中心</td><td><a href="../Case1_Demo_Final 2/页面demo/notify.html">notify.html</a></td><td><a href="images/notify.png">notify.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>权限中心</td><td><a href="../Case1_Demo_Final 2/页面demo/rbac.html">rbac.html</a></td><td><a href="images/rbac.png">rbac.png</a></td><td><span class="tag ok">已确认（只读）</span></td></tr>
+<tr><td>治理运营台</td><td><a href="../Case1_Demo_Final 2/页面demo/govern.html">govern.html</a></td><td><a href="images/govern.png">govern.png</a></td><td><span class="tag ok">已确认</span></td></tr>
+<tr><td>UC26 分析工作台</td><td><a href="../Case1_Demo_Final 2/页面demo/uc26-query.html">uc26-query.html</a></td><td><a href="images/uc26-query.png">uc26-query.png</a></td><td><span class="tag ok">存档（Case1 范围外）</span></td></tr>
+<tr><td>后台 RPA 执行链（七节点）</td><td colspan="2">无 UI，以 PRD 业务规则章节（R1-R10）为准</td><td><span class="tag gap">原型缺口</span></td></tr>
+</table>
+
+<div class="note">原型缺口说明：Type1-4 明细分支判断、SET 套装逐 UN No. 核验、SDS 第14章解析、Hazmat indicator 查询属后台 RPA 逻辑，demo 中无专门 UI，相关需求以 PRD「核心业务规则」章节为准。</div>
+</div>
+</body>
+</html>

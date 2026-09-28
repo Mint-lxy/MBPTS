@@ -1,0 +1,206 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC34 Case4 X-entry 发票与预报创建</title><style>:root{
+  --navy:#1c2e42;--navy2:#22415e;--navy3:#182c40;
+  --teal:#2f7480;--purple:#6b5f9e;--amber:#5b6cae;--deepamber:#454f86;
+  --green:#4a8a6d;--red:#b06058;--ink:#22303c;--muted:#6c7880;--line:#8b98a3;
+  --paper:#e9ebee;--stage:#fafbfc;--gold:#5b6cae;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+
+/* ---------- 顶部标题栏（与画布同宽的居中卡片） ---------- */
+.top{height:66px;max-width:1720px;margin:14px auto 0;padding:0 26px;background:linear-gradient(120deg,#f8fafc 0%,#eef2f7 100%);border:1px solid #d3dae2;border-radius:14px;color:var(--ink);display:flex;align-items:center;position:relative;box-shadow:0 4px 16px #1c2e4212}
+.top::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#36709e,#2f7480)}
+.top::after{content:"";position:absolute;inset:0;background:radial-gradient(520px 150px at 94% -50px,#36709e1f,transparent 70%);border-radius:inherit;pointer-events:none}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.mark{flex:0 0 auto;width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#22415e,#182c40);color:#a8c9e8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.03em;box-shadow:0 4px 10px #1c2e4233, inset 0 1px 0 #ffffff26}
+.tt small{display:block;color:#7d8b99;letter-spacing:.24em;font-weight:700;font-size:10.5px;margin-bottom:2px}
+.tt h1{font-size:19px;margin:0;letter-spacing:.02em;color:#1c2e42}
+.tt p{margin:2px 0 0;color:#7d8894;font-size:11.5px;letter-spacing:.03em}
+
+/* ---------- 图例 ---------- */
+.legend{height:40px;max-width:1720px;margin:10px auto;padding:0 22px;background:#eff2f6;border:1px solid #d6dde4;border-radius:11px;display:flex;gap:24px;align-items:center;color:#525a63;font-weight:600;font-size:12px;box-shadow:0 2px 8px #1c2e420a}
+.legend .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;box-shadow:inset 0 0 0 1px #00000014}
+.legend i.dia{transform:rotate(45deg);border-radius:3px}
+.legend .cap{color:#9aa5ae;font-weight:700;letter-spacing:.16em;font-size:11px;margin-right:-6px}
+
+/* ---------- 画布外壳 ---------- */
+.shell{height:calc(100vh - 140px);padding:0 14px 14px;margin-top:10px}
+.wrap{height:100%;overflow:auto;max-width:1720px;margin:auto;background:var(--paper);border:1px solid #ced5dc;border-radius:14px;box-shadow:0 18px 44px #1c2e421a,0 2px 8px #1c2e4210;position:relative}
+.holder{position:relative;margin:auto}
+.stage{position:relative;width:2550px;height:1800px;transform-origin:top left;background:var(--stage);background-image:radial-gradient(#d3d9df .8px,transparent .8px);background-size:22px 22px}
+
+/* 缩放工具 */
+.zoom{position:fixed;right:26px;bottom:24px;display:flex;gap:6px;padding:6px;background:#fffffff0;border:1px solid #d5dbe1;border-radius:12px;box-shadow:0 10px 26px #1c2e4226;z-index:50;backdrop-filter:blur(4px)}
+.zoom button{border:1px solid #dee3e9;background:#fff;color:#4c5760;font:700 12px/1 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;padding:8px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+.zoom button:hover{background:#eef2f6;border-color:#b7c2cc;color:#1c2e42}
+.zoom button:active{transform:translateY(1px)}
+
+/* ---------- 画布内标题 ---------- */
+.doc{position:absolute;left:46px;top:20px;z-index:7}
+.doc b{display:block;color:#1c2e42;font-size:24px;letter-spacing:.01em}
+.doc span{color:var(--muted);font-size:13px}
+
+/* ---------- 泳道 ---------- */
+.lane{position:absolute;left:45px;width:2460px;border:1px solid #d5dae0;border-radius:14px;background:#fcfdfd;overflow:hidden;z-index:0;box-shadow:0 1px 3px #1c2e420a}
+.portal{top:110px;height:170px;background:linear-gradient(180deg,#f8f9fc,#f5f6fa)}
+.rpa{top:305px;height:1190px;background:linear-gradient(180deg,#fbfcfc,#f9fbfb)}
+.output{top:1520px;height:220px;background:linear-gradient(180deg,#f2f7f4,#f0f5f1)}
+.lane h2{height:40px;margin:0;padding:9px 20px;font-size:13.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e5ea}
+.lane h2 .no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;color:#fff;font-size:11px;font-weight:800;letter-spacing:0}
+.portal h2{color:#58527e;border-left:6px solid var(--purple)}
+.portal h2 .no{background:var(--purple)}
+.rpa h2{color:#2a5a64;border-left:6px solid var(--teal)}
+.rpa h2 .no{background:var(--teal)}
+.output h2{color:#3e6a55;border-left:6px solid var(--green)}
+.output h2 .no{background:var(--green)}
+.lane h2 em{font-style:normal;color:#9099a1;font-weight:600;font-size:12px;margin-left:4px;letter-spacing:.03em}
+
+/* ---------- 阶段标签 ---------- */
+.phase{position:absolute;color:#3e5260;font-weight:800;font-size:12px;letter-spacing:.04em;z-index:1;display:flex;align-items:center;gap:8px}
+.phase::before{content:"";width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--teal),#93b3b6)}
+
+/* ---------- 分组框 ---------- */
+.group{position:absolute;border:1.4px dashed #c2cad2;border-radius:12px;background:#ffffff78;z-index:1;box-shadow:0 1px 4px #1c2e4208}
+.group h3{margin:0;padding:9px 15px;font-size:12.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.group h3::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.75}
+.nonset{left:75px;top:805px;width:1120px;height:285px}
+.nonset h3{background:linear-gradient(90deg,#e5eef0,#ecf2f3 70%,transparent);color:#2c6470;border-bottom:1px dashed #bfd0d3}
+.setgroup{left:1270px;top:805px;width:1190px;height:285px;border-color:#b7b4d9;background:#fafbfeea}
+.setgroup h3{background:linear-gradient(90deg,#e9e6f5,#f4f2fa 70%,transparent);color:#5a5290;border-bottom:1px dashed #c7c2e0}
+.setnote{position:absolute;left:1305px;top:1047px;color:#5f5890;font-size:11px;z-index:5;padding-left:20px}
+.setnote::before{content:"※";position:absolute;left:0;top:0;color:var(--amber);font-weight:700}
+.record{position:absolute;left:95px;top:1452px;width:2350px;height:30px;padding:6px 14px;border:1px solid #a4bcb2;border-radius:8px;background:linear-gradient(90deg,#ecf2ee,#f1f5f1);color:#48684f;font-size:11.5px;z-index:5;display:flex;align-items:center;gap:8px}
+.record::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #4a8a6d33;flex:0 0 auto}
+
+/* ---------- 节点卡片 ---------- */
+.node{--ac:var(--teal);position:absolute;min-height:80px;padding:12px 14px 11px;background:#fffefe;border:1px solid #dadfe4;border-top:3px solid var(--ac);border-radius:10px;box-shadow:0 2px 5px #1c2e420a,0 9px 22px #1c2e420e;z-index:6;transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+.node:hover{transform:translateY(-3px);box-shadow:0 6px 12px #1c2e4214,0 16px 34px #1c2e4218}
+.node .ttl{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.chip{font-style:normal;font-weight:800;font-size:10px;line-height:1;padding:4px 7px;border-radius:6px;background:var(--ac);color:#fff;letter-spacing:.04em;white-space:nowrap;box-shadow:0 2px 5px #1c2e422a}
+.node b{display:block;font-size:13px;color:var(--ink);line-height:1.35}
+.node span{display:block;font-size:10.5px;color:var(--muted);line-height:1.55}
+.node.portal-n{--ac:var(--purple);background:#fbfbfd}
+.node.rule{--ac:var(--amber);background:#fbfbfd}
+.node.bad{--ac:var(--red);background:#fdfaf9}
+.node.set{--ac:#66609e;background:#fafbfe}
+.node.out{--ac:var(--green);background:#fbfdfb}
+.node.merge{--ac:#67748a;background:#f0f3f5;text-align:center}
+.node.merge .ttl{justify-content:center}
+
+/* ---------- 菱形判断 ---------- */
+.diamond{position:absolute;width:106px;height:106px;transform:rotate(45deg);border-radius:12px;background:linear-gradient(135deg,#f8f9fd,#eef0f9);border:1.6px solid #8f9bd0;box-shadow:0 2px 5px #1c2e420a,0 10px 22px #5b6cae18;z-index:6;transition:box-shadow .18s}
+.diamond:hover{box-shadow:0 6px 14px #1c2e4218,0 16px 32px #5b6cae24}
+.diamond div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-45deg);padding:0 4px}
+.diamond b{font-size:11.5px;font-weight:800;color:#454f86;line-height:1.3;max-width:96px}
+.diamond small{font-size:9.5px;font-weight:500;color:#7a84aa;margin-top:3px;max-width:96px;line-height:1.35}
+
+/* ---------- 连线 ---------- */
+.edges{position:absolute;inset:0;width:2550px;height:1800px;z-index:3;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;marker-end:url(#arrow)}
+.edge.yes{stroke:#4f8a72}
+.edge.no{stroke:#b26a62}
+.edge.set{stroke:#5b6cae}
+.edge.fb{stroke:#8b96ad;stroke-dasharray:7 6}
+.label{font-size:10.5px;font-weight:600;fill:#4f5a64;paint-order:stroke;stroke:var(--stage);stroke-width:6px;stroke-linejoin:round}
+
+.dim{opacity:.16}
+.hit{stroke-width:3.2}
+.node.dim,.diamond.dim{opacity:.24}
+.node.focus,.diamond.focus{outline:3px solid var(--gold);outline-offset:3px}
+
+@media print{
+  .top,.legend,.zoom{display:none}
+  .shell{height:auto;padding:0}
+  .wrap{overflow:visible;max-width:none;border:0;box-shadow:none}
+  .holder{width:2550px!important;height:1800px!important}
+  .stage{transform:scale(.58)!important}
+  @page{size:A3 landscape;margin:5mm}
+}
+
+.stage,.edges{height:1620px}
+@media print{.holder{height:1620px!important}}
+.note-card{position:absolute;z-index:5;background:#f6f8fa;border:1px solid #d4dbe2;border-left:4px solid #70869a;border-radius:8px;padding:12px 16px;color:#4e5e6c;font-size:12px;line-height:1.55}.note-card b{display:block;color:#31455a;margin-bottom:2px}.separator{position:absolute;left:47px;width:2456px;height:1px;background:#cbd2d9;z-index:2}
+</style></head><body><header class="top"><div class="brand"><div class="mark">BRD</div><div class="tt"><small>MBPTS AI QUICK WIN · UC34 CASE 4</small><h1>UC34 Case4 X-entry 发票与预报创建</h1><p>FedEx 预报 · X-entry 诊断设备新货/旧货进口 · BRD 0927</p></div></div></header>
+<div class="legend"><span class="cap">LEGEND</span><span class="lg"><i style="background:var(--purple)"></i>Portal 操作</span><span class="lg"><i style="background:var(--teal)"></i>后台流程</span><span class="lg"><i class="dia" style="background:var(--amber)"></i>BRD 判断条件</span><span class="lg"><i style="background:var(--green)"></i>业务输出</span><span class="lg"><i style="background:var(--red)"></i>异常 / 排除</span></div>
+<main class="shell"><div class="wrap" id="wrap"><div class="holder" id="holder"><div class="stage" id="stage">
+<div class="doc" style="top:18px;left:46px"><b>X-entry 发票与预报创建 · 端到端流程</b><span>触发 → 收单归档 → 票据校验 → 信息表 → IES+ 发票与预报 → 旧货文件 → 命名存档</span></div>
+<section class="lane portal" style="top:110px;height:170px"><h2><span class="no">01</span>业务用户 / 触发来源<em>Portal 公邮与人工补传</em></h2></section>
+<section class="lane rpa" style="top:305px;height:1005px"><h2><span class="no">02</span>后台自动流程与数据逻辑<em>提取校验、IES+ 操作、旧货文件</em></h2></section>
+<section class="lane output" style="top:1335px;height:250px"><h2><span class="no">03</span>业务输出<em>BRD 明确写出的最终产物</em></h2></section>
+<div class="phase" style="left:90px;top:352px">阶段一 · 收件归档与票据校验（BRD 1、2.1–2.3）</div>
+<div class="phase" style="left:90px;top:682px">阶段二 · 信息表生成、导入与预报（BRD 2.5–2.20、3、4）</div>
+<div class="phase" style="left:90px;top:912px">阶段三 · 旧货文件准备与命名存档（BRD 5、6）</div>
+<div class="note-card" title="BRD §触发机制、§生成预报字段表" style="left:1000px;top:156px;width:470px"><b>可配置建议（原文依据）</b>发件人后缀 @fedex.com 要求做成可配置；生成预报时 Airline/Carrier、Flight No.、Terminal WH 原文建议不要写死，防 Forwarder 变更。</div>
+<div class="note-card" title="BRD §1.4 步骤表 2.12、§附件 7.1–7.2" style="left:2150px;top:555px;width:310px"><b>基础数据资料</b>PN list 每年更新；追踪大表以 2025-08-08 分段（Star D orders / SharePoint）；诊断仪大表查 loaner pool。</div>
+<svg class="edges"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5 0 9Z" fill="context-stroke"/></marker></defs><g id="edgeLayer"></g></svg><div id="nodes"></div>
+</div></div></div></main><div class="zoom"><button data-z="out" title="缩小">−</button><button data-z="fit" title="适应窗口宽度">适应宽度</button><button data-z="full" title="原始尺寸">100%</button><button data-z="in" title="放大">＋</button></div><script>const stageHeight=1620;
+const N=[["p1", "portal-n", 120, 175, 330, "P1 监控收取 X-entry 邮件", "Portal 公邮收信：①发件人后缀 @fedex.com；②标题含 AWB电子版 / Genesis AWB / CI / Packing List / 提单自报催办通知 之一，两条件同时满足", "BRD §触发机制"], ["p2", "portal-n", 600, 175, 320, "P2 业务补传票据", "业务老师在 Portal 入口上传原始 PDF 与 invoice PDF；待补传后流程于下次运行时继续", "BRD §下载附件·特殊情形"], ["r1", "", 140, 405, 220, "R1 下载附件并归档", "保存至 Portal SharePoint，一级目录按运行日期", "BRD §下载附件并保存到 Portal Share Point"], ["d1", "diamond", 360, 392, 150, "附件含 Invoice？", "否则转人工", "BRD：若附件 PDF 不包含 Invoice 则报错转人工"], ["bad1", "bad", 330, 560, 250, "E1 报错转人工", "附件缺发票时报错并转人工处理", "BRD §下载附件·特殊情形"], ["rhawb", "rule", 550, 405, 240, "R2 提取 HAWB 三处", "运单主页 Hawb / 运单附页 Master（去空格）/ 发票页 HAWB（2.1–2.3）", "BRD 步骤表 2.1–2.3"], ["d2", "diamond", 850, 392, 150, "HAWB 一致？", "2.3 与 2.1/2.2 比对", "BRD 步骤表 2.1–2.3 一致性校验"], ["bad2", "bad", 830, 560, 250, "E2 停止等确认", "号码不一致则停止，等待人工确认后再处理", "BRD 步骤表 2.1–2.3：不一致则停止等确认"], ["r3", "", 1050, 405, 300, "R3 提取发票字段", "DN、发票号+日期、货值运费币制、重量尺寸（cm→mm）、品名、Qty·单价、产地二字码、Order No.=Your reference、Incoterm；固定值 EME / BJ PDC / Air / 纸箱（2.5–2.20）", "BRD 步骤表 2.5–2.20"], ["d3", "diamond", 1420, 392, 150, "Order type 判定", "新货/旧货/GLC/pool", "BRD 步骤表 2.9–2.10"], ["s1", "set", 1620, 405, 330, "S1 按类别套用差异规则", "Supplier=GLC-Xentry-New/Old；SN 位置（旧：发票右上；新：配件区）；Order No.（旧取全号 CASE-…；新取 _ 前数字）；产地特例（Retail Data storage 旧货=CN）；PAD 两行品名取 PAD 行、Qty=1", "BRD 步骤表 2.9、2.10、2.13–2.16"], ["r4", "rule", 2000, 405, 280, "R4 查表匹配 Part Number", "新货/GLC 补货→PN list；loaner→先取 PO 号查诊断仪大表 Loaner pool=Y；纯旧货→按 SN 查追踪大表当时进口 PN", "BRD 步骤表 2.12 + 附件 7.1–7.2"], ["r5", "", 90, 730, 270, "R5 生成发票信息表", "重复 MBZ/DN&amp;PN 行合并：Item 保留首行，Qty/净重/金额加总；未提及字段留空（2.11）", "BRD 步骤表 2.11 及合并规则"], ["r6", "", 410, 730, 270, "R6 导入发票信息表", "IES+ 进口管理 → 发票信息 → 导入 → 导入 INV&amp;DN → 选择文件 → 上传", "BRD §3(1) 发票信息表上传"], ["r7", "", 730, 730, 280, "R7 发票批量维护 Remark", "Remark1：旧货/新货；GLC 补货写“新货”；pool 写“新货loaner pool”。Remark2：SN（多号用顿号）；GLC 补货加“德国补的新货，旧的坏了”", "BRD §3(2) 备注 remark"], ["r8", "", 1060, 730, 300, "R8 生成进口预报", "MAWB=000、HAWB=2.1、Carrier/Flight=Fedex、DG=N、Terminal WH=联邦库、C.W=Total Weight、Package QTY=Total Pieces、G.W=总和、VOL=尺寸乘积、Arrival=首都国际机场、Departure=德国", "BRD §生成预报字段表"], ["r9", "", 1410, 730, 260, "R9 预报批量修改 Remark", "旧货→旧货；新货→新货；GLC 补货→“新货，旧的坏了，德国补发”；pool→“新货loaner pool”", "BRD §生成预报·备注 remark"], ["r10", "", 1720, 730, 270, "R10 预报存档 PDF", "进口预报详情 → 文档资料 → 上传 → 文档类别 HAWB → 保存（4.3）", "BRD §4.3 存档 PDF"], ["d4", "diamond", 2040, 708, 150, "是否旧货类？", "旧货 / GLC 补货", "BRD §5：对于旧货进口需提供"], ["r11", "", 90, 950, 300, "R11 查取原出口报关单", "T 盘 X-entry Documentation 目录，按 SN+exp./CDS 取最后一次出口（或经 Warranty 表 System No→P 列运单号，SF 前缀顺丰件排除），存入进口文件夹", "BRD §5.1 原出口报关单准备"], ["r12", "", 440, 950, 280, "R12 抓取出口盖章文件 ×4", "盖章版 return label、维修 letter、给海关的情况说明、原进口报关单（MBPTS 默认模板）", "BRD §5.1 出口文件夹抓取"], ["r13", "", 770, 950, 300, "R13 填写旧机电进口声明", "按声明模板填发票号、运单号、SN（2.19）、货值；落款日期=文件生成当天", "BRD §5.2 旧机电声明准备"], ["d5", "diamond", 1120, 938, 150, "SN 一致？", "发票 vs 原出口报关单", "BRD 步骤表 2.19"], ["bad3", "bad", 1095, 1110, 260, "E3 转人工核实", "纯旧货 SN 与发票/原出口报关单不一致时转人工核实", "BRD 步骤表 2.19：不一致需转人工核实"], ["r14", "", 1330, 950, 290, "R14 命名并存档", "PDF 以 2.1 HAWB 命名；每票 PDF+信息表存入独立文件夹，命名=SN_配件_新旧_HAWB（示例 SN 532418_pad 2_Old_448886329033）", "BRD §6.1–6.2 命名规则"], ["o1", "out", 90, 1395, 300, "O1 SharePoint 归档完成", "邮件四类附件（运单/发票等）按运行日期一级目录归档", "BRD §下载附件并保存"], ["o2", "out", 440, 1395, 300, "O2 IES+ 发票信息已建", "INV&amp;DN 信息表导入，Remark1（新旧/GLC/pool）与 Remark2（SN）已批量维护", "BRD §3、§2 步骤表"], ["o3", "out", 790, 1395, 310, "O3 IES+ 进口预报已建", "按字段表生成预报并写好 Remark；预报详情已挂 HAWB 文档资料", "BRD §生成预报、§4.3"], ["o4", "out", 1150, 1395, 320, "O4 旧货单据包（仅旧货）", "原出口报关单 + 出口盖章文件×4 + 已填写的旧机电产品进口声明", "BRD §5.1–5.2"], ["o5", "out", 1520, 1395, 320, "O5 命名文件夹存档", "每票 PDF 与发票信息表按 SN_配件_新旧_HAWB 规则存入独立文件夹", "BRD §6.1–6.2"]];
+const E=[["p1", "r1", "", "", [[285, 375], [250, 375]], "BRD §触发机制→§业务流程 顺序"], ["r1", "d1", "", "", [], "BRD §下载附件→特殊情形判断"], ["d1", "bad1", "否 · 转人工", "no", [], "BRD：不包含 Invoice 则报错转人工"], ["d1", "rhawb", "是", "yes", [], "BRD §业务流程顺序：归档后填写模板提取"], ["bad1", "p2", "人工补传", "no", [[812, 610], [812, 300], [760, 300]], "BRD：portal 上留存可供业务老师上传的入口"], ["p2", "r1", "下次运行继续", "fb", [[760, 163], [55, 163], [55, 445]], "BRD：待上传后流程再下次 portal 运行时继续进行"], ["rhawb", "d2", "", "", [], "BRD 步骤表 2.1–2.3 提取后比对"], ["d2", "bad2", "不一致", "no", [[925, 560], [955, 560]], "BRD 步骤表：如不一致则停止等确认"], ["d2", "r3", "一致", "yes", [], "BRD 步骤表：如一致则进行下一步"], ["r3", "d3", "", "", [], "BRD 步骤表 2.9 新旧判定前置提取"], ["d3", "s1", "四类判定", "set", [], "BRD 步骤表 2.9–2.10 类别规则"], ["s1", "r4", "", "", [], "BRD 步骤表 2.12 PN 查询依赖类别"], ["r4", "r5", "字段齐备", "", [[2140, 672], [225, 672]], "BRD §填写发票导入模板→§导入发票模板 顺序"], ["r5", "r6", "", "", [], "BRD §填写模板→§导入 顺序"], ["r6", "r7", "", "", [], "BRD §3(1)→§3(2) 顺序：选中刚上传的发票"], ["r7", "r8", "", "", [], "BRD §3→§生成预报 顺序"], ["r8", "r9", "", "", [], "BRD §生成预报后批量修改 Remark"], ["r9", "r10", "", "", [], "BRD §4.3 存档 PDF 顺序"], ["r10", "d4", "", "", [], "BRD §4.3→§5 顺序，§5 以旧货为条件"], ["d4", "r11", "旧货 / GLC 补货", "yes", [[2115, 890], [240, 890]], "BRD §5：对于旧货进口需提供…"], ["d4", "r14", "新货 / loaner pool", "no", [[2115, 935], [1475, 935]], "BRD §5 条件仅针对旧货；§6 命名存档适用全部"], ["r11", "r12", "", "", [], "BRD §5.1：同时抓取出口文件夹下四份文件"], ["r12", "r13", "", "", [], "BRD §5.1→§5.2 顺序"], ["r13", "d5", "声明含 SN", "", [], "BRD 步骤表 2.19：纯旧货填写声明中的 SN 并对比"], ["d5", "bad3", "不一致", "no", [], "BRD 步骤表 2.19：不一致需转人工核实"], ["d5", "r14", "一致", "yes", [], "BRD §5→§6 命名存档 顺序"], ["r14", "o1", "完成后全量可查", "", [[1475, 1318], [240, 1318]], "BRD §6 存档为流程终点，汇总各产物"], ["o1", "o2", "", "", [], "BRD 产物顺序：归档→信息表"], ["o2", "o3", "", "", [], "BRD 产物顺序：发票→预报"], ["o3", "o4", "", "", [], "BRD §5 旧货比例外产物"], ["o4", "o5", "", "", [], "BRD §6 命名存档收尾"]];
+const layer=document.getElementById('nodes'),edgeLayer=document.getElementById('edgeLayer'),stage=document.getElementById('stage'),wrap=document.getElementById('wrap'),holder=document.getElementById('holder');
+let scale=1;const by={};
+N.forEach(n=>{
+  let e=document.createElement('div');by[n[0]]=e;e.id=n[0];
+  // A diamond's JSON width reserves a horizontal slot. Keep its rendered
+  // shape square and centre it in that slot before applying the rotation.
+  e.style.left=(n[1]==='diamond'?n[2]+(n[4]-106)/2:n[2])+'px';
+  e.style.top=n[3]+'px';
+  e.style.width=(n[1]==='diamond'?106:n[4])+'px';
+  if(n[1]==='diamond'){
+    e.className='diamond';
+    e.innerHTML='<div><b>'+n[5]+'</b><small>'+n[6]+'</small></div>';
+  }else{
+    e.className='node '+n[1];
+    let m=n[5].match(/^([A-Za-z]{1,2}\d{0,2})\s+(.*)$/);
+    e.innerHTML=m?'<div class="ttl"><i class="chip">'+m[1]+'</i><b>'+m[2]+'</b></div><span>'+n[6]+'</span>'
+                 :'<div class="ttl"><b>'+n[5]+'</b></div><span>'+n[6]+'</span>';
+  }
+  e.title=n[7]||'';e.onmouseenter=()=>focus(n[0]);e.onmouseleave=()=>focus();
+  layer.append(e);
+});
+
+function box(id){let r=by[id].getBoundingClientRect(),s=stage.getBoundingClientRect();return{x:(r.left-s.left)/scale,y:(r.top-s.top)/scale,w:r.width/scale,h:r.height/scale}}
+function anchor(a,p){let c=[a.x+a.w/2,a.y+a.h/2],dx=p[0]-c[0],dy=p[1]-c[1];if(Math.abs(dx)>Math.abs(dy))return dx>0?[a.x+a.w,c[1]]:[a.x,c[1]];return dy>0?[c[0],a.y+a.h]:[c[0],a.y]}
+function orthogonal(points){let out=[points[0]];for(let i=1;i<points.length;i++){let a=out[out.length-1],b=points[i];if(a[0]!==b[0]&&a[1]!==b[1])out.push([b[0],a[1]]);out.push(b)}return out}
+function rounded(pts,r){let d='M'+pts[0][0]+' '+pts[0][1];for(let i=1;i<pts.length-1;i++){let a=pts[i-1],b=pts[i],c=pts[i+1],v1=[b[0]-a[0],b[1]-a[1]],v2=[c[0]-b[0],c[1]-b[1]],l1=Math.hypot(v1[0],v1[1]),l2=Math.hypot(v2[0],v2[1]);if(l1<.01||l2<.01||Math.abs(v1[0]*v2[1]-v1[1]*v2[0])<.01){d+=' L'+b[0]+' '+b[1];continue}let rr=Math.min(r,l1/2,l2/2);d+=' L'+(b[0]-v1[0]/l1*rr)+' '+(b[1]-v1[1]/l1*rr)+' Q'+b[0]+' '+b[1]+' '+(b[0]+v2[0]/l2*rr)+' '+(b[1]+v2[1]/l2*rr)}let e=pts[pts.length-1];d+=' L'+e[0]+' '+e[1];return d}
+
+function draw(){
+  edgeLayer.innerHTML='';
+  E.forEach((e,i)=>{
+    let a=box(e[0]),b=box(e[1]),ways=e[4]||[],
+        first=ways[0]||[b.x+b.w/2,b.y+b.h/2],
+        last=ways[ways.length-1]||[a.x+a.w/2,a.y+a.h/2],
+        s=anchor(a,first),t=anchor(b,last),
+        pts=orthogonal([s,...ways,t]),
+        d=rounded(pts,14),
+        path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d);path.setAttribute('class','edge '+e[3]);path.dataset.i=i;
+    edgeLayer.append(path);
+    if(e[2]){
+      let seg=pts.slice(1).map((p,j)=>({a:pts[j],b:p,l:Math.hypot(p[0]-pts[j][0],p[1]-pts[j][1])})).sort((x,y)=>y.l-x.l)[0],
+          q=document.createElementNS('http://www.w3.org/2000/svg','text');
+      q.setAttribute('x',(seg.a[0]+seg.b[0])/2);q.setAttribute('y',(seg.a[1]+seg.b[1])/2-7);
+      q.setAttribute('text-anchor','middle');q.setAttribute('class','label');q.dataset.i=i;q.textContent=e[2];
+      edgeLayer.append(q);
+    }
+  });
+}
+
+function focus(id){
+  N.forEach(n=>by[n[0]].classList.toggle('dim',!!id&&n[0]!==id&&!E.some(e=>(e[0]===id&&e[1]===n[0])||(e[1]===id&&e[0]===n[0]))));
+  [...edgeLayer.children].forEach(x=>{let e=E[+x.dataset.i],on=id&&(e[0]===id||e[1]===id);x.classList.toggle('dim',!!id&&!on);x.classList.toggle('hit',!!on)});
+  N.forEach(n=>by[n[0]].classList.toggle('focus',n[0]===id));
+}
+
+function apply(){stage.style.transform='scale('+scale+')';holder.style.width=(2550*scale)+'px';holder.style.height=(stageHeight*scale)+'px';draw()}
+function fit(){scale=Math.min(1,(wrap.clientWidth-6)/2550);apply()}
+document.querySelectorAll('.zoom button').forEach(btn=>btn.onclick=()=>{
+  let z=btn.dataset.z;
+  if(z==='fit')fit();
+  else if(z==='full'){scale=1;apply()}
+  else if(z==='in'){scale=Math.min(1.6,scale*1.18);apply()}
+  else if(z==='out'){scale=Math.max(.3,scale/1.18);apply()}
+});
+new ResizeObserver(fit).observe(wrap);onload=fit;onresize=fit;setTimeout(fit,80);
+</script></body></html>
