@@ -1,0 +1,238 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC34 Case 5 · ASN 自动创建业务流程图</title><style>:root{
+  --navy:#1c2e42;--navy2:#22415e;--navy3:#182c40;
+  --teal:#2f7480;--purple:#6b5f9e;--amber:#5b6cae;--deepamber:#454f86;
+  --green:#4a8a6d;--red:#b06058;--ink:#22303c;--muted:#6c7880;--line:#8b98a3;
+  --paper:#e9ebee;--stage:#fafbfc;--gold:#5b6cae;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+
+/* ---------- 顶部标题栏（与画布同宽的居中卡片） ---------- */
+.top{height:66px;max-width:1720px;margin:14px auto 0;padding:0 26px;background:linear-gradient(120deg,#f8fafc 0%,#eef2f7 100%);border:1px solid #d3dae2;border-radius:14px;color:var(--ink);display:flex;align-items:center;position:relative;box-shadow:0 4px 16px #1c2e4212}
+.top::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#36709e,#2f7480)}
+.top::after{content:"";position:absolute;inset:0;background:radial-gradient(520px 150px at 94% -50px,#36709e1f,transparent 70%);border-radius:inherit;pointer-events:none}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.mark{flex:0 0 auto;width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#22415e,#182c40);color:#a8c9e8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:.03em;box-shadow:0 4px 10px #1c2e4233, inset 0 1px 0 #ffffff26}
+.tt small{display:block;color:#7d8b99;letter-spacing:.24em;font-weight:700;font-size:10.5px;margin-bottom:2px}
+.tt h1{font-size:19px;margin:0;letter-spacing:.02em;color:#1c2e42}
+.tt p{margin:2px 0 0;color:#7d8894;font-size:11.5px;letter-spacing:.03em}
+
+/* ---------- 图例 ---------- */
+.legend{height:40px;max-width:1720px;margin:10px auto;padding:0 22px;background:#eff2f6;border:1px solid #d6dde4;border-radius:11px;display:flex;gap:24px;align-items:center;color:#525a63;font-weight:600;font-size:12px;box-shadow:0 2px 8px #1c2e420a}
+.legend .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;box-shadow:inset 0 0 0 1px #00000014}
+.legend i.dia{transform:rotate(45deg);border-radius:3px}
+.legend .cap{color:#9aa5ae;font-weight:700;letter-spacing:.16em;font-size:11px;margin-right:-6px}
+
+/* ---------- 画布外壳 ---------- */
+.shell{height:calc(100vh - 140px);padding:0 14px 14px;margin-top:10px}
+.wrap{height:100%;overflow:auto;max-width:1720px;margin:auto;background:var(--paper);border:1px solid #ced5dc;border-radius:14px;box-shadow:0 18px 44px #1c2e421a,0 2px 8px #1c2e4210;position:relative}
+.holder{position:relative;margin:auto}
+.stage{position:relative;width:2550px;height:1800px;transform-origin:top left;background:var(--stage);background-image:radial-gradient(#d3d9df .8px,transparent .8px);background-size:22px 22px}
+
+/* 缩放工具 */
+.zoom{position:fixed;right:26px;bottom:24px;display:flex;gap:6px;padding:6px;background:#fffffff0;border:1px solid #d5dbe1;border-radius:12px;box-shadow:0 10px 26px #1c2e4226;z-index:50;backdrop-filter:blur(4px)}
+.zoom button{border:1px solid #dee3e9;background:#fff;color:#4c5760;font:700 12px/1 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;padding:8px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+.zoom button:hover{background:#eef2f6;border-color:#b7c2cc;color:#1c2e42}
+.zoom button:active{transform:translateY(1px)}
+
+/* ---------- 画布内标题 ---------- */
+.doc{position:absolute;left:46px;top:20px;z-index:7}
+.doc b{display:block;color:#1c2e42;font-size:24px;letter-spacing:.01em}
+.doc span{color:var(--muted);font-size:13px}
+
+/* ---------- 泳道 ---------- */
+.lane{position:absolute;left:45px;width:2460px;border:1px solid #d5dae0;border-radius:14px;background:#fcfdfd;overflow:hidden;z-index:0;box-shadow:0 1px 3px #1c2e420a}
+.portal{top:110px;height:170px;background:linear-gradient(180deg,#f8f9fc,#f5f6fa)}
+.rpa{top:305px;height:1190px;background:linear-gradient(180deg,#fbfcfc,#f9fbfb)}
+.output{top:1520px;height:220px;background:linear-gradient(180deg,#f2f7f4,#f0f5f1)}
+.lane h2{height:40px;margin:0;padding:9px 20px;font-size:13.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e5ea}
+.lane h2 .no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;color:#fff;font-size:11px;font-weight:800;letter-spacing:0}
+.portal h2{color:#58527e;border-left:6px solid var(--purple)}
+.portal h2 .no{background:var(--purple)}
+.rpa h2{color:#2a5a64;border-left:6px solid var(--teal)}
+.rpa h2 .no{background:var(--teal)}
+.output h2{color:#3e6a55;border-left:6px solid var(--green)}
+.output h2 .no{background:var(--green)}
+.lane h2 em{font-style:normal;color:#9099a1;font-weight:600;font-size:12px;margin-left:4px;letter-spacing:.03em}
+
+/* ---------- 阶段标签 ---------- */
+.phase{position:absolute;color:#3e5260;font-weight:800;font-size:12px;letter-spacing:.04em;z-index:1;display:flex;align-items:center;gap:8px}
+.phase::before{content:"";width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--teal),#93b3b6)}
+
+/* ---------- 分组框 ---------- */
+.group{position:absolute;border:1.4px dashed #c2cad2;border-radius:12px;background:#ffffff78;z-index:1;box-shadow:0 1px 4px #1c2e4208}
+.group h3{margin:0;padding:9px 15px;font-size:12.5px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.group h3::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.75}
+.nonset{left:75px;top:805px;width:1120px;height:285px}
+.nonset h3{background:linear-gradient(90deg,#e5eef0,#ecf2f3 70%,transparent);color:#2c6470;border-bottom:1px dashed #bfd0d3}
+.setgroup{left:1270px;top:805px;width:1190px;height:285px;border-color:#b7b4d9;background:#fafbfeea}
+.setgroup h3{background:linear-gradient(90deg,#e9e6f5,#f4f2fa 70%,transparent);color:#5a5290;border-bottom:1px dashed #c7c2e0}
+.setnote{position:absolute;left:1305px;top:1047px;color:#5f5890;font-size:11px;z-index:5;padding-left:20px}
+.setnote::before{content:"※";position:absolute;left:0;top:0;color:var(--amber);font-weight:700}
+.record{position:absolute;left:95px;top:1452px;width:2350px;height:30px;padding:6px 14px;border:1px solid #a4bcb2;border-radius:8px;background:linear-gradient(90deg,#ecf2ee,#f1f5f1);color:#48684f;font-size:11.5px;z-index:5;display:flex;align-items:center;gap:8px}
+.record::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #4a8a6d33;flex:0 0 auto}
+
+/* ---------- 节点卡片 ---------- */
+.node{--ac:var(--teal);position:absolute;min-height:80px;padding:12px 14px 11px;background:#fffefe;border:1px solid #dadfe4;border-top:3px solid var(--ac);border-radius:10px;box-shadow:0 2px 5px #1c2e420a,0 9px 22px #1c2e420e;z-index:6;transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+.node:hover{transform:translateY(-3px);box-shadow:0 6px 12px #1c2e4214,0 16px 34px #1c2e4218}
+.node .ttl{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.chip{font-style:normal;font-weight:800;font-size:10px;line-height:1;padding:4px 7px;border-radius:6px;background:var(--ac);color:#fff;letter-spacing:.04em;white-space:nowrap;box-shadow:0 2px 5px #1c2e422a}
+.node b{display:block;font-size:13px;color:var(--ink);line-height:1.35}
+.node span{display:block;font-size:10.5px;color:var(--muted);line-height:1.55}
+.node.portal-n{--ac:var(--purple);background:#fbfbfd}
+.node.rule{--ac:var(--amber);background:#fbfbfd}
+.node.bad{--ac:var(--red);background:#fdfaf9}
+.node.set{--ac:#66609e;background:#fafbfe}
+.node.out{--ac:var(--green);background:#fbfdfb}
+.node.merge{--ac:#67748a;background:#f0f3f5;text-align:center}
+.node.merge .ttl{justify-content:center}
+
+/* ---------- 菱形判断 ---------- */
+.diamond{position:absolute;width:106px;height:106px;transform:rotate(45deg);border-radius:12px;background:linear-gradient(135deg,#f8f9fd,#eef0f9);border:1.6px solid #8f9bd0;box-shadow:0 2px 5px #1c2e420a,0 10px 22px #5b6cae18;z-index:6;transition:box-shadow .18s}
+.diamond:hover{box-shadow:0 6px 14px #1c2e4218,0 16px 32px #5b6cae24}
+.diamond div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-45deg);padding:0 4px}
+.diamond b{font-size:11.5px;font-weight:800;color:#454f86;line-height:1.3;max-width:96px}
+.diamond small{font-size:9.5px;font-weight:500;color:#7a84aa;margin-top:3px;max-width:96px;line-height:1.35}
+
+/* ---------- 连线 ---------- */
+.edges{position:absolute;inset:0;width:2550px;height:1800px;z-index:3;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;marker-end:url(#arrow)}
+.edge.yes{stroke:#4f8a72}
+.edge.no{stroke:#b26a62}
+.edge.set{stroke:#5b6cae}
+.edge.fb{stroke:#8b96ad;stroke-dasharray:7 6}
+.label{font-size:10.5px;font-weight:600;fill:#4f5a64;paint-order:stroke;stroke:var(--stage);stroke-width:6px;stroke-linejoin:round}
+
+.dim{opacity:.16}
+.hit{stroke-width:3.2}
+.node.dim,.diamond.dim{opacity:.24}
+.node.focus,.diamond.focus{outline:3px solid var(--gold);outline-offset:3px}
+
+@media print{
+  .top,.legend,.zoom{display:none}
+  .shell{height:auto;padding:0}
+  .wrap{overflow:visible;max-width:none;border:0;box-shadow:none}
+  .holder{width:2550px!important;height:1800px!important}
+  .stage{transform:scale(.58)!important}
+  @page{size:A3 landscape;margin:5mm}
+}
+
+.note-card{position:absolute;z-index:5;background:#f6f8fa;border:1px solid #d4dbe2;border-left:4px solid #70869a;border-radius:8px;padding:12px 16px;color:#4e5e6c;font-size:12px;line-height:1.55}
+.note-card b{display:block;color:#31455a;margin-bottom:2px}
+.separator{position:absolute;left:47px;width:2456px;height:1px;background:#cbd2d9;z-index:2}
+/* ---- header/tabs aligned to canvas width ---- */
+.top{max-width:1720px}
+.legend{max-width:1720px}
+.tabs{max-width:1720px;margin:12px auto 0;padding:0;display:flex;gap:10px;align-items:stretch}
+.tab{border:1px solid #c9d3dc;background:#ffffffe8;color:#4c5760;font:700 13px/1.2 "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;
+     padding:10px 26px;border-radius:11px 11px 0 0;border-bottom:none;cursor:pointer;transition:.15s;letter-spacing:.02em}
+.tab small{display:block;font-weight:600;font-size:10.5px;color:#8a949e;margin-top:3px;letter-spacing:.04em}
+.tab:hover{background:#f2f6fa;border-color:#a9b8c6;color:#1c2e42}
+.tab.active{background:linear-gradient(145deg,#22415e,#182c40);color:#eaf2fa;border-color:#22415e;box-shadow:0 6px 16px #1c2e4240}
+.tab.active small{color:#a8c9e8}
+.pane{display:none}
+.pane.active{display:block}
+.shell{height:calc(100vh - 232px);margin-top:6px}
+@media print{.tabs{display:none}.pane{display:none}.pane.active{display:block}.shell{height:auto}}
+</style></head><body><header class="top"><div class="brand"><div class="mark">UC34</div><div class="tt"><small>MBPTS AI QUICK WIN · UC34 CASE 5</small><h1>ASN 自动创建流程</h1><p>来源：【MBPTS-UC34】case 5：ASN自动创建_0927.docx</p></div></div></header><nav class="tabs"><button class="tab active" data-pane="mbplap">MBPLAP<small>定时批量 12:00 / 17:00</small></button><button class="tab" data-pane="xentry">X-entry<small>送货邮件 + PO 邮件触发</small></button></nav><div class="legend"><span class="cap">LEGEND</span><span class="lg"><i style="background:var(--purple)"></i>触发 / 人工节点</span><span class="lg"><i style="background:var(--teal)"></i>业务执行步骤</span><span class="lg"><i class="dia" style="background:var(--amber)"></i>BRD 判断条件</span><span class="lg"><i style="background:var(--green)"></i>业务输出</span><span class="lg"><i style="background:var(--red)"></i>异常单独处理</span><span class="lg"><i style="background:#66609e"></i>数据记录 / 状态表</span><span class="lg"><i style="background:transparent;border:1.5px dashed #8b96ad;width:22px;border-top:none;border-left:none;border-right:none;height:0"></i>人工/下轮回馈线</span></div><div class="pane active" id="pane-mbplap"><main class="shell"><div class="wrap fl-wrap"><div class="holder fl-holder"><div class="stage fl-stage" style="height:855px"><div class="doc" style="top:20px;left:46px"><b>MBPLAP · 定时批量创建 ASN</b><span>当天预报清单 → 按分单号导发票 → 填 DSS 模板 → Portal 发布</span></div><section class="lane portal" style="top:110px;height:150px"><h2><span class="no">A</span>触发来源<em>定时任务</em></h2></section><section class="lane rpa" style="top:290px;height:360px"><h2><span class="no">B</span>业务执行链<em>导预报 → 导发票 → 填模板 → 重命名发布</em></h2></section><section class="lane output" style="top:670px;height:170px"><h2><span class="no">C</span>业务输出<em>BRD 明确的最终产物</em></h2></section><div class="note-card" title="MBPLAP › 填写DSS模板并重命名 · 数据映射关系表" style="left:85px;top:505px;width:620px"><b>DSS 字段映射要点</b>ASN Number=发票号(导出清单A列)；Vendor BP Number 默认 191110510；Delivery Date=Invoice date(M列)；SPM Part Number=Part Number(H列)；SPM PO Number=Order No.(Z列)；SPM PO Item Number 无来源可置空；Unit 默认 PC；ETA=预报警创建日期+1 自然日</div><svg class="edges" style="width:2550px;height:855px"><g class="fl-layer"></g></svg><div class="fl-nodes"></div></div></div></div></main></div><div class="pane" id="pane-xentry"><main class="shell"><div class="wrap fl-wrap"><div class="holder fl-holder"><div class="stage fl-stage" style="height:855px"><div class="doc" style="top:20px;left:46px"><b>X-entry · 邮件触发创建 ASN</b><span>送货邮件 → 诊断仪大表找 PO → PO 邮件 → 填 DSS 模板</span></div><section class="lane portal" style="top:110px;height:150px"><h2><span class="no">A</span>触发 / 人工节点<em>邮件监控与人工补录</em></h2></section><section class="lane rpa" style="top:290px;height:360px"><h2><span class="no">B</span>业务执行链<em>查大表 → 找 PO → 多 Item 处理 → 填模板</em></h2></section><section class="lane output" style="top:670px;height:170px"><h2><span class="no">C</span>业务输出<em>BRD 明确的最终产物</em></h2></section><div class="note-card" title="X-entry › 通过PO号找到PO邮件 · 注" style="left:85px;top:505px;width:319px"><b>数量口径</b>邮件中的 Quantity 大于等于诊断仪大表筛选后 QTY 加总，无需额外对 Qty 校验</div><svg class="edges" style="width:2550px;height:855px"><g class="fl-layer"></g></svg><div class="fl-nodes"></div></div></div></div></main></div><svg width="0" height="0" style="position:absolute"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5 0 9Z" fill="context-stroke"/></marker></defs></svg><div class="zoom"><button data-z="out" title="缩小">−</button><button data-z="fit" title="适应窗口宽度">适应宽度</button><button data-z="full" title="原始尺寸">100%</button><button data-z="in" title="放大">＋</button></div><script>const CFG_mbplap={pane:'pane-mbplap',H:855,N:[["T01", "portal-n", 85, 168, 319, "T01 定时触发：每天 12:00 / 17:00", "每天中午 12 点、下午 5 点定时触发", "MBPLAP › 触发机制"], ["R01", "", 85, 350, 319, "R01 导出当天预报清单", "进口管理 → 进口预报：查询设置 Supplier=MBPLAP、Pre-alert creation=执行当天日期，确定后「导出 → 批量导出」", "MBPLAP › 导出预报清单获取分单号"], ["R02", "", 431, 350, 319, "R02 取分单号 HAWB No.", "从导出的预报清单中取 HAWB No.（分单号）", "MBPLAP › 导出预报清单获取分单号"], ["R03", "", 777, 350, 319, "R03 批量查询并导出发票", "IES+ 发票信息：将 HAWB No. 批量粘贴至 HAWB/BL NO. 栏 → 确定 → 导出 →「按照PN级别模板全部导出」(Excel)", "MBPLAP › 根据分单号导出发票信息"], ["R04", "", 1123, 350, 319, "R04 按映射填 DSS 模板", "按 DSS 字段映射关系逐票填写；关键是 Qty：按相同发票号 + 相同 Order No. 下相同 Part No. 合并加总后填入", "MBPLAP › 填写DSS模板并重命名 · 数据映射关系表"], ["R05", "", 1469, 350, 319, "R05 重命名「PN_日期」", "填好的 DSS 导入模板文件以「PN_日期」命名", "MBPLAP › 填写DSS模板并重命名"], ["O01", "out", 1469, 715, 319, "O01 DSS 导入模板上 Portal", "「PN_日期」命名的 DSS 导入模板在 Portal 上可供下载，供 DSS 导入创建 ASN", "MBPLAP › 填写DSS模板并重命名（在Portal上可供下载）"]],E:[["T01", "R01", "", "", [], "MBPLAP › 触发机制 → 业务流程"], ["R01", "R02", "", "", [], "MBPLAP › 导出预报清单获取分单号"], ["R02", "R03", "", "", [], "MBPLAP › 根据分单号导出发票信息"], ["R03", "R04", "", "", [], "MBPLAP › 导出发票信息 → 填写DSS模板"], ["R04", "R05", "", "", [], "MBPLAP › 填写DSS模板并重命名"], ["R05", "O01", "上传 Portal", "", [], "MBPLAP › 填写DSS模板并重命名（在Portal上可供下载）"]]};
+const CFG_xentry={pane:'pane-xentry',H:855,N:[["T11", "portal-n", 85, 168, 319, "T11 邮件触发", "收到报关代理送货邮件（发件人 @bjfcl.com 且标题含「快件签收单」）＋ IMS 同事 PO 邮件，Portal 公邮监控", "X-entry › 触发机制"], ["H01", "portal-n", 431, 168, 319, "H01 补录 ID No.（手工）", "大表 MBPTS PO 为空时本票阻断；后续有 PO 后，需手工在 Portal 输入 ID No.，等下一次运行继续流程", "X-entry › 通过ID No.找到PO号"], ["H02", "portal-n", 2161, 168, 319, "H02 手工收货录入（PTS 平台）", "BU 在 PTS 平台手工录入：PO 号 + Part No. + 线下已收货数量", "X-entry › 通过PO号找到PO邮件（手工收货录入段）"], ["R11", "", 85, 350, 319, "R11 按 AWB 查诊断仪大表", "按送货邮件附件的运单号查诊断仪大表：取 PN、QTY（多行进加总）、ID No.（J 列，各行一致）", "X-entry › 获取PN/QTY/ID No."], ["D11", "diamond", 506, 352, 170, "MBPTS PO 已回填？", "诊断仪大表顶部灰色区 M 列", "X-entry › 通过ID No.找到PO号"], ["R12", "", 777, 350, 319, "R12 按 PO 号搜 PO 邮件", "以 PO 号搜索邮件（邮件正文与标题均含 PO 号），定位 IMS 发来的 PO 邮件", "X-entry › 通过PO号找到PO邮件"], ["D12", "diamond", 1198, 352, 170, "同 Material 多 Item No.？", "PO 邮件中的 SPM 截屏", "X-entry › 通过PO号找到PO邮件 · 特殊场景"], ["R14", "", 1469, 350, 319, "R14 单 Item：单行填写", "一个 Item No. 对应一行 DSS 数据", "X-entry › 通过PO号找到PO邮件 ·（隐含常规情形）"], ["R15", "", 1815, 350, 319, "R15 按映射填 DSS 模板", "ASN=进口发票 Our delivery note No.（按 AWB 查系统库）；Shipment Date=Document date；Part No./Qty=诊断仪大表 D/F 列；PO=PO 邮件或大表 DPTS PO 列；Item No.=IMS 邮件 SPM 截屏 Item Number 列（一 ITEM 一 SN 一行）；ETA=Fullcome 邮件日期+1 自然日；Vendor BP=191110260；Unit=PC", "X-entry › 数据映射关系表（X-entry）"], ["E11", "bad", 431, 505, 319, "E11 PO 为空 · 报错转人工", "大表 M 列 MBPTS PO 为空：报错并阻断本票流程，转人工；附件等仍保留待续", "X-entry › 通过ID No.找到PO号（若空则转人工并阻断）"], ["R13", "", 1123, 505, 319, "R13 多 Item：顺次收货多行", "从第一行 Item No. 起顺次收货，多行填写。例：QTY 总 100、Item100 剩 20 → Item100/QTY20 与 Item200/QTY80 两行", "X-entry › 通过PO号找到PO邮件 · 特殊场景"], ["G01", "set", 1835, 505, 319, "收货记录表（自动 + 手工）", "汇总本流程自动收货记录与 H02 手工收货记录（按 PO 号 + Part No. / Item No. 归集）", "X-entry › 通过PO号找到PO邮件 · 特殊场景段落"], ["O11", "out", 1815, 715, 319, "O11 DSS 导入模板完成", "X-entry 场景的 DSS 导入模板填写完成（一 ITEM/SN 一行），供 DSS 导入创建 ASN", "X-entry › 数据映射关系表（X-entry）· BRD 未写明命名/发布方式"], ["O12", "out", 2161, 715, 319, "O12 收货记录可查询", "BU 可在 Portal 搜索查看每个 PO 的自动 + 手工收货记录（前台默认不展示每 PO 已收/剩余明细）", "X-entry › 通过PO号找到PO邮件 · 特殊场景段落（BU 可以进行搜索查看…提供查询功能）"]],E:[["T11", "R11", "送货邮件 + PO 邮件", "", [], "X-entry › 触发机制 → 业务流程"], ["R11", "D11", "", "", [], "X-entry › 获取PN/QTY/ID No."], ["D11", "R12", "已有 PO", "yes", [], "X-entry › 通过ID No.找到PO号"], ["D11", "E11", "为空", "no", [], "X-entry › 通过ID No.找到PO号（若空则转人工并阻断）"], ["E11", "H01", "报错转人工 · 阻断", "", [[664, 545], [664, 300]], "X-entry › 通过ID No.找到PO号（转人工）"], ["H01", "R11", "补录后等下次运行继续", "fb", [[540, 335], [244, 335]], "X-entry › 通过ID No.找到PO号（等待下一次运行继续流程）"], ["H02", "G01", "手工收货记录", "", [[2320, 555]], "X-entry › 通过PO号找到PO邮件（PTS 平台手工录入…Portal 提供记录查询）"], ["R12", "D12", "", "", [], "X-entry › 通过PO号找到PO邮件"], ["D12", "R13", "是（顺次收货）", "yes", [], "X-entry › 通过PO号找到PO邮件 · 特殊场景"], ["D12", "R14", "否（单 Item）", "", [], "X-entry › 通过PO号找到PO邮件及数据映射（隐含常规情形）"], ["R13", "R15", "多行填写", "", [], "X-entry › 特殊场景（可能涉及多行 DSS 模板填写）"], ["R14", "R15", "单行填写", "", [], "X-entry › 通过PO号找 PO 邮件 → 按映射填模板"], ["R15", "O11", "", "", [], "X-entry › 填写DSS模板（X-entry 数据映射关系表）"], ["G01", "O12", "记录开放查询", "", [[1995, 690]], "X-entry › 通过PO号找到PO邮件（Portal 对自动收货和手工收货的记录提供查询功能）"]]};
+
+function createFlow(cfg){
+  const root=document.getElementById(cfg.pane);
+  const wrap=root.querySelector('.fl-wrap'),holder=root.querySelector('.fl-holder'),
+        stage=root.querySelector('.fl-stage'),layer=root.querySelector('.fl-nodes'),
+        edgeLayer=root.querySelector('.fl-layer');
+  const N=cfg.N,E=cfg.E,stageHeight=cfg.H;
+  const by={};let scale=1;
+  N.forEach(n=>{
+    let e=document.createElement('div');by[n[0]]=e;e.id=n[0];
+    e.style.left=(n[1]==='diamond'?n[2]+(n[4]-106)/2:n[2])+'px';
+    e.style.top=n[3]+'px';
+    e.style.width=(n[1]==='diamond'?106:n[4])+'px';
+    if(n[1]==='diamond'){
+      e.className='diamond';
+      e.innerHTML='<div><b>'+n[5]+'</b><small>'+n[6]+'</small></div>';
+    }else{
+      e.className='node '+n[1];
+      let m=n[5].match(/^([A-Za-z]{1,2}\d{0,2})\s+(.*)$/);
+      e.innerHTML=m?'<div class="ttl"><i class="chip">'+m[1]+'</i><b>'+m[2]+'</b></div><span>'+n[6]+'</span>'
+                   :'<div class="ttl"><b>'+n[5]+'</b></div><span>'+n[6]+'</span>';
+    }
+    e.title=n[7]||'';e.onmouseenter=()=>focus(n[0]);e.onmouseleave=()=>focus();
+    layer.append(e);
+  });
+  function box(id){let r=by[id].getBoundingClientRect(),s=stage.getBoundingClientRect();
+    return{x:(r.left-s.left)/scale,y:(r.top-s.top)/scale,w:r.width/scale,h:r.height/scale}}
+  function anchor(a,p){let c=[a.x+a.w/2,a.y+a.h/2],dx=p[0]-c[0],dy=p[1]-c[1];
+    if(Math.abs(dx)>Math.abs(dy))return dx>0?[a.x+a.w,c[1]]:[a.x,c[1]];
+    return dy>0?[c[0],a.y+a.h]:[c[0],a.y]}
+  function orthogonal(points){let out=[points[0]];
+    for(let i=1;i<points.length;i++){let a=out[out.length-1],b=points[i];
+      if(a[0]!==b[0]&&a[1]!==b[1])out.push([b[0],a[1]]);out.push(b)}return out}
+  function rounded(pts,r){let d='M'+pts[0][0]+' '+pts[0][1];
+    for(let i=1;i<pts.length-1;i++){let a=pts[i-1],b=pts[i],c=pts[i+1],
+      v1=[b[0]-a[0],b[1]-a[1]],v2=[c[0]-b[0],c[1]-b[1]],
+      l1=Math.hypot(v1[0],v2[0]?0:0)||Math.hypot(v1[0],v1[1]),
+      l2=Math.hypot(v2[0],v2[1]);
+      if(l1<.01||l2<.01||Math.abs(v1[0]*v2[1]-v1[1]*v2[0])<.01){d+=' L'+b[0]+' '+b[1];continue}
+      let rr=Math.min(r,l1/2,l2/2);
+      d+=' L'+(b[0]-v1[0]/l1*rr)+' '+(b[1]-v1[1]/l1*rr)+' Q'+b[0]+' '+b[1]+' '+(b[0]+v2[0]/l2*rr)+' '+(b[1]+v2[1]/l2*rr)}
+    let e=pts[pts.length-1];d+=' L'+e[0]+' '+e[1];return d}
+  function draw(){
+    edgeLayer.innerHTML='';
+    E.forEach((e,i)=>{
+      let a=box(e[0]),b=box(e[1]),ways=e[4]||[],
+        first=ways[0]||[b.x+b.w/2,b.y+b.h/2],
+        last=ways[ways.length-1]||[a.x+a.w/2,a.y+a.h/2],
+        s=anchor(a,first),t=anchor(b,last),
+        pts=orthogonal([s,...ways,t]),
+        d=rounded(pts,14),
+        path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',d);path.setAttribute('class','edge '+e[3]);path.dataset.i=i;
+      edgeLayer.append(path);
+      if(e[2]){
+        let seg=pts.slice(1).map((p,j)=>({a:pts[j],b:p,l:Math.hypot(p[0]-pts[j][0],p[1]-pts[j][1])}))
+                     .sort((x,y)=>y.l-x.l)[0],
+            q=document.createElementNS('http://www.w3.org/2000/svg','text');
+        q.setAttribute('x',(seg.a[0]+seg.b[0])/2);q.setAttribute('y',(seg.a[1]+seg.b[1])/2-7);
+        q.setAttribute('text-anchor','middle');q.setAttribute('class','label');
+        q.dataset.i=i;q.textContent=e[2];
+        edgeLayer.append(q);
+      }
+    });
+  }
+  function focus(id){
+    N.forEach(n=>by[n[0]].classList.toggle('dim',!!id&&n[0]!==id&&!E.some(e=>(e[0]===id&&e[1]===n[0])||(e[1]===id&&e[0]===n[0]))));
+    [...edgeLayer.children].forEach(x=>{let e=E[+x.dataset.i],on=id&&(e[0]===id||e[1]===id);
+      x.classList.toggle('dim',!!id&&!on);x.classList.toggle('hit',!!on)});
+    N.forEach(n=>by[n[0]].classList.toggle('focus',n[0]===id));
+  }
+  function apply(){stage.style.transform='scale('+scale+')';
+    holder.style.width=(2550*scale)+'px';holder.style.height=(stageHeight*scale)+'px';draw()}
+  function fit(){if(wrap.clientWidth<10)return;scale=Math.min(1,(wrap.clientWidth-6)/2550);apply()}
+  function zoom(z){
+    if(z==='fit')fit();
+    else if(z==='full'){scale=1;apply()}
+    else if(z==='in'){scale=Math.min(1.6,scale*1.18);apply()}
+    else if(z==='out'){scale=Math.max(.3,scale/1.18);apply()}
+  }
+  return{fit:fit,apply:apply,zoom:zoom};
+}
+
+const flows={mbplap:createFlow(CFG_mbplap),xentry:createFlow(CFG_xentry)};
+let activeFlow=(location.hash.replace('#','') in {mbplap:1,xentry:1})?location.hash.replace('#',''):'mbplap';
+function refit(){requestAnimationFrame(()=>flows[activeFlow].fit())}
+document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.pane===activeFlow));
+document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+activeFlow));
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{
+  activeFlow=btn.dataset.pane;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===btn));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+btn.dataset.pane));
+  refit();
+});
+document.querySelectorAll('.zoom button').forEach(btn=>btn.onclick=()=>flows[activeFlow].zoom(btn.dataset.z));
+window.addEventListener('resize',refit);
+requestAnimationFrame(refit);setTimeout(refit,120);
+</script></body></html>
