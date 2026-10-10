@@ -5,9 +5,9 @@
 | 项目 | 内容 |
 |------|------|
 | **文档名称** | UC34 Case 2 · GLC 线(欧线 OOCL)AVIS/BL 自动化 PRD |
-| **版本** | v1.2.4(主时序图补人工重跑分支) |
+| **版本** | v1.3.0(第八部分起开发可执行性改造) |
 | **创建日期** | 2026-09-29 |
-| **最后更新** | 2026-10-08 |
+| **最后更新** | 2026-10-09 |
 | **负责人** | BA(SCM-IE / Import Operations 对接) |
 | **审核人** | 待审核 |
 | **密级** | 内部 |
@@ -38,6 +38,7 @@
 | v1.2.2 | 2026-10-08 | BA | 页面设计细节规格(8 项全量):新增 7.6 通用规格——7.6.1 六个表单控件规格(控件/默认值/校验时机/错误文案/字段联动)、7.6.2 全局文案表(术语约束:重跑/续跑/补跑/补传)、7.6.3 权限×状态×操作总矩阵(接口级鉴权基准)、7.6.4 数据展示规范(欧式小数/日期/状态色)、7.6.5 边界并发场景(防重/并发修正/补传竞争/Session);④三条关键交互序列(S1 补传→续跑、S2 修正→重跑、S3 批量重跑)落入 7.3.2/7.3.3;⑦Run 对比视图(OPEN-G26)落入 7.3.3,并补回 Run 切换区描述;⑧附录 A-1 Demo 与最终设计偏差对照表;修复 v1.2.1 误删的"第八部分"标题;OPEN 增至 27 项(G26/G27) | 草稿(含 27 项 OPEN 待确认) |
 | v1.2.3 | 2026-10-08 | BA | 新增 6.2.1 重跑交互时序与判定流程:统一判定链流程图(执行中跳过/类型分支/3.1 对外动作 MANAGER 门槛/快照+修正值+互斥锁)、mermaid 时序图(前端显隐+后端复核双判定、幂等返回首个 RunId)、8 条时序关键点(快照时点/修正携带/检查点输出沿用/同票互斥/批量逐票独立/终态重置/回写覆盖边界);R7 新增 R7.5 引用;新增 OPEN-G28(L 列重跑后覆盖清空口径);OPEN 增至 28 项 | 草稿(含 28 项 OPEN 待确认) |
 | v1.2.4 | 2026-10-08 | BA | 6.2 主时序图末尾补简化"人工重跑"分支(提醒→用户触发→R#N+1→重走节点链→回写覆盖,标注判定链详见 6.2.1),主图获得完整性、复杂度不爆炸 | 草稿(含 28 项 OPEN 待确认) |
+| v1.3.0 | 2026-10-09 | BA | 第八部分起开发可执行性改造(业务规则 R1-R8 与已确认口径不变):新增 8.0.4 字段处理通用规则(NORM-01~07 标准化/空值/多来源主核数据源/值三层语义 original-corrected-effective/配置快照);8.1 扩写为实体关系+逐实体规格(唯一约束/生命周期)+Run 逐状态状态机(进入/操作/退出/副作用/恢复),Task 状态表补"已关闭";8.2 扩写为完整接口契约(8.2.1 通用约定:鉴权/错误结构/幂等键/分页/乐观锁/审计;8.2.2 十七接口契约表+请求响应示例;8.2.3 异步任务受理/查询/重复提交/超时规格);8.3 错误码补类型/HTTP/可重试/恢复动作,新增 E2003/E4004/E4005/E4006/E5003;新增 8.4 外部系统依赖与异常处理规格(公邮/OCR/IES/归档/回写×超时/重试/幂等/补偿/告警/证据);第十部分改写为 NF-G01~G10 可验证验收条件;新增第十三部分追踪与验收(13.1 需求→规则→页面→接口→实体→用例映射表;13.2 三十条验收测试矩阵,覆盖正常/异常/边界/权限/并发/恢复/性能);修复 8.0.1"暂停在节点 4"与 7.4 G2 闸口编号冲突(7.2 R4.5 同款表述待同步,见一致性报告);OPEN 增至 32 项(G29~G32) | 草稿(含 32 项 OPEN 待确认) |
 
 ---
 
@@ -1166,7 +1167,7 @@ S2 修正→重跑(差异票主路径):
 - F-02 → F-03:Customer code 变更 → PDC 自动重算(对新 Run 生效)。
 - F-04 为主归并键,F-01 辅助校验。
 - F-10=Y → 节点 5a 必走;修正 F-10 → 重跑按新值分支(误判纠正路径 R3.4)。
-- F-11/F-13/F-14/F-15 任一交叉核对不一致 → 字段质量降级 + 任务置"有差异",暂停在节点 4(R4.5)。
+- F-11/F-13/F-14/F-15 任一交叉核对不一致 → 字段质量降级 + 任务置"有差异",停在 G2 闸口(N2→N3)待人工(R4.5,与 7.4 节点编号一致)。
 
 ### 8.0.2 AVIS 导入模板(7 列)字段映射(双口径并列,以 OPEN-G21 确认为准)
 
@@ -1196,28 +1197,109 @@ S2 修正→重跑(差异票主路径):
 | Container Load (KG) | **提单 PDF GROSS WEIGHT / (19)字段** | BL.xlsx 注释误写为 MEASUREMENT(20),与自身数据矛盾(OPEN-G17) |
 | Container VOL (m³) | **提单 PDF MEASUREMENT / (20)字段** | BL.xlsx 注释误写为 GROSS WEIGHT(19)(OPEN-G17) |
 
+### 8.0.4 字段处理通用规则(标准化 / 空值 / 多来源 / 值版本)
+
+**① 标准化规则**(OCR 结果与人工输入一律先经本层处理,再入库/比对/回写;8.0.1 各行不再重复描述规则本身):
+
+| 规则 ID | 适用字段 | 处理规则 | 依据 |
+|---------|---------|---------|------|
+| NORM-01 | F-04 BL 号 | trim+大写;纯 10 位数字无前缀 → 补 `OOLU`;归一后才参与归并/去重/搜索/回写定位 | 实物:AVIS 无前缀、提单自带 OOLU |
+| NORM-02 | F-11 箱号 | 去全部空格(`OOLU 6750777`→`OOLU6750777`) | 业务注释明示 |
+| NORM-03 | F-14/F-15 数值 | 欧式逗号小数 → 点(`27,111`→27.111);VOL 再 ÷1000;存储为数值,展示按 7.6.4 | 400759 实物+业务注释 |
+| NORM-04 | F-12 箱型 | 单位 `"`→`'`(R4.2);`40HQ/40HC`→`40'`(OPEN-G18 建议规则) | 实物样本 |
+| NORM-05 | F-07 日期 | 源 `DD.MM.YYYY` → 存储 ISO 8601(`YYYY-MM-DD`);展示 `YYYY.MM.DD`(7.6.4) | AVIS 实物 |
+| NORM-06 | F-05/F-06 港口 | trim+大写英文港名;进 IES 前经 IES Port 对应表转换(R4.3) | R4.3 |
+| NORM-07 | F-17 MBZ | 10 位文本,保留前导零,禁止数值化 | gvShipLog 实物 |
+
+**② 空值处理**:必填字段(8.0.1 必填=是)OCR 为空 → 视同低置信,G2 不通过(Run=DIFF_PENDING,转人工修正);F-07 ETA 缺失 → E4003,处理口径【待确认 OPEN-G5】;F-03 PDC 未命中 → 建 Other 不阻断(R2.1);17 项字段均可空=否(F-08 已删除,编号保留不重排以维持引用稳定)。
+
+**③ 多来源字段冲突处理**(主数据源/核对源/冲突动作,数据源配置化,OPEN-G21/G19 确认后仅需改配置):
+
+| 字段 | 主数据源 | 核对数据源 | 冲突处理 |
+|------|---------|-----------|---------|
+| F-11/F-13 | 配置项 `avisSource`:A=AVIS PDF / B=gvShipLog【OPEN-G21】 | 另一来源 + 提单 (16) 区 | 不一致 → 质量降级 + DIFF_PENDING(R4.5),不自动进 N3 |
+| F-14/F-15 | 同上 | 提单 (19)/(20) | 容差内通过【容差 OPEN-G13】;超容差 → 同上 |
+| F-03 PDC | RefTable(pdc)唯一来源 | gvShipLog G 列(是否启用核对【OPEN-G19】) | 未命中 → Other(R2.1) |
+| F-07 ETA | AVIS 唯一来源 | gvShipLog H 列(同上【OPEN-G19】) | — |
+
+**④ 值三层语义**(修正留痕与重跑携带的实现基准):
+- `originalValue` = OCR 原值,Run 内不可变,附原文定位(证据可回溯);
+- `correctedValue` = 人工最新修正值,可多次修正,全量留痕(修正人/时间/原因);
+- `effectiveValue = correctedValue ?? originalValue`,页面"当前识别数据"与后续节点输入一律读此值;
+- 修正仅写**当前生效 Run**(R8.2);重跑生成新 Run 时,将上一 Run 的 effectiveValue 复制为新 Run 的识别基底并标记"携带人工修正"(R7.2,6.2.1 关键点 #3);历史 Run 只读(7.3.3)。
+
+**⑤ 持久化与快照**:FieldResult / NodeExecution / Evidence 随 Run 创建后不可变;Run 启动时固化配置快照(AVIS/BL 模板版本、RefTable 版本、OCR 置信度阈值),存 `Run.configSnapshot`(R4.4,OPEN-G7)。
+
 ## 8.1 数据模型(逻辑模型,GLC 相关实体)
 
-| 实体 | 说明 | 关键字段 |
-|------|------|---------|
-| MailRule 邮件规则 | GLC 三条监听规则 | id、监听邮箱、发件人白名单、主题关键词、附件区间、附件角色[]、绑定流程、去重键、优先级、启停 |
-| AttachmentLedger 附件台账 | 暂存登记(key=BL号) | BL 号(归一)、角色(avis/shipper_decl/bl)、文件名、来源邮件、接收时间、状态(pending/processed)、版本 |
-| StagingFile 暂存文件 | 暂存库引用 | BL 号、类型、路径、hash |
-| Task 任务 | 业务单据(票粒度) | 任务号(T-BL号)、caseId(case-2-glc)、BL/HAWB、触发来源、当前状态、当前 Run 号 |
-| Run 执行实例 | 一次执行(不可变) | Run 号、起因、状态、起止、耗时、携带修正版本、**配置快照版本(R4.4)** |
-| NodeExecution 节点执行 | GLC 7 节点轨迹 | Run id、节点序号/名称、状态、起止、输出摘要 |
-| FieldResult 字段结果 | 识别+修正(17 字段,8.0.1) | 字段名、原值、来源、置信度、质量等级、修正值/人/时间、原文定位 |
-| Evidence 证据 | WORM 留痕 | 类型/子类型、路径、hash、Run/节点关联 |
-| ConfigTemplate 模板配置 | AVIS/BL 模板 | 配置项、当前文件、版本、状态、列定义 |
-| RefTable 对应表 | PDC / IES Port | 类型、键、值、备注、版本 |
-| ShipLogInfo 船运日志 | IES Shipping log 查询结果(gvShipLog 导出,AVIS 模板主要数据源) | Ship Log File ID、Vessel Name、Voyage、Booking Number、Departure/Arrival Port、**PDC**、ETA、ETD、Container、Container Type、Seal Number、**BOL(=MBZ,1..n)**、Package Qty、Created、Last Update(共 16 列,列结构按实物导出核实) |
-| WritebackRecord 回写记录 | 大表双写 | BL 号、列(D/E/F/G/H/J/K/L/M/N/P)、值、时间、结果 |
-| Notification / AuditLog | 提醒 / 审计 | 见平台定义 |
+### 8.1.1 实体关系总览
 
-**状态机(Task-Run 映射)**:
+`MailRule 1—n Task(触发来源)`;`Task 1—n Run`;`Run 1—n NodeExecution / FieldResult / Evidence / WritebackRecord`;`Task 1—n AttachmentLedger(按归一 BL 号)`;`AttachmentLedger n—1 StagingFile(最新版本)`;`Run n—1 ConfigTemplate / RefTable(经 configSnapshot 版本引用)`。
 
-- Run:PENDING → RUNNING → SUCCEEDED / DIFF_PENDING / WAIT_INPUT / FAILED
-- Task 状态 = 最新 Run 状态映射:
+### 8.1.2 实体规格
+
+**MailRule 邮件规则**:id、监听邮箱、发件人白名单、主题关键词、附件区间、附件角色[]、绑定流程(case-2-glc)、去重键(邮件 Message-ID)、优先级、启停。GLC 三条规则为预置配置数据;保存 version+1,对新邮件生效,不影响已建任务(7.3.4)。
+
+**Task 任务**(票粒度)— 唯一约束:`caseId + blNo(归一)` 唯一(冲突 E4002)。
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|:---:|------|
+| taskId | 文本 PK | 是 | `T-<归一BL号>` |
+| caseId | 文本 | 是 | 固定 `case-2-glc` |
+| blNo / avisNo / pdc / dgFlag | 文本 | blNo 是 | dgFlag:Y/N/待定(G1 定版,R3.4) |
+| triggerSource | 枚举 | 是 | schedule / manual / rerun |
+| currentStatus / currentRunNo | 枚举/数值 | 是 | 展示状态=最新 Run 映射(8.1.3) |
+| createdBy/At、closedAt/closeReason | — | 否 | 标记无效时填 closeReason(R3.3③) |
+
+生命周期:创建(收单 N1 / 手动新建)→ 执行中/待上传/有差异/失败 → 已完成 | 已关闭(标记无效,终态;撤销口径【OPEN-G11】)。
+
+**Run 执行实例**(不可变)— 唯一约束:`taskId + runNo` 唯一。
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|:---:|------|
+| runId | PK | 是 | 平台生成 |
+| taskId / runNo | FK/数值 | 是 | runNo 自 1 递增,重跑=R#N+1(R7.2) |
+| triggerType | 枚举 | 是 | schedule / rerun-full / rerun-node / batch / resume(检查点续跑) |
+| status | 枚举 | 是 | 状态机见 8.1.3 |
+| fromCheckpoint | 枚举 | 否 | CP1~CP7(续跑/节点级重跑落点,R7.3) |
+| carriedCorrection | 布尔 | 是 | 是否携带人工修正(6.2.1 #3) |
+| configSnapshot | JSON | 是 | {templateVer, refTableVer, ocrThreshold}(R4.4) |
+| startedAt / endedAt / durationMs | — | 否 | 7.5.3 耗时预算核对依据 |
+
+**NodeExecution 节点执行** — 唯一约束:`runId + nodeNo` 唯一。字段:nodeNo(1~7)/nodeName、status(PENDING/RUNNING/SUCCEEDED/FAILED/SKIPPED)、checkpoint(CP1~CP7)、startedAt/endedAt、outputSummary、errorCode(8.3)。SKIPPED 用于节点级重跑时前置节点标记沿用(6.2.1 #4 检查点输出沿用)。
+
+**FieldResult 字段结果** — 唯一约束:`runId + fieldId + containerNo` 唯一(箱维度字段按箱展开;F-17 按 MBZ 展开,单票可达数十行)。字段:fieldId(F-01~F-17)、containerNo(可空)、originalValue、source(avis/bl/gvshiplog/rule)、confidence(0~1)、qualityLevel(高/中/低,阈值 OPEN-G23)、correctedValue/correctedBy/correctedAt/correctReason(三层值见 8.0.4④)、evidenceRef(原文定位)。生命周期:随 Run 创建不可变;修正仅更新 corrected* 列并写 AuditLog。
+
+**Evidence 证据**(WORM)— 字段:type(trigger/process/operation/screen/file)、path、hash(SHA-256)、runId/nodeId 关联、createdAt。只增不改(R8.3)。
+
+**AttachmentLedger 附件台账** — 唯一约束:`blNo(归一) + role + version` 唯一。字段:role(avis/shipper_decl/bl)、fileName、mailId、receivedAt、status(pending/processed)、version(同 BL 同角色递增;同 BL 重复邮件保留最新版,旧版标记 superseded 仍留档,R1.2)。
+
+**StagingFile 暂存文件**:blNo、type(同 role)、path、hash、sizeBytes(≤20MB)、pageCount。
+
+**ConfigTemplate 模板配置**:id(avis-template/bl-template)、currentVersion、versions[{version, file, hash, columns[], status(active/archived), createdBy/At}]。上传/恢复均 version+1(恢复=复制历史版本为新版本,7.3.5);E2001/E2002 校验。
+
+**RefTable 对应表** — 唯一约束:`type + key` 唯一(冲突 E2003)。type=pdc / ies-port;字段:key、value、remark、version(整表版本,乐观锁);生效语义=Run 快照(R4.4)。
+
+**ShipLogInfo 船运日志**:IES 查询结果(gvShipLog 16 列:Ship Log File ID、Vessel Name、Voyage、Booking Number、Departure/Arrival Port、**PDC**、ETA、ETD、Container、Container Type、Seal Number、**BOL(=MBZ,1..n)**、Package Qty、Created、Last Update,列结构实物已核实),**不持久化**——口径 B 时 N5.1 实时取数;口径 A 时仅作互核,查询快照存 Evidence【OPEN-G21】。
+
+**WritebackRecord 回写记录**:blNo(归一,大表行定位键【OPEN-G30】)、column(D/E/F/G/H/J/K/L/M/N/P,共 11 列 = R6 矩阵 9 个写入时机,H/K/N 为同一时机 3 列)、value、runId、status(pending/succeeded/failed)、retryCount、lastError、writtenAt。覆盖语义:大表侧同 BL 同列以最新 Run 值为准(R6/R7.1;L 列重跑边界 OPEN-G28)。
+
+**Notification / AuditLog**:复用平台实体;AuditLog 记全部写操作(actor/action/target/before/after/at,R8.3)。
+
+### 8.1.3 状态机(Task / Run / AttachmentLedger)
+
+**Run 状态逐状态规格**:
+
+| 状态 | 进入条件 | 允许操作 | 退出事件 → 下一状态 | 副作用 | 失败恢复 |
+|------|---------|---------|--------------------|--------|---------|
+| PENDING | 建票(N1/手动)或重跑受理 | 仅查看 | 获得执行资源 → RUNNING | 占用同票互斥锁(6.2.1 #5) | 超调度周期未启动 → 告警 ADMIN |
+| RUNNING | PENDING 取到资源;检查点续跑受理 | 仅查看(不可修正/重跑) | G1 缺件 → WAIT_INPUT;G2 不过 → DIFF_PENDING;节点失败 → FAILED;N7 完成无差异 → SUCCEEDED;N7 完成有 L 列差异 → DIFF_PENDING(终态型) | 逐节点写 NodeExecution;R6 矩阵埋点回写 | 节点失败自动重试(8.4),耗尽 → FAILED |
+| WAIT_INPUT | G1 缺件(E4001) | 补传/确认等待/标记无效(R3.3) | 补传校验通过 → RUNNING(自动 G1 续跑,S1);确认等待 → 保持;标记无效 → Run 关闭 | "待上传"chip + 缺件提醒 | 不适用(人工驱动) |
+| DIFF_PENDING | G2 质量闸口不过 / R4.5 核对不一致 / N7 完成但有 L 列差异记录(终态型) | 字段修正(OPERATOR)+ 节点级/整单重跑 | 重跑受理 → 新 Run(R#N+1),本 Run 转历史只读 | 金色高亮 + "有差异"chip + 差异提醒;终态型进待人工聚合(统计卡 J4) | 不适用(人工驱动) |
+| FAILED | 任一节点失败(E3002/E3003/红灯/N3/N4) | 检查点续跑(同 Run 从最近 CP)/ 整单、节点重跑(新 Run) | 续跑受理 → RUNNING;重跑 → 新 Run | 失败告警 + P 列异常反馈 | 即本状态的出口 |
+| SUCCEEDED | N7 全部完成且无差异记录 | 整单重跑(涉 3.1 仅 MANAGER,R7.4) | 重跑 → 新 Run | J 列完成标记、台账 processed | — |
+
+**Task 展示状态 = 最新 Run 状态映射**(任务中心 chip):
 
 | Task 展示状态(任务中心 chip) | 最新 Run 状态 | 含义 | 允许的人工动作 |
 |------------------------------|--------------|------|---------------|
@@ -1227,30 +1309,77 @@ S2 修正→重跑(差异票主路径):
 | 失败 | FAILED | 节点失败(含弹窗捕获失败) | 检查点续跑/整单重跑 |
 | 已完成 | SUCCEEDED | 全部完成(含"已完成但有 L 列差异记录"外的票) | 整单重跑(MANAGER,R7.4) |
 | 待人工处理(聚合 chip) | WAIT_INPUT ∪ DIFF_PENDING ∪ FAILED | 快捷筛选口径,非独立状态 | — |
+| 已关闭 | Run 关闭(标记无效,R3.3③) | 任务终止,留痕可查 | 仅查看;撤销口径【OPEN-G11】 |
 
-- AttachmentLedger:pending → processed
+**AttachmentLedger**:pending → processed(N7 子步骤 7.6);同 BL 同角色新邮件 → version+1、旧版标记 superseded,仍留档(R1.2)。
 
 ## 8.2 API 接口(平台前后端,GLC 相关)
 
-| 接口 | 方法 | 说明 |
-|------|------|------|
-| /api/workbench/summary?line=glc | GET | GLC 统计卡(含待人工处理=待上传∪有差异∪失败 合计) |
-| /api/tasks | GET/POST | 任务列表(line=glc,status 支持 manual 聚合)/ 新建 GLC 任务(BL 号+附件,7.3.2) |
-| /api/tasks/{id} | GET | 任务详情(Runs/节点/字段/证据/缺件信息) |
-| /api/tasks/{id}/rerun | POST | 重跑(full/node/batch;对外动作后 full 需 MANAGER,R7.4) |
-| /api/runs/{runId}/fields/{fieldId}/correct | POST | 字段修正留痕(仅 OPERATOR) |
-| /api/tasks/{id}/attachments | POST | 缺件补传(解除 WAIT_INPUT,自动续跑) |
-| /api/tasks/{id}/hold-confirm | POST | 挂起确认(继续等待/标记无效+原因)(R3.3) |
-| /api/rules、/api/rules/{id}、/toggle、/dry-run | GET/POST/PUT | GLC 规则管理 |
-| /api/configs、/api/configs/{id}/versions | GET/POST | AVIS/BL 模板版本 |
-| /api/ref-tables/{type} | GET/PUT | pdc / ies-port 对应表 |
-| /api/staging/{blNo}、/resume | GET/POST | 暂存查询 / 挂起确认续跑(与 hold-confirm 配合) |
-| /api/writeback?blNo= | GET | 回写状态 |
-| /api/archive/tree、/files | GET | GLC 归档浏览(只读) |
-| /api/export/tasks.csv | GET | 导出(MANAGER;字段=列表列+最近 Run 状态/耗时) |
-| /api/schedule/trigger | POST | 工作台手动补跑(line=glc,窗口=上周一至周日,同窗口去重;OPERATOR/MANAGER) |
+### 8.2.1 通用约定(全部接口适用)
 
-**页面-操作-接口映射**(开发可直接按表实现前后端联动):
+| 项 | 约定 |
+|----|------|
+| 认证鉴权 | Alice SSO 登录态;接口级鉴权按 7.6.3 总矩阵,越权 → E5001 + 审计 |
+| 错误结构 | `{code, message, details, traceId}`;HTTP 状态与错误码对应见 8.3 |
+| 幂等 | 全部 POST 写接口支持 `Idempotency-Key` 头(24h 内同键返回首次结果);重跑另受同票互斥锁保护(6.2.1 #5) |
+| 分页 | 列表接口 `page`(1 起)/`size`(默认 20,最大 100),响应 `{total, page, size, items[]}`;禁出全量(7.5.4) |
+| 并发 | 修正/配置/对应表保存走乐观锁(请求携带 `version`),冲突 → E5003 提示刷新【OPEN-G27】 |
+| 审计与时间 | 全部写操作记 AuditLog(R8.3);时间戳 ISO 8601 存储、UTC+8 展示 |
+
+### 8.2.2 接口契约表
+
+| # | 接口 | 方法 | 权限 | 前置状态 | 请求要点 | 响应要点 | 错误码 | 幂等/并发 |
+|---|------|------|------|---------|---------|---------|--------|----------|
+| 1 | /api/workbench/summary?line=glc | GET | 全角色 | — | — | 4 口径计数(待人工=待上传∪有差异∪失败聚合,按最新 Run)+ 调度信息条(上周窗口/执行状态/下次时间) | — | 只读 |
+| 2 | /api/tasks | GET | 全角色 | — | line=glc(必);status(running/wait_input/diff/failed/done/manual聚合/closed);runWeek/pdc/dg/source/blNo(归一后精确匹配,NORM-01);page/size | items[](列表列+最近 Run 状态/耗时+异常摘要截断) | — | 只读;BL 归一走索引 |
+| 3 | /api/tasks | POST | OPERATOR/MANAGER | BL 无现存 Task | {blNo(格式校验 OPEN-G10,归一 NORM-01), attachments[{role, file}]} | 201 {taskId, runNo:1} | E4002/E4005 | 幂等键+BL 唯一约束双保险;从 N2 起跑(手动票无 N1 邮件扫描),缺件则 G1 → WAIT_INPUT |
+| 4 | /api/tasks/{id} | GET | 全角色 | Task 存在 | ?runNo=N(缺省=当前 Run) | {task, runs[], nodes[], fields[](effectiveValue 口径+三层值), evidences[], missing[]} | — | 只读;历史 Run 只读标记 |
+| 5 | /api/tasks/{id}/rerun | POST | OPERATOR/MANAGER;3.1 对外动作后 full 仅 MANAGER(R7.4) | 非执行中、非已关闭 | {type:full\|node, from:nodeNo\|CPx, reason?} | 202 {runId, runNo} | E4004/E4006/E5001 | 幂等键+同票互斥锁;异步受理(8.2.3) |
+| 6 | /api/runs/{runId}/fields/{fieldId}/correct | POST | 仅 OPERATOR | 当前生效 Run 且 DIFF_PENDING | {value, reason?, version} | 200 {fieldId, effectiveValue, version} | E5001/E5003/E4006 | 乐观锁;留痕不审批(R8.2);行级写 ≤1s(7.5.2) |
+| 7 | /api/tasks/{id}/attachments | POST | OPERATOR/MANAGER | Run=WAIT_INPUT | multipart 逐槽位:role+file(PDF/≤20MB/BL 号一致性) | 202 {ledgerId, resumeAccepted:true} | E4005/E4006 | 幂等键;入暂存 → 自动 G1 续跑(S1 序列) |
+| 8 | /api/tasks/{id}/hold-confirm | POST | OPERATOR/MANAGER | Run=WAIT_INPUT | {action:wait\|invalid, reason(invalid 必填)} | 200 {status} | E4006 | 幂等键;invalid → Task 关闭留痕(撤销 OPEN-G11) |
+| 9 | /api/rules、/api/rules/{id}、/toggle、/dry-run | GET/POST/PUT | 查看全角色;编辑仅 ADMIN | — | dry-run:{sampleMailId};保存:规则全量 | dry-run 逐条件匹配结果;保存 version+1 | E1001/E1002 | 保存对新邮件生效,不影响已建任务 |
+| 10 | /api/configs、/api/configs/{id}/versions | GET/POST | 查看全角色;编辑仅 ADMIN | — | 上传:file ≤20MB;恢复:{version} | version+1(恢复=复制历史为新版本) | E2001/E2002 | 版本单调递增 |
+| 11 | /api/ref-tables/{type} | GET/PUT | 查看全角色;编辑仅 ADMIN | — | PUT {rows[], baseVersion};保存前差异预览确认 | 200 {version, diff} | E2003/E5003 | 乐观锁+键唯一;Run 快照语义(R4.4) |
+| 12 | /api/staging/{blNo} | GET | 全角色 | — | blNo 归一(NORM-01) | files[{role, version, receivedAt, status}] | — | 只读 |
+| 13 | /api/staging/{blNo}/resume | POST | OPERATOR/MANAGER | 挂起且暂存齐套 | — | 202 | E4006 | 与 hold-confirm 配合 |
+| 14 | /api/writeback?blNo= | GET | 全角色 | — | blNo 归一 | records[](column/value/status/retryCount/writtenAt) | — | 只读 |
+| 15 | /api/archive/tree、/files | GET | 全角色(AUDITOR 只读) | — | tree:{path};files:{path 或 keyword, page/size};下载 /files/{id} | 目录树/文件清单(J8 路径定位) | — | 只读 |
+| 16 | /api/export/tasks.csv | GET | 仅 MANAGER | — | 同 #2 筛选参数 | ≤1.5 万行:CSV 同步下载;超限:202 转异步+提醒下载【OPEN-G31】 | E5001 | 当前筛选生效 |
+| 17 | /api/schedule/trigger | POST | OPERATOR/MANAGER【OPEN-G25】 | — | {line:"glc", window:"lastWeek"}(窗口=上周一至周日) | 202 {accepted, created, skipped} | E5001 | 同窗口 BL 去重;异步受理(8.2.3) |
+
+**关键写接口请求/响应示例**:
+
+重跑(#5):
+
+```json
+POST /api/tasks/T-OOLU2038969910/rerun    Idempotency-Key: op-20261009-001
+{ "type": "node", "from": 2, "reason": "Seal 修正后重跑" }
+
+→ 202 { "runId": "r-10086", "runNo": 3, "status": "PENDING" }
+→ 409 { "code": "E4004", "message": "该票正在执行中(R#3),请完成后重试", "traceId": "..." }
+```
+
+字段修正(#6):
+
+```json
+POST /api/runs/r-10086/fields/F-13/correct
+{ "value": "OOLKVL0458", "reason": "OCR 误识 0/O", "version": 2 }
+
+→ 200 { "fieldId": "F-13", "effectiveValue": "OOLKVL0458", "version": 3 }
+→ 409 { "code": "E5003", "message": "该字段已被他人修改,请刷新后重试" }
+```
+
+### 8.2.3 异步任务接口规格(rerun / trigger / attachments 续跑)
+
+| 环节 | 规格 |
+|------|------|
+| 受理 | 同步校验(权限/前置状态/幂等键)→ 202 返回 {runId \| batchId};校验失败同步返回 4xx,不产生任务 |
+| 状态查询 | GET /api/tasks/{id}(最新 Run 状态+当前节点);前端轮询建议 5s;完成/失败另有提醒中心推送(7.3.7) |
+| 重复提交 | 同 Idempotency-Key → 返回首次结果;执行中再 rerun → E4004(409);同窗口重复 trigger → BL 去重跳过,skipped 计数返回 |
+| 超时 | 前端轮询 5 分钟未到终态 → 提示"后台继续执行,可在任务中心查看",不影响后端;后端节点超时/重试见 8.4 |
+
+### 8.2.4 页面-操作-接口映射(开发可直接按表实现前后端联动)
 
 | 页面 | 用户操作 | 调用接口 | 触发时机 | 关键业务逻辑(后端) |
 |------|---------|---------|---------|---------------------|
@@ -1273,24 +1402,45 @@ S2 修正→重跑(差异票主路径):
 | 归档浏览 | 浏览/搜索/下载 | GET /api/archive/tree、/files | 页面交互 | 只读;J8 路径定位 |
 | 提醒中心 | 点击提醒 | (无新接口,前端跳 J9) | 点击 | 提醒置已读 |
 
-**IES+ 侧能力要求**(实现不限定):I1 发票查询(MBZ);I2 批量导入 AVIS(绿灯校验);I3 invoice 级导出(导出列已核实,含 Others/price difference,见 R5.2);I4 发票附件下载/修改(FOB 填 Others);I5 生成预报;I6 集装箱导入 BL 模板(**差异弹窗可完整捕获**);I7 文档上传(类别含 Other);**I8 Shipping log 查询导出(gvShipLog 16 列,AVIS 模板口径 B 前 5 列数据源)**。
+### 8.2.5 IES+ 侧能力要求(实现不限定)
+
+I1 发票查询(MBZ);I2 批量导入 AVIS(绿灯校验);I3 invoice 级导出(导出列已核实,含 Others/price difference,见 R5.2);I4 发票附件下载/修改(FOB 填 Others);I5 生成预报;I6 集装箱导入 BL 模板(**差异弹窗可完整捕获**);I7 文档上传(类别含 Other);**I8 Shipping log 查询导出(gvShipLog 16 列,AVIS 模板口径 B 前 5 列数据源)**。
 
 ## 8.3 错误码
 
-| 错误码 | 含义 | 触发入口 | 页面提示文案(建议) |
-|--------|------|---------|-------------------|
-| E1001 | 规则校验失败(正则/附件角色缺失),阻断保存 | 规则编辑器保存 | "规则校验未通过:{字段}——{原因},请修正后保存" |
-| E1002 | dry-run 样本邮件不可用 | 规则编辑器 dry-run | "样本邮件不可用,请先在邮件中心选择有效样本" |
-| E2001 | 模板上传校验失败(扩展名/>20MB) | 配置中心上传 | "文件不符合要求:仅支持 {格式} 且 ≤20MB" |
-| E2002 | 模板版本与流程不兼容 | 配置中心上传 | "模板版本与当前流程不兼容,请回退至 v{n} 或联系平台" |
-| E3001 | IES 差异弹窗捕获成功(不再是"转人工") | 节点 6 | 回写 L 列,流程继续;任务终态标记"有差异",不产生阻断提示 |
-| E3002 | IES 上传失败/超时,支持检查点重试 | 节点 5/7 | "IES 交互失败:{节点},可检查点续跑;已自动告警" |
-| E3003 | 差异弹窗无法解析,截图存证转人工(承接原 E3001 的转人工场景) | 节点 6 | "差异弹窗解析失败,已存证并转人工处理"(任务置失败) |
-| E4001 | 暂存缺件(缺 AVIS/BL/Shipper),任务挂起 WAIT_INPUT | 节点 3 | 任务中心"待上传";详情缺件横幅:"缺少 {角色} 附件,请补传或确认" |
-| E4002 | 重复 BL(去重命中),跳过并记录 | 收单/新建任务 | "BL 号 {no} 已存在任务,点击跳转查看" |
-| E4003 | ETA 缺失,文件夹命名无法生成 | 节点 3/归档 | 处理口径【待确认 OPEN-G5】;原"PDC 缺失转人工"已废止(R2.1) |
-| E5001 | 权限不足,拒绝 + 审计 | 全局 | "当前角色无权执行此操作" |
-| E5002 | 大表回写失败,入队重试 + 告警 | 回写通道 | "大表回写失败,已入队自动重试;管理员请关注告警" |
+> 类型:阻断=操作失败需用户处置;信息=业务事件非错误(HTTP 200);可重试=系统自动重试。E2003/E4004/E4005/E4006/E5003 为本次契约化新增(原页面文案/行为已存在但无码)。
+
+| 错误码 | 类型 | HTTP | 含义与触发条件 | 可重试 | 恢复动作 | 页面提示文案(建议) | 关联规则 |
+|--------|------|:---:|---------------|:---:|---------|-------------------|---------|
+| E1001 | 阻断 | 400 | 规则校验失败(正则非法/附件角色缺失),保存时触发 | 否 | 修正后重新保存 | "规则校验未通过:{字段}——{原因},请修正后保存" | R1/7.3.4 |
+| E1002 | 阻断 | 400 | dry-run 样本邮件不可用 | 否 | 邮件中心重选有效样本 | "样本邮件不可用,请先在邮件中心选择有效样本" | 7.3.4 |
+| E2001 | 阻断 | 400 | 模板上传校验失败(扩展名非法/>20MB) | 否 | 更换文件重传 | "文件不符合要求:仅支持 {格式} 且 ≤20MB" | 7.3.5 |
+| E2002 | 阻断 | 409 | 模板版本与流程不兼容(列定义缺失/版本冲突) | 否 | 回退至 v{n} 或联系平台 | "模板版本与当前流程不兼容,请回退至 v{n} 或联系平台" | R4.4 |
+| E2003 | 阻断 | 400 | 对应表键重复/必填值缺失【新增】 | 否 | 修正冲突行后重存 | "对应表第 {n} 行键重复:{key}" | R4.4 |
+| E3001 | 信息 | 200 | IES 差异弹窗捕获成功(非错误):回写 L 列、流程继续、任务终态"有差异" | — | 无需恢复;业务线下核对 | 不产生阻断提示 | R5.4 |
+| E3002 | 可重试 | 502 | IES 交互失败/超时(节点 5/6/7) | 是(自动指数退避,次数/间隔可配) | 耗尽 → FAILED,检查点续跑 | "IES 交互失败:{节点},可检查点续跑;已自动告警" | 8.4/R5 |
+| E3003 | 阻断 | 500 | 差异弹窗无法解析 | 否 | 截图存证,FAILED 转人工 | "差异弹窗解析失败,已存证并转人工处理" | R5.4 |
+| E4001 | 信息 | 200 | 暂存缺件(缺 AVIS/BL/Shipper),任务挂起 WAIT_INPUT | — | 补传/确认等待/标记无效(R3.3) | 任务中心"待上传";详情缺件横幅:"缺少 {角色} 附件,请补传或确认" | R3.2 |
+| E4002 | 阻断 | 409 | 重复 BL(去重命中),跳过并记录 | 否 | 跳转已有任务 | "BL 号 {no} 已存在任务,点击跳转查看" | R1.2 |
+| E4003 | 阻断 | 200 | ETA 缺失,文件夹命名无法生成 | — | 按 OPEN-G5 定版口径(挂起/兜底/省略 ETA 段);原"PDC 缺失转人工"已废止(R2.1) | "ETA 缺失,请确认处理方式"(定版前按建议口径) | R2.2/OPEN-G5 |
+| E4004 | 阻断 | 409 | 同票执行中/重跑互斥【新增】 | 稍后重试 | 等当前 Run 终态后重发 | "该票正在执行中(R#{n}),请完成后重试" | 6.2.1 #5 |
+| E4005 | 阻断 | 400 | 补传校验失败(非 PDF/>20MB/BL 号不一致)【新增】 | 否 | 更换文件逐槽位重传 | "{槽位} 校验未通过:{原因}" | R3.3① |
+| E4006 | 阻断 | 409 | 前置状态不满足(非挂起态确认/非当前 Run 修正/已关闭任务操作)【新增】 | 否 | 刷新页面取最新状态 | "任务状态已变化,请刷新后重试" | 8.1.3 |
+| E5001 | 阻断 | 403 | 权限不足,拒绝+审计 | 否 | — | "当前角色无权执行此操作" | R8.1/7.6.3 |
+| E5002 | 可重试 | 202 | 大表回写失败,入队重试+告警 | 是(入队重试,次数/间隔可配;死信转人工) | 恢复后自动补齐(同列覆盖写) | "大表回写失败,已入队自动重试;管理员请关注告警" | R6/8.4 |
+| E5003 | 阻断 | 409 | 并发修改冲突(乐观锁 version 不匹配)【新增】 | 否 | 刷新后基于最新值重试 | "数据已被他人修改,请刷新后重试" | 8.2.1/OPEN-G27 |
+
+## 8.4 外部系统依赖与异常处理规格
+
+> 超时/重试数值为建议值(标注【建议】),最终以概要设计与对应系统 SLA 确认为准(D1/D2/D3)。"失败后转人工""自动重试"的触发条件与处理结果以本表为准,节点表(7.4.2)不再重复定义策略本身。
+
+| 外部依赖 | 交互内容(输入→输出) | 超时【建议】 | 重试策略 | 幂等保证 | 失败补偿 | 告警 | 证据留存 |
+|---------|--------------------|-------------|---------|---------|---------|------|---------|
+| 公邮(Portal 公邮) | N1 扫描+附件下载(邮件 → 暂存+台账) | 连接 10s/读取 60s | 整节点指数退避 3 次(间隔可配,R8.4) | CP1 已扫描邮件清单,断点续扫防重 | 重试耗尽 → N1 FAILED;单封解析不出 BL 号记异常转人工,**不阻断其他邮件** | 调度告警 → ADMIN | email 证据(原件+附件 hash) |
+| OCR 服务 | N2 全页识别(PDF → 字段+置信度+原文定位) | 单票 ≤2min(7.5.3) | 服务异常重试 2 次 → FAILED | CP2 原始结果落盘,续跑不重识已完成部分 | FAILED → 人工修正字段后节点级重跑 | 排队/失败 → ADMIN(7.5.4) | ocr 证据(含原文定位) |
+| IES+(交互方式 D1 未定) | N5 导入/查询、N6 预报+弹窗捕获、N7 附件上传 | 单操作超时【D1 决策项】;节点预算 7.5.3 | E3002 自动重试 → 检查点续跑;会话失效重登(凭证管理 D1) | 绿灯校验防重复导入(R5.1);上传保存确认;重复上传防护【D1】 | 红灯/必填校验不过 → FAILED 转人工(不臆改);弹窗解析失败 → E3003 | E3002 自动告警 → ADMIN | screen 证据(绿灯/弹窗/保存确认) |
+| 归档(SharePoint/T 盘,D3) | N7.4 目录创建+文件写入 | 单文件 60s | 入队重试(不影响 IES 侧已保存事实) | 目录/文件命名确定性(R2.2),重跑覆盖不重复(R7.1) | 归档根不可达 → 重试队列+告警 | 容量 >80% → ADMIN(7.5.4) | file 证据(路径+hash) |
+| 大表回写通道(D2) | R6 矩阵 9 时机 11 列写入 | 单次 5s | E5002 入队重试;死信 → P 列记异常+提醒 | 同 BL 同列覆盖写(最新 Run 为准);行定位键=归一 BL 号【OPEN-G30】 | 重试耗尽 → 转人工+提醒 MANAGER | 失败即告警 MANAGER | WritebackRecord 全量留痕 |
 
 ---
 
@@ -1319,16 +1469,20 @@ S2 修正→重跑(差异票主路径):
 
 # 第十部分:非功能性需求
 
-| 类别 | 指标 | 要求 |
-|------|------|------|
-| 性能 | 周批量时长 | GLC 线批量 <2 小时(建议值;周票量级【待确认 OPEN-G8】);峰值测算与可达性结论见 7.5.3 |
-| 性能 | 页面响应 | 首屏 <2s;任务列表万级分页流畅;分页面/操作指标见 7.5.2 |
-| 可靠性 | 续跑 | 失败票检查点续跑;重跑去重 100%;调度失败告警 |
-| 安全 | 凭证 | 安全存储,不出现于日志 |
-| 安全 | 权限/审计 | RBAC 四角色(第三部分矩阵);全操作审计;证据 WORM |
-| 兼容性 | 浏览器 | Chrome / Edge 主流版本(PC Web) |
-| 可配置 | 配置化 | 调度时间、邮箱、路径、重试、等待时间、模板、对应表均不硬编码 |
-| 可审计 | 留痕 | 每票保留源文件、输出、时间戳、状态、错误详情 |
+> 全部转化为可验证验收条件;数据规模假设与页面/节点性能指标以 7.5 为准,本节不重复定义,只做验收口径。
+
+| 编号 | 类别 | 需求 | 可验证验收条件(环境/规模/计时/通过标准) |
+|------|------|------|------------------------------------------|
+| NF-G01 | 性能 | 周批量时长 <2h | 环境=准生产+IES 测试环境(OPEN-G4);规模=峰值 300 票(OPEN-G8 确认后校准);计时=调度触发 → 末票 N7 完成;标准=<2h。D1 若采 RPA 过渡方案(业务量确认 ≤30 票/周)按 30 票 <2h 验收(7.5.3) |
+| NF-G02 | 性能 | 页面响应 | 环境=准生产,数据=年 1.5 万票;按 7.5.2 全表逐项计时(浏览器 Performance 工具);标准=逐项达标 |
+| NF-G03 | 可靠性 | 续跑与重跑去重 | 注入 N5 失败 → CP5 续跑成功且前置产物不重建(6.2.1 #4);同票重跑 3 次 → 大表/归档/IES 无重复行/目录/上传(R7.1);批量重跑 100 票抽查 10 票零重复 |
+| NF-G04 | 可靠性 | 调度失败告警 | 模拟公邮不可达 → N1 按 8.4 重试耗尽 → FAILED → ADMIN ≤5min 收到告警 |
+| NF-G05 | 安全 | 凭证 | IES/邮箱凭证加密存储(D1);日志、证据、错误详情全文检索无明文凭据 |
+| NF-G06 | 安全 | 权限/审计 | 7.6.3 总矩阵逐格验证(4 角色 × 操作 × 状态);越权请求 100% 返回 E5001 且有审计记录;证据 hash 校验一致、不可篡改(WORM,R8.3) |
+| NF-G07 | 兼容性 | 浏览器 | Chrome/Edge 最新 2 个大版本全功能用例通过(PC Web) |
+| NF-G08 | 可配置 | 配置化 | 调度时间/邮箱/归档路径/重试次数与间隔/等待时间/OCR 阈值/模板/对应表 改配置即生效、无需发版(配置项清单=7.3.5;R8.4) |
+| NF-G09 | 可审计 | 留痕 | 抽样 10 票可完整还原链路:源文件 → OCR → 修正 → IES 上传 → 回写 → 归档,每步有时间戳与证据;字段三层值可查(8.0.4④) |
+| NF-G10 | 数据 | 展示规范 | 欧式小数/日期格式/状态色按 7.6.4 抽查通过 |
 
 ---
 
@@ -1408,6 +1562,68 @@ S2 修正→重跑(差异票主路径):
 | OPEN-G26 | Run 对比视图(7.3.3)是否纳入一期:业务重跑后核对"两次差在哪"的高价值功能,建议纳入 | 任务详情范围 | 待业务确认 |
 | OPEN-G27 | 并发修正同一字段的冲突策略:建议版本校验+提示刷新(7.6.5);备选=后写覆盖(留痕可追溯) | 修正并发 | 待平台确认 |
 | OPEN-G28 | 重跑后新 Run 未再出现差异弹窗时,大表 L 列(BL different)是否覆盖清空:建议覆盖清空,与"同列以最新 Run 为准"语义一致(6.2.1 关键点 #8) | 回写口径 | 待业务确认 |
+| OPEN-G29 | L 列「BL different」差异明细结构:建议字段级 JSON(字段/IES 值/提单值)序列化写入大表,任务详情结构化展示 | 回写口径/详情展示 | 待业务/平台确认 |
+| OPEN-G30 | 大表回写行定位键:建议=归一 BL 号;行不存在时新建行(建议)还是记异常 | 回写通道(D2) | 待平台确认 |
+| OPEN-G31 | 导出超 1.5 万行转异步的下载入口与文件保留期(建议:提醒中心通知+保留 7 天) | 导出体验 | 待平台确认 |
+| OPEN-G32 | 多箱票 BL 模板行粒度:建议箱粒度(1 行/箱),与 AVIS 模板 箱×MBZ 行粒度区分 | BL 模板取数 | 待业务确认 |
+
+---
+
+# 第十三部分:追踪与验收
+
+## 13.1 规则与接口映射表(需求 → 规则 → 页面 → 接口 → 实体 → 用例)
+
+> 接口编号 = 8.2.2 契约表 #1~#17;用例编号 = 13.2 验收测试矩阵。本表用于覆盖性核查:每行任一列留空即视为规格缺口。
+
+| 需求 | 规则 | 页面 | 接口 | 数据实体 | 验收用例 |
+|------|------|------|------|---------|---------|
+| US-G01 每周批量/手动补跑 | R1/R7、7.4.1 | 工作台(F-G01) | #1 #17 | Task/Run | AT-G01/G02/G17 |
+| US-G02 收单与齐套 | R1/R3、G1 | 任务中心/详情缺件区(F-G02/G11) | #2 #3 #7 #8 #12 #13 | AttachmentLedger/StagingFile/Task/Run | AT-G03/G05/G16/G19/G20 |
+| US-G03 DG 票 FOB | R3.4/R5.2/R5.3 | 任务详情(F-G03) | #5 #6 | FieldResult/Run | AT-G04/G07/G21 |
+| US-G04 修正与重跑 | R4.5/R7、6.2.1 | 任务详情(F-G03) | #5 #6 | FieldResult/Run/NodeExecution | AT-G06/G10/G11/G22/G25/G26/G28 |
+| US-G05 差异弹窗与回写 | R5.4/R6 | 任务详情/任务中心 | #14 | WritebackRecord/Evidence | AT-G08/G13/G15 |
+| US-G06 规则与模板维护 | R1/R4/R8.4 | 邮件中心/规则编辑器/配置中心(F-G06~G08) | #9 #10 #11 | MailRule/ConfigTemplate/RefTable | AT-G24 |
+| 模板生成与字段标准化 | R4/8.0.4(NORM/G2) | 任务详情(F-G03) | #4 #6 | FieldResult/ConfigTemplate | AT-G09/G10/G11/G18 |
+| 归档 | R2 | 归档浏览(F-G09) | #15 | StagingFile/Evidence | AT-G01/G04 |
+| 权限与审计 | R8/3.1 | 全局 | 全部写接口 | AuditLog | AT-G23/G24 |
+| 非功能(性能/可靠性) | 7.5/第十部分 | — | — | — | AT-G27/G29/G30 |
+
+## 13.2 验收测试矩阵
+
+> 覆盖正常/异常/边界/权限/并发/恢复/性能七类;环境=准生产+IES 测试环境(OPEN-G4),样本=400759 全套实物(附录B)。
+
+| 用例 | 类型 | 场景 | 前置条件 | 步骤要点 | 预期结果 | 关联 |
+|------|------|------|---------|---------|---------|------|
+| AT-G01 | 正常 | 周一 09:00 调度批量全链 | 公邮含 AVIS/BL/Shipper 样本 | 触发调度 → 观察 N1~N7 | 归并建票;齐套票走完全链;大表 11 列按 R6 回写;归档目录命名符合 R2.2 | R1/R2/R6 |
+| AT-G02 | 正常 | 手动补跑同窗口去重 | 本周窗口已执行过 | 点「立即补跑」 | 返回 created/skipped 计数;已有票不重复建 Run | 7.3.1/#17 |
+| AT-G03 | 正常 | 跨周归并齐套 | W1 仅到 AVIS,W3 到 BL | 两轮调度 | W1 建票挂起;W3 齐套放行 G1 | R3.1/G1 |
+| AT-G04 | 正常 | DG 票全链 | 归并到 Shippers_Decl | 走完 N1~N7 | M 列=Y;5a FOB 填 Others 保存;归档名追加 DG 后缀 | R3.4/R5.2/R2.2 |
+| AT-G05 | 正常 | 缺件补传自动续跑(S1) | Run=WAIT_INPUT | 逐槽位补传 → 确认 | 校验通过入暂存 → 自动 G1 续跑 → 完成 | R3.3①/#7 |
+| AT-G06 | 正常 | 字段修正+节点重跑(S2) | Run=DIFF_PENDING | 修正字段 → toast 引导 → 从 N2 重跑 | R#N+1 携带修正值;后续节点读 effectiveValue | R8.2/6.2.1 |
+| AT-G07 | 正常 | FOB 公式计算 | 发票导出差异≠0 | 5a 导出 → 计算 → 填 O 列保存 | FOB=Total−Goods−Packing−Insurance−Freight−DGR;差异=0 不处理;K 列不参与 | R5.2 |
+| AT-G08 | 正常 | 差异弹窗捕获不阻断 | N6 出现差异弹窗 | 自动捕获 → 继续 N7 | L 列=字段级明细;流程走完;终态"有差异" | R5.4/E3001 |
+| AT-G09 | 正常 | 双模板生成对拍 | 400759 全套实物 | N3/N4 生成两模板 | AVIS 69 行(68 MBZ×1 箱);BL 9 列取值与实物 `AVIS.xlsx`/`BL (1).xlsx` 一致 | R4.1/R4.2 |
+| AT-G10 | 异常 | OCR 低置信 | 字段置信度<阈值(OPEN-G23) | N2 完成 | G2 不通过:金色高亮+DIFF_PENDING,不进 N3 | G2/8.1.3 |
+| AT-G11 | 异常 | 交叉核对不一致 | 篡改 Seal 一位 | N2 核对 | 字段质量降级+任务"有差异",停 G2 待人工 | R4.5 |
+| AT-G12 | 异常 | IES 红灯 | 构造必填校验不过 | N5 导入 | 不上传;FAILED 转人工,不臆改 | R5.1/G3 |
+| AT-G13 | 异常 | 弹窗无法解析 | 模拟弹窗结构变更 | N6 捕获 | E3003 截图存证;FAILED 转人工 | R5.4 |
+| AT-G14 | 异常 | IES 超时续跑 | 模拟 IES 超时 | E3002 重试耗尽 → FAILED → CP5 续跑 | 续跑成功;前置产物不重建 | 8.4/R7.3 |
+| AT-G15 | 异常 | 回写失败重试 | 断开大表通道 | 触发回写 → 恢复通道 | E5002 入队;恢复后自动补齐,同列覆盖写 | R6/8.4 |
+| AT-G16 | 异常 | 补传校验失败 | Run=WAIT_INPUT | 传 xlsx/>20MB/BL 号不符文件 | E4005 逐槽位报错,不入暂存 | R3.3① |
+| AT-G17 | 异常 | 公邮不可达 | 断开公邮 | N1 执行 | 指数退避耗尽 → FAILED+调度告警;已扫邮件不重扫(CP1) | 8.4 |
+| AT-G18 | 边界 | 单箱 68 MBZ/多箱 AVIS | 400759 + 多箱样本(397611) | N2/N3 | 箱×MBZ 展开正确;模板行数=Σ(箱×MBZ) | F-17 |
+| AT-G19 | 边界 | ETA 缺失 | 构造无 ETA AVIS | N2/N7 | 按 OPEN-G5 定版口径处理(确认前按建议口径) | E4003 |
+| AT-G20 | 边界 | PDC 未命中 | 对应表无此 Customer code | G1 映射 | 建 Other 文件夹+异常记录;流程不阻断 | R2.1 |
+| AT-G21 | 边界 | F-10 误判纠正 | 定版非 DG 后 Shipper 晚到 | 修正 F-10=Y → 重跑 | 走 5a 分支;已保存 FOB 时仅 MANAGER 可整单重跑 | R3.4/3.1 |
+| AT-G22 | 边界 | 已完成差异票整单重跑 | N7 完成且 L 列有值 | MANAGER 整单重跑 | 对外后果确认弹窗;L 列按 OPEN-G28 口径处理 | R7.4 |
+| AT-G23 | 权限 | 矩阵逐格验证 | 四角色账号 | 逐操作尝试 | 越权 100% E5001+审计;AUDITOR 全只读;MANAGER 无修正权 | 7.6.3/R8.1 |
+| AT-G24 | 权限 | 导出/规则/配置角色边界 | 非授权角色 | 调 #16/#9/#10/#11 | 导出仅 MANAGER;规则/配置编辑仅 ADMIN | #16/#9~#11 |
+| AT-G25 | 并发 | 双人修正同字段 | 两人同开 DIFF_PENDING 详情 | 先后保存 | 后保存者 E5003 提示刷新;无脏写 | 8.2.1/OPEN-G27 |
+| AT-G26 | 并发 | 执行中重跑互斥/双击 | Run=RUNNING | 重复 rerun/双击 | 仅一个 R#N+1;其余 E4004;同幂等键返回首次结果 | 6.2.1 #5 |
+| AT-G27 | 并发 | 补传与挂起确认竞争 | Run=WAIT_INPUT | 补传入暂存同时点「继续等待」 | 状态已流转的操作返回 E4006 | 7.6.5 |
+| AT-G28 | 恢复 | 检查点续跑产物沿用 | N5 失败 FAILED | 从 CP5 续跑 | CP2~CP4 产物不重建;NodeExecution 前置 SKIPPED/沿用标记 | 6.2.1 #4 |
+| AT-G29 | 恢复 | 服务重启断点恢复 | RUNNING/PENDING 混合 | 重启服务 | RUNNING 票从最近 CP 恢复;PENDING 票不丢 | 8.1.3 |
+| AT-G30 | 性能 | NF 验收 | 年 1.5 万票数据+峰值批量 | 按 NF-G01/G02 口径执行 | <2h 批量;页面指标逐项达标 | 7.5/NF |
 
 ---
 
