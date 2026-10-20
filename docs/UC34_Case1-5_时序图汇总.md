@@ -14,6 +14,7 @@
 2. **Case3 新增人工修正环节**：发票导入模板出现 package number（PID）对 delivery number 一对多时，IES 不允许导入 → 业务下载平台生成的模板 → 手工修正为一对一 → 上传修正模板 → 从「导入发票」节点续跑。
 3. **"暂存库"表述更正**：会议明确"根本就不是暂存库"，本文档统一改为"**附件台账（平台内部存储）**"；各 PRD 业务流程图同步待改（新月跟进）。
 4. Case4 尚未与开发讨论，本期仅按 demo 校对触发口径，业务逻辑不动；Case5 批量重跑/批量下载/任务内重跑不涉及时序变化，图保持原样。
+5. **GLC 正向细化（同日下午口述口径）**：收 AVIS 邮件=建票起点（一 AVIS 一票）→ 识别 AVIS PDF 取 BL 号/AVIS 号 → BL 号找 BL 邮件、AVIS 号找 Shipper（判 DG）→ **PDC 按邮件发件人取（BRD 发件人-PDC 对应关系表，不用 customer code）** → 齐备判断；**正向只能识别缺 BL**，缺 AVIS 由 GLC-R 承担。
 
 **B. 依据 `case全权限版本demo` 核对调整：**
 
@@ -113,7 +114,7 @@ sequenceDiagram
 
 ### 3.1 Case2-GLC 正向（欧线 OOCL，7 节点）
 
-> 依据 GLC PRD 修订版 v1.2.4 §6.2；按会议决议将"暂存库"更正为"附件台账（平台内部存储）"。
+> 依据 GLC PRD 修订版 v1.2.4 §6.2；按 2026-10-16 会议更正"暂存库"→"附件台账（平台内部存储）"，并按同日下午口述口径细化前半段：**收 AVIS 邮件=建票起点 → 识别 AVIS PDF 取 BL 号 → 找 BL 邮件 / 找 Shipper → 按邮件发件人判 PDC → 齐备判断（只能识别缺 BL）**。
 
 ```mermaid
 sequenceDiagram
@@ -121,20 +122,28 @@ sequenceDiagram
     participant U as 业务用户(OPERATOR/MANAGER)
     participant MB as Portal公邮
     participant PF as MBPTS平台
+    participant CFG as 配置中心(发件人-PDC对应表)
     participant ATT as 附件台账(平台内部存储)
     participant IES as IES+
     participant SP as 归档(SharePoint/T盘)
     participant RPT as AVIS BL status report
 
     SCH->>PF: 触发(上周一至周日窗口)
-    PF->>MB: 按R-GLC三条规则扫描(AVIS/Shippers_Decl/BL)
-    MB-->>PF: AVIS/Shippers_Decl/BL邮件+附件
-    PF->>ATT: 附件按BL号归并,台账pending
-    Note over PF: 票级视角:收到 AVIS 即建任务,凭 AVIS 号绑定 Shipper(仅 DG 货),<br/>识别 BL 号后轮询邮件标题找 BL,三件套齐了才往下走
-    PF->>PF: OCR识别+AVIS⇄BL交叉核对+齐套判断(DG定版)
-    alt 缺件/无PDC配置
-        PF->>RPT: 异常反馈列记录(P列)
-        Note over PF: 缺件→建Task挂起(待上传)<br/>任务详情人工确认后续跑<br/>无PDC→建Other不阻断
+    PF->>MB: 扫描公邮,筛出 AVIS 邮件
+    MB-->>PF: AVIS 邮件+附件
+    PF->>PF: 收到 AVIS 即建 Task+R#35;1(一 AVIS 一票,建票起点)
+    PF->>ATT: 附件按 BL 号归并入台账(pending)
+    PF->>PF: 识别 AVIS PDF,提取 BL 号 / AVIS 号
+    PF->>MB: 按 BL 号轮询邮件标题,找 BL 邮件
+    MB-->>PF: BL 邮件+BL PDF
+    PF->>MB: 按 AVIS 号找同号 Shipper(仅 DG 货有,据此判定 DG)
+    MB-->>PF: Shipper 邮件(如有)
+    PF->>CFG: 按邮件发件人查 PDC 对应关系表
+    CFG-->>PF: PDC(无匹配→建 Other 不阻断)
+    PF->>PF: 齐套判断:AVIS+BL(DG 货+Shipper),DG 在找 Shipper 步定版
+    alt 缺 BL / 无 PDC 对应
+        PF->>RPT: 异常反馈列记录(P列,只记缺 BL)
+        Note over PF: 缺 BL→建 Task 挂起(待上传),任务详情确认/补传后续跑<br/>缺 AVIS 识别不到(起点即 AVIS),由 GLC-R 反向核对承担<br/>无 PDC 对应→建 Other 不阻断
     else 齐套
         PF->>ATT: 取件组装文件包(DG含Shipper)
         PF->>PF: 填AVIS/BL模板
@@ -563,7 +572,7 @@ sequenceDiagram
 | 图 | 来源 | 本版改动 |
 |---|---|---|
 | §2 Case1 | `Case1_危险品托运清单_PRD_修订版.md` v2.0.0 §6.2 | 无 |
-| §3.1 GLC 正向 | `UC34-Case2-GLC_PRD_修订版.md` v1.2.4 §6.2 | 暂存库→附件台账；补票级视角注释 |
+| §3.1 GLC 正向 | `UC34-Case2-GLC_PRD_修订版.md` v1.2.4 §6.2 | 暂存库→附件台账；**前半段按口述口径重构**（AVIS 建票起点/识别 PDF 取 BL 号/找 BL+Shipper/发件人判 PDC/只识别缺 BL） |
 | §3.2 GLC-R | 2026-10-16 会议口述 | **新增** |
 | §3.3 MBUSI 正向 | `UC34-Case2-MBUSI_PRD_修订版.md` v1.2.0 §6.2 | **起点改为邮件先行**（待确认 §8-1）；暂存库→附件台账 |
 | §3.4 MBUSI-R | 2026-10-16 会议口述 | **新增** |
