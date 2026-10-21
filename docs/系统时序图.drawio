@@ -1,9 +1,264 @@
 <mxfile host="app.diagrams.net">
-  <diagram name="第 1 页" id="cQiS8fE0fzOJcqF8LTbB">
-    <mxGraphModel>
+  <diagram name="Case5-X-entry" id="cQiS8fE0fzOJcqF8LTbB">
+    <mxGraphModel dx="2610" dy="1175" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <UserObject label="" mermaidData="{&#xa;  &quot;data&quot;: &quot;sequenceDiagram\n    participant SP as SharePoint(起点文件夹)\n    participant U as IO/BU\n    participant PF as MBPTS平台\n    participant DIM as 诊断仪大表(维度表)\n    participant SPA as SharePoint(归档)\n\n    U-&gt;&gt;SP: 业务审阅送货邮件后手工拖入指定文件夹(附快件签收单 Excel)\n    PF-&gt;&gt;SP: 读取新增送货邮件\n    PF-&gt;&gt;PF: 解析附件运单号 AWB,收单即建 Task+R#35;1(票=AWB)\n    PF-&gt;&gt;DIM: 按 AWB 查 PN(D)/QTY(F 加总)/ID No.(J)/Item No.(业务维护)\n    PF-&gt;&gt;DIM: 按 ID No. 查 M 列 MBPTS PO\n    alt PO 为空(硬阻断,R4.1)\n        PF--&gt;&gt;U: 报错转人工·本票阻断(站内提醒)\n        U-&gt;&gt;PF: 补录 ID No.(4~8位校验,留痕)\n        Note over PF: 随下次运行续跑(R4.2)\n    end\n    U-&gt;&gt;SP: 业务拖入进口发票邮件(与 Case4 同一起点)\n    PF-&gt;&gt;SP: 按 AWB 匹配发票邮件,取 PDF 提取 ASN/Shipment Date\n    alt 发票缺失\n        PF--&gt;&gt;U: 提醒业务补拖发票邮件后整单重跑(R4.3)\n    end\n    PF-&gt;&gt;PF: 多 Item 顺次收货拆行(R6,Item 取大表),映射 9 字段生成模板(R5.2)\n    PF-&gt;&gt;SPA: 归档 X-entry\\&lt;时间戳&gt;\\「AWB No._日期.xlsx」+ 原件\n    PF-&gt;&gt;PF: 收货记录登记(source=rpa)\n    PF--&gt;&gt;U: 完成提醒,收货记录(自动+手工)可查询\n    opt 人工重跑(判定链详见 §7)\n        U-&gt;&gt;PF: 重跑(整单/节点,携带补录/修正值)\n        PF-&gt;&gt;PF: 生成 R#35;N+1(大表快照重取+互斥幂等)\n    end&quot;,&#xa;  &quot;config&quot;: null,&#xa;  &quot;version&quot;: &quot;12&quot;&#xa;}" id="XHPw4hNx1ryvH0lFEXZH-1">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="SharePoint(起点文件夹)" mermaidId="n:SP" mermaidBaseStyle="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#FDF4FF;strokeColor=#E879F9;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;" mermaidBaseValue="SharePoint(起点文件夹)" id="XHPw4hNx1ryvH0lFEXZH-2">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#FDF4FF;strokeColor=#E879F9;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="1264" width="184" x="30" y="70" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="IO/BU" mermaidId="n:U" mermaidBaseStyle="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#F0FDFA;strokeColor=#2DD4BF;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;" mermaidBaseValue="IO/BU" id="XHPw4hNx1ryvH0lFEXZH-3">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#F0FDFA;strokeColor=#2DD4BF;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="1264" width="150" x="540" y="70" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="MBPTS平台" mermaidId="n:PF" mermaidBaseStyle="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#FFF7ED;strokeColor=#FB923C;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;" mermaidBaseValue="MBPTS平台" id="XHPw4hNx1ryvH0lFEXZH-4">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#FFF7ED;strokeColor=#FB923C;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="1264" width="150" x="877" y="70" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="诊断仪大表(维度表)" mermaidId="n:DIM" mermaidBaseStyle="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#ECFEFF;strokeColor=#22D3EE;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;" mermaidBaseValue="诊断仪大表(维度表)" id="XHPw4hNx1ryvH0lFEXZH-5">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#ECFEFF;strokeColor=#22D3EE;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="1264" width="150" x="1380" y="70" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="SharePoint(归档)" mermaidId="n:SPA" mermaidBaseStyle="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#F0FDF4;strokeColor=#4ADE80;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;" mermaidBaseValue="SharePoint(归档)" id="XHPw4hNx1ryvH0lFEXZH-6">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;sequenceEdgeStyle&quot;,&quot;libavoidRouting&quot;:0,&quot;curved&quot;:0,&quot;rounded&quot;:0};lifelineDashed=0;strokeWidth=2;rounded=1;absoluteArcSize=1;arcSize=12;lifelineColor=#28253D;fillColor=#F0FDF4;strokeColor=#4ADE80;fontColor=#28253D;size=73;lifelineMirror=1;fontFamily=Recursive;fontSize=16;shadow=1;shadowColor=#000000;shadowOffsetX=4;shadowOffsetY=4;shadowBlur=0;shadowOpacity=6;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="1264" width="150" x="1608" y="70" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="alt" mermaidId="n:f0" mermaidBaseStyle="html=1;shape=umlFrame;dashed=1;fixDash=1;dashPattern=2 2;strokeWidth=2;pointerEvents=0;dropTarget=0;fillColor=#ffffff;strokeColor=#28253D;fontSize=16;align=center;verticalAlign=middle;fontFamily=Recursive;fontColor=#28253D;height=35;width=50;" mermaidBaseValue="alt" id="XHPw4hNx1ryvH0lFEXZH-7">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlFrame;dashed=1;fixDash=1;dashPattern=2 2;strokeWidth=2;pointerEvents=0;dropTarget=0;fillColor=#ffffff;strokeColor=#28253D;fontSize=16;align=center;verticalAlign=middle;fontFamily=Recursive;fontColor=#28253D;height=35;width=50;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="184" width="437" x="605" y="413" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-8" parent="XHPw4hNx1ryvH0lFEXZH-7" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontFamily=Recursive;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="[PO 为空(硬阻断,R4.1)]" vertex="1">
+          <mxGeometry height="16" width="383" x="54" y="2" as="geometry" />
+        </mxCell>
+        <UserObject label="alt" mermaidId="n:f1" mermaidBaseStyle="html=1;shape=umlFrame;dashed=1;fixDash=1;dashPattern=2 2;strokeWidth=2;pointerEvents=0;dropTarget=0;fillColor=#ffffff;strokeColor=#28253D;fontSize=16;align=center;verticalAlign=middle;fontFamily=Recursive;fontColor=#28253D;height=35;width=50;" mermaidBaseValue="alt" id="XHPw4hNx1ryvH0lFEXZH-9">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlFrame;dashed=1;fixDash=1;dashPattern=2 2;strokeWidth=2;pointerEvents=0;dropTarget=0;fillColor=#ffffff;strokeColor=#28253D;fontSize=16;align=center;verticalAlign=middle;fontFamily=Recursive;fontColor=#28253D;height=35;width=50;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="91" width="357" x="605" y="699" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-10" parent="XHPw4hNx1ryvH0lFEXZH-9" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontFamily=Recursive;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="[发票缺失]" vertex="1">
+          <mxGeometry height="16" width="303" x="54" y="2" as="geometry" />
+        </mxCell>
+        <UserObject label="opt" mermaidId="n:f2" mermaidBaseStyle="html=1;shape=umlFrame;dashed=1;fixDash=1;dashPattern=2 2;strokeWidth=2;pointerEvents=0;dropTarget=0;fillColor=#ffffff;strokeColor=#28253D;fontSize=16;align=center;verticalAlign=middle;fontFamily=Recursive;fontColor=#28253D;height=35;width=50;" mermaidBaseValue="opt" id="XHPw4hNx1ryvH0lFEXZH-11">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;shape=umlFrame;dashed=1;fixDash=1;dashPattern=2 2;strokeWidth=2;pointerEvents=0;dropTarget=0;fillColor=#ffffff;strokeColor=#28253D;fontSize=16;align=center;verticalAlign=middle;fontFamily=Recursive;fontColor=#28253D;height=35;width=50;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="197" width="504" x="605" y="1044" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-12" parent="XHPw4hNx1ryvH0lFEXZH-11" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontFamily=Recursive;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="[人工重跑(判定链详见 §7)]" vertex="1">
+          <mxGeometry height="16" width="450" x="54" y="2" as="geometry" />
+        </mxCell>
+        <UserObject label="业务审阅送货邮件后手工拖入指定文件夹(附快件签收单 Excel)" mermaidId="e:U-&gt;SP#0" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="业务审阅送货邮件后手工拖入指定文件夹(附快件签收单 Excel)" id="XHPw4hNx1ryvH0lFEXZH-13">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-3" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-2">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="369" y="189" />
+              </Array>
+              <mxPoint x="615" y="189" as="sourcePoint" />
+              <mxPoint x="122" y="189" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="读取新增送货邮件" mermaidId="e:PF-&gt;SP#0" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="读取新增送货邮件" id="XHPw4hNx1ryvH0lFEXZH-14">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-2">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="537" y="235" />
+              </Array>
+              <mxPoint x="952" y="235" as="sourcePoint" />
+              <mxPoint x="122" y="235" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:PF-&gt;PF#0" mermaidBaseStyle="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="" id="XHPw4hNx1ryvH0lFEXZH-15">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;rounded=0;" target="XHPw4hNx1ryvH0lFEXZH-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="987" y="281" />
+                <mxPoint x="991" y="293" />
+                <mxPoint x="987" y="305" />
+              </Array>
+              <mxPoint x="952" y="281" as="sourcePoint" />
+              <mxPoint x="952" y="305" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-16" parent="XHPw4hNx1ryvH0lFEXZH-1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Recursive;fontSize=16;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="解析附件运单号 AWB,收单即建 Task+R#1(票=AWB)" vertex="1">
+          <mxGeometry height="18" width="200" x="852" y="255" as="geometry" />
+        </mxCell>
+        <UserObject label="按 AWB 查 PN(D)/QTY(F 加总)/ID No.(J)/Item No.(业务维护)" mermaidId="e:PF-&gt;DIM#0" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="按 AWB 查 PN(D)/QTY(F 加总)/ID No.(J)/Item No.(业务维护)" id="XHPw4hNx1ryvH0lFEXZH-17">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-5">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1204" y="357" />
+              </Array>
+              <mxPoint x="952" y="357" as="sourcePoint" />
+              <mxPoint x="1455" y="357" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="按 ID No. 查 M 列 MBPTS PO" mermaidId="e:PF-&gt;DIM#1" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="按 ID No. 查 M 列 MBPTS PO" id="XHPw4hNx1ryvH0lFEXZH-18">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-5">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1204" y="403" />
+              </Array>
+              <mxPoint x="952" y="403" as="sourcePoint" />
+              <mxPoint x="1455" y="403" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="报错转人工·本票阻断(站内提醒)" mermaidId="e:PF-&gt;U#0" mermaidBaseStyle="dashed=1;fixDash=1;dashPattern=3 3;endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="报错转人工·本票阻断(站内提醒)" id="XHPw4hNx1ryvH0lFEXZH-19">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="dashed=1;fixDash=1;dashPattern=3 3;endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-3">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="784" y="494" />
+              </Array>
+              <mxPoint x="952" y="494" as="sourcePoint" />
+              <mxPoint x="615" y="494" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="补录 ID No.(4~8位校验,留痕)" mermaidId="e:U-&gt;PF#0" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="补录 ID No.(4~8位校验,留痕)" id="XHPw4hNx1ryvH0lFEXZH-20">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-3" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="784" y="540" />
+              </Array>
+              <mxPoint x="615" y="540" as="sourcePoint" />
+              <mxPoint x="952" y="540" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="业务拖入进口发票邮件(与 Case4 同一起点)" mermaidId="e:U-&gt;SP#1" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="业务拖入进口发票邮件(与 Case4 同一起点)" id="XHPw4hNx1ryvH0lFEXZH-21">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-3" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-2">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="369" y="643" />
+              </Array>
+              <mxPoint x="615" y="643" as="sourcePoint" />
+              <mxPoint x="122" y="643" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="按 AWB 匹配发票邮件,取 PDF 提取 ASN/Shipment Date" mermaidId="e:PF-&gt;SP#1" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="按 AWB 匹配发票邮件,取 PDF 提取 ASN/Shipment Date" id="XHPw4hNx1ryvH0lFEXZH-22">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-2">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="537" y="689" />
+              </Array>
+              <mxPoint x="952" y="689" as="sourcePoint" />
+              <mxPoint x="122" y="689" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="提醒业务补拖发票邮件后整单重跑(R4.3)" mermaidId="e:PF-&gt;U#1" mermaidBaseStyle="dashed=1;fixDash=1;dashPattern=3 3;endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="提醒业务补拖发票邮件后整单重跑(R4.3)" id="XHPw4hNx1ryvH0lFEXZH-23">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="dashed=1;fixDash=1;dashPattern=3 3;endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-3">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="784" y="780" />
+              </Array>
+              <mxPoint x="952" y="780" as="sourcePoint" />
+              <mxPoint x="615" y="780" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:PF-&gt;PF#1" mermaidBaseStyle="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="" id="XHPw4hNx1ryvH0lFEXZH-24">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;rounded=0;" target="XHPw4hNx1ryvH0lFEXZH-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="987" y="836" />
+                <mxPoint x="991" y="848" />
+                <mxPoint x="987" y="860" />
+              </Array>
+              <mxPoint x="952" y="836" as="sourcePoint" />
+              <mxPoint x="952" y="860" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-25" parent="XHPw4hNx1ryvH0lFEXZH-1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Recursive;fontSize=16;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="多 Item 顺次收货拆行(R6,Item 取大表),映射 9 字段生成模板(R5.2)" vertex="1">
+          <mxGeometry height="18" width="200" x="852" y="810" as="geometry" />
+        </mxCell>
+        <UserObject label="归档 X-entry\&lt;时间戳&gt;\「AWB No._日期.xlsx」+ 原件" mermaidId="e:PF-&gt;SPA#0" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="归档 X-entry\&lt;时间戳&gt;\「AWB No._日期.xlsx」+ 原件" id="XHPw4hNx1ryvH0lFEXZH-26">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-6">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1318" y="912" />
+              </Array>
+              <mxPoint x="952" y="912" as="sourcePoint" />
+              <mxPoint x="1683" y="912" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:PF-&gt;PF#2" mermaidBaseStyle="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="" id="XHPw4hNx1ryvH0lFEXZH-27">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;rounded=0;" target="XHPw4hNx1ryvH0lFEXZH-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="987" y="958" />
+                <mxPoint x="991" y="970" />
+                <mxPoint x="987" y="982" />
+              </Array>
+              <mxPoint x="952" y="958" as="sourcePoint" />
+              <mxPoint x="952" y="982" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-28" parent="XHPw4hNx1ryvH0lFEXZH-1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Recursive;fontSize=16;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="收货记录登记(source=rpa)" vertex="1">
+          <mxGeometry height="18" width="200" x="852" y="932" as="geometry" />
+        </mxCell>
+        <UserObject label="完成提醒,收货记录(自动+手工)可查询" mermaidId="e:PF-&gt;U#2" mermaidBaseStyle="dashed=1;fixDash=1;dashPattern=3 3;endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="完成提醒,收货记录(自动+手工)可查询" id="XHPw4hNx1ryvH0lFEXZH-29">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="dashed=1;fixDash=1;dashPattern=3 3;endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-3">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="784" y="1034" />
+              </Array>
+              <mxPoint x="952" y="1034" as="sourcePoint" />
+              <mxPoint x="615" y="1034" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="重跑(整单/节点,携带补录/修正值)" mermaidId="e:U-&gt;PF#1" mermaidBaseStyle="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="重跑(整单/节点,携带补录/修正值)" id="XHPw4hNx1ryvH0lFEXZH-30">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-3" style="endArrow=block;endSize=9;verticalAlign=bottom;spacingBottom=2;edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=0;rounded=0;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" target="XHPw4hNx1ryvH0lFEXZH-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="784" y="1125" />
+              </Array>
+              <mxPoint x="615" y="1125" as="sourcePoint" />
+              <mxPoint x="952" y="1125" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:PF-&gt;PF#3" mermaidBaseStyle="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;" mermaidBaseValue="" id="XHPw4hNx1ryvH0lFEXZH-31">
+          <mxCell edge="1" parent="XHPw4hNx1ryvH0lFEXZH-1" source="XHPw4hNx1ryvH0lFEXZH-4" style="edgeStyle=sequenceEdgeStyle;libavoidRouting=0;curved=1;endArrow=block;endSize=9;verticalAlign=bottom;align=center;fontSize=16;labelBackgroundColor=none;strokeWidth=1.5;strokeColor=#28253D;fontColor=#28253D;fontFamily=Recursive;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;rounded=0;" target="XHPw4hNx1ryvH0lFEXZH-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="987" y="1171" />
+                <mxPoint x="991" y="1183" />
+                <mxPoint x="987" y="1195" />
+              </Array>
+              <mxPoint x="952" y="1171" as="sourcePoint" />
+              <mxPoint x="952" y="1195" as="targetPoint" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="XHPw4hNx1ryvH0lFEXZH-32" parent="XHPw4hNx1ryvH0lFEXZH-1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Recursive;fontSize=16;fontColor=#28253D;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" value="生成 R#N+1(大表快照重取+互斥幂等)" vertex="1">
+          <mxGeometry height="18" width="200" x="852" y="1145" as="geometry" />
+        </mxCell>
+        <UserObject label="随下次运行续跑(R4.2)" mermaidId="n:note0" mermaidBaseStyle="html=1;fillColor=#fff5ad;strokeColor=#FACC15;fontColor=#28253D;fontFamily=Recursive;fontSize=16;" mermaidBaseValue="随下次运行续跑(R4.2)" id="XHPw4hNx1ryvH0lFEXZH-33">
+          <mxCell parent="XHPw4hNx1ryvH0lFEXZH-1" style="html=1;fillColor=#fff5ad;strokeColor=#FACC15;fontColor=#28253D;fontFamily=Recursive;fontSize=16;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DRecursive;" vertex="1">
+            <mxGeometry height="37" width="159" x="873" y="550" as="geometry" />
+          </mxCell>
+        </UserObject>
       </root>
     </mxGraphModel>
   </diagram>

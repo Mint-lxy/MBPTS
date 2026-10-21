@@ -1,7 +1,8 @@
 # UC34 进口单证自动化平台 · Case1~5 时序图汇总
 
-> 版本 v1.0 · 2026-10-16
+> 版本 v1.1 · 2026-10-21
 > 用途：K44/K45 PRD 第六章「业务流程图与时序图」素材底稿，供周一交付前修订使用。
+> v1.1 变更：Case5 X-entry 邮件获取方式改版（2026-10-21 已确认）——送货邮件/发票邮件改为业务拖入 SharePoint 指定文件夹起点、Item No. 改由诊断仪大表取值（PO 邮件链废弃）、模板命名改「AWB No._日期」。
 > 素材来源：`docs\Case1_PRD\Case1_危险品托运清单_PRD_修订版.md`（v2.0.0）、`docs\Case2_PRD\UC34-Case2-GLC_PRD_修订版.md`（v1.2.4）、`docs\Case2_PRD\UC34-Case2-MBUSI_PRD_修订版.md`（v1.2.0）、`docs\Case2_PRD\PRD数据字段展示方式优化建议.md`（Case3/Case4 附录图）、`docs\Case5_PRD\UC34-Case5_PRD_修订版.md`（v2.0.0）、`c:\MBPTS\case全权限版本demo\`（开发侧全权限原型）。
 
 ---
@@ -36,7 +37,7 @@
 | Case3 MBPLAP 发票与预报 | — | 邮件触发（R-C3-PREALERT：@tvsscs.com + MBPLAP Pre-alert） | 预报邮件收单即建票（票=HAWB） | N1~N7 | IES 发票/预报创建 + 回复邮件 |
 | Case4 X-entry 发票与预报 | — | 邮件触发建票（R-C4-FEDEX：@fedex.com + 提单自报催办通知），12:00/20:00 批次执行 | Fedex 预报邮件（票=HAWB） | N1~N12 | IES 导入/预报（无通知邮件） |
 | Case5 ASN | MBPLAP | 定时调度（12:00/17:00，17:00 剔除 12:00 已成功票） | IES 预报导出登记即建票 | N1~N6 | 无对外写入（产出 DSS 模板） |
-| Case5 ASN | X-entry | 邮件触发（送货邮件） | 收单即建票（票=AWB） | N1~N7 | 无对外写入（产出 DSS 模板） |
+| Case5 ASN | X-entry | SharePoint 起点（业务审阅后拖入送货邮件，不再监听公邮） | 读取 SP 送货邮件即建票（票=AWB） | N1~N7 | 无对外写入（产出 DSS 模板） |
 
 > 触发归组（demo 任务中心口径）：定时/邮件 = 自动触发；手动新建/人工上传/重跑 = 人工触发。
 
@@ -406,7 +407,7 @@ sequenceDiagram
 
 ## 6. Case5 · ASN 自动创建（双支线，零 IES 写入）
 
-> 依据 Case5 PRD 修订版 v2.0.0 §6.2。2026-10-16 会议确认 Case5（批量重跑/批量下载/任务内重跑）不涉及时序变化，图保持原样；与 demo 核对触发口径一致（MBPLAP 定时 / X-entry 邮件）。
+> 依据 Case5 PRD 修订版 v2.0.0 §6.2。2026-10-16 会议确认 Case5（批量重跑/批量下载/任务内重跑）不涉及时序变化。**2026-10-21 已确认变更（X-entry）**：①送货邮件由业务审阅后手工拖入 SharePoint 指定文件夹，平台以 SP 中邮件为起点，不再按标题关键字监控公邮；②PO 邮件链废弃，Item No. 由业务维护进诊断仪大表直接取值；③进口发票邮件同 Case4 由业务拖入 SP 指定文件夹，按 AWB 匹配取值；④模板命名「PN_日期」改为「AWB No._日期」（日期取送货邮件标题中的日期，前置当年年份）。MBPLAP 支线不变。
 
 ### 6.1 MBPLAP 定时支线（6 节点）
 
@@ -437,36 +438,33 @@ sequenceDiagram
     end
 ```
 
-### 6.2 X-entry 邮件支线（7 节点）
+### 6.2 X-entry 支线（SharePoint 起点，7 节点）
 
 ```mermaid
 sequenceDiagram
-    participant M as Portal公邮 asn@mb.cn
+    participant SP as SharePoint(起点文件夹)
     participant U as IO/BU
     participant PF as MBPTS平台
     participant DIM as 诊断仪大表(维度表)
-    participant INV as 系统库(进口发票)
-    participant SP as SharePoint
+    participant SPA as SharePoint(归档)
 
-    M->>PF: 送货邮件(@bjfcl.com ∧ 快件签收单)
-    PF->>PF: 收单即建 Task+R#35;1(票=AWB)
-    PF->>DIM: 按 AWB 查 PN(D)/QTY(F 加总)/ID No.(J)
+    U->>SP: 业务审阅送货邮件后手工拖入指定文件夹(附快件签收单 Excel)
+    PF->>SP: 读取新增送货邮件
+    PF->>PF: 解析附件运单号 AWB,收单即建 Task+R#35;1(票=AWB)
+    PF->>DIM: 按 AWB 查 PN(D)/QTY(F 加总)/ID No.(J)/Item No.(业务维护)
     PF->>DIM: 按 ID No. 查 M 列 MBPTS PO
     alt PO 为空(硬阻断,R4.1)
         PF-->>U: 报错转人工·本票阻断(站内提醒)
         U->>PF: 补录 ID No.(4~8位校验,留痕)
         Note over PF: 随下次运行续跑(R4.2)
     end
-    PF->>M: 按 PO 号搜 IMS PO 邮件(标题/正文)
-    opt PO 邮件未到
-        PF->>PF: 挂 WAIT_INPUT,等齐续跑(R1.3)
-    end
-    PF->>INV: 按 AWB 查进口发票(ASN/Shipment Date)
+    U->>SP: 业务拖入进口发票邮件(与 Case4 同一起点)
+    PF->>SP: 按 AWB 匹配发票邮件,取 PDF 提取 ASN/Shipment Date
     alt 发票缺失
-        PF-->>U: 引导补传发票后整单重跑(R4.3)
+        PF-->>U: 提醒业务补拖发票邮件后整单重跑(R4.3)
     end
-    PF->>PF: 多 Item 顺次收货拆行(R6),映射 9 字段生成模板(R5.2)
-    PF->>SP: 归档 X-entry\<时间戳>\「PN_日期.xlsx」+ 原件
+    PF->>PF: 多 Item 顺次收货拆行(R6,Item 取大表),映射 9 字段生成模板(R5.2)
+    PF->>SPA: 归档 X-entry\<时间戳>\「AWB No._日期.xlsx」+ 原件
     PF->>PF: 收货记录登记(source=rpa)
     PF-->>U: 完成提醒,收货记录(自动+手工)可查询
     opt 人工重跑(判定链详见 §7)
@@ -564,6 +562,7 @@ sequenceDiagram
 | 8-3 | 上传中心形态 | demo 无独立上传中心页面，上传=任务级弹窗（场景：C12 CCC 信息提取/C13 关务报表/C06 ASN 结果回传）；Case4/Case5 PRD 按"上传中心"页面描述 | 待确认（页面 or 弹窗），影响 J 系列跳转表 |
 | 8-4 | 反向核对 case 细则 | 会议只定了起点与比对逻辑；差异清单的落点（大表新增列/独立报表/任务中心可见性）、调度具体时点、是否建 Task 均未细化 | 待与开发确认 |
 | 8-5 | Case4 触发 | demo=邮件触发建票+12:00/20:00 批次执行；原时序图=调度器扫描命中邮件 | 本文档已按 demo 改；Case4 整体待与开发讨论后再定稿 |
+| 8-6 | **Case5 X-entry 邮件获取改版细则** | 2026-10-21 已确认 SP 拖拽起点/Item 入大表/发票同 Case4/命名 AWB No._日期；**未细化**：①SP 指定文件夹路径与结构（送货/发票是否同夹，与 Case4 共用关系）②SP 监听方式与频率、"半天时延"起算口径 ③大表 Item No./PO QTY 列名与维护责任 ④送货邮件标题日期解析规则（"4.7"→当年-04-07，跨年件处理）⑤发票缺失是否保留上传中心补传入口 | **待确认**，确认后回写 Case5 PRD 并同步原型 |
 
 ---
 
@@ -578,5 +577,5 @@ sequenceDiagram
 | §3.4 MBUSI-R | 2026-10-16 会议口述 | **新增** |
 | §4 Case3 | `PRD数据字段展示方式优化建议.md` 附录 | **新增人工修正环节**（会议+demo）；多对一→一对多更正；改写为系统交互视角 |
 | §5 Case4 | `PRD数据字段展示方式优化建议.md` 附录 | 触发口径按 demo 改为邮件触发建票+批次执行；改写为系统交互视角 |
-| §6 Case5 | `UC34-Case5_PRD_修订版.md` v2.0.0 §6.2 | 无 |
+| §6 Case5 | `UC34-Case5_PRD_修订版.md` v2.0.0 §6.2 + 2026-10-21 已确认变更 | **X-entry 改 SP 拖拽起点、Item 取大表（PO 邮件链删）、发票同 Case4 从 SP 取、命名改 AWB No._日期**；MBPLAP 不变 |
 | §7 通用重跑 | GLC v1.2.4 §6.2.1 为基准 | 泛化为通用版+各 Case 差异表 |
