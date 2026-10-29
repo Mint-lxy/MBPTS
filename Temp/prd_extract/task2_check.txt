@@ -1,0 +1,63 @@
+﻿[标题 4|8.2.3.2|b=-1] 任务二：单票填写托运清单
+[正文||b=-1] 节点执行轨迹总览
+  [TABLE rows=10 cols=6] first='序号 | 节点名称 | 适用 Type | 轨迹中的一行摘要 | 产出文件标签 '
+[正文||b=0] 节点 2-3 至 2-6 按零件的 Type 执行（Type 来自任务一 Part List AR 列；SET 套装在节点 2-2 展开后按各 UN 的 Type 执行）。同一票的不同零件可走不同分支，最终在节点 2-7 汇总；该票没有对应 Type 的零件时，节点显示为“无需执行”（灰色），不影响后续节点。
+[正文||b=0] 票级判定为“N_ Not required”时，节点 2-8 显示为“无需执行”，任务状态为“已完成”，并带“N_ Not required”标签。
+[正文||b=-1] Type 分支说明
+  [TABLE rows=6 cols=5] first='Type | 附表4 判定 | 经过节点 | 是否纳入明细 | 运输名称来源 |'
+[正文||b=-1] 节点 2-1：IES+ 下载 Shippers_Decl
+[正文||b=0] 节点说明：IES+ 预报界面按 HAWB/BL No. 搜索并下载 Shippers_Decl PDF，重命名为 shippers_Decl_<HAWB/BL No.>。
+  [TABLE rows=3 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 下载记录 | 过程证'
+[正文||b=0] 
+  [TABLE rows=2 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 未找到 Shippers_'
+[正文||b=-1] 节点 2-2：Agent 识别 Shippers_Decl
+[正文||b=0] 节点说明：识别 Shippers_Decl 中的危险品字段；SET 套装从 Shippers_Decl 取出各 UN No.，逐个匹配附表4，展开为独立的零件行并带上各自的 Type。本节点为解析节点，工作区分左右两栏：左栏为当前识别数据，右栏为原文预览。字段口径详见“7.4.1 识别与判定字段”。
+[正文||b=0] 当前识别数据（示例）
+  [TABLE rows=7 cols=5] first='字段 | 识别值 | 来源 | 置信度 | 是否必填 | UN or ID No'
+[正文||b=0] 
+  [TABLE rows=4 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 字段识别结果 | 过'
+[正文||b=0] 
+  [TABLE rows=5 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 存在低置信字段 | 待人工'
+[正文||b=-1] 节点 2-3：IES+ 查询 Hazmat
+[正文||b=0] 节点说明：仅对 Type3（待定，查 Hazmat）零件执行。IES+ Hazmat 模块按 Part No. 查询 Hazmat indicator：Y → 标记为“需取 SDS”，进入节点 2-4；N → 按普通货物处理，该零件不纳入明细。
+  [TABLE rows=2 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | Hazmat 查询结'
+[正文||b=0] 
+  [TABLE rows=3 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 该票无 Type3 零件 '
+[正文||b=-1] 节点 2-4：IES+ 下载 SDS
+[正文||b=0] 节点说明：对 Type2 零件及 Hazmat = Y 的 Type3 零件，IES+ Hazmat 模块按 Part No. 批量下载附件，选中 SDS 下载。
+  [TABLE rows=3 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | SDS 下载记录 |'
+[正文||b=0] 
+  [TABLE rows=3 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 该票无需取 SDS 的零件'
+[正文||b=-1] 节点 2-5：Agent 识别 SDS 第 14 部分
+[正文||b=0] 节点说明：识别 SDS 第 14 部分的“联合国运输名称”或“道路运输 (JT/T 617)”，作为 Type2、Type3 零件的运输名称（第 14 部分现有 3 种版式）。本节点为解析节点，左栏为当前识别数据，右栏为 SDS 原文预览，多份 SDS 以页签区分。
+[正文||b=0] 当前识别数据（示例）
+  [TABLE rows=3 cols=5] first='字段 | 识别值 | 来源 | 置信度 | 是否必填 | 运输名称（Part N'
+[正文||b=0] 
+  [TABLE rows=3 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 字段识别结果 | 过'
+[正文||b=0] 
+  [TABLE rows=4 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 该票无需取 SDS 的零件'
+[正文||b=-1] 节点 2-6：Part List 查 Unit N.W
+[正文||b=0] 节点说明：仅对 Type4（待定，查包装净重）零件执行。在 Part List 中按 UN Number 与 DG Code 定位零件，取 AJ 列 Unit N.W 判定：≤ 4kg → 不纳入；> 4kg 且有 Shippers_Decl → 按 Type1 纳入；> 4kg 且无 Shippers_Decl → 不纳入并记录 Remark。
+  [TABLE rows=2 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 净重判定结果 | 过'
+[正文||b=0] 
+  [TABLE rows=4 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 该票无 Type4 零件 '
+[正文||b=-1] 节点 2-7：Excel 填写托运清单表
+[正文||b=0] 节点说明：汇总节点 2-2 至 2-6 各零件行的判定结果。按三键匹配附表1 填写表头；将“纳入”的零件行按附表2 写入危险货物明细（运输名称：Type1 / Type4 取附表4，Type2 / Type3 取 SDS 第 14 部分；包装规格按附表3 映射）；进行票级判定。
+  [TABLE rows=5 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 表头 Mapping'
+[正文||b=0] 
+  [TABLE rows=4 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 附表1 表头 Mappin'
+[正文||b=-1] 节点 2-8：IES+ 上传托运清单【待确认】
+[正文||b=0] 节点说明：进口预报 → 输入 HAWB/BL No. → 修改 → 文档资料“上传”，文档类别选择 Others，上传托运清单并保存；记录上传状态 Y / N。
+  [TABLE rows=2 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 上传记录 | 过程证'
+[正文||b=0] 
+  [TABLE rows=3 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 未获取到 IES+ 上传回'
+[正文||b=-1] 节点 2-9：文件归档
+[正文||b=0] 节点说明：按“运行日期 / HAWB/BL No.”归档 Part List、Shippers_Decl、MSDS（如涉及）、完成版托运清单。
+  [TABLE rows=2 cols=4] first='序号 | 名称 | 类型 | 点击后展示的内容 | 1 | 归档记录 | 过程证'
+[正文||b=0] 
+  [TABLE rows=2 cols=4] first='情形 | 节点状态 | 显示的说明 | 可用操作 | 存档路径不可用 | 完成（'
+[正文||b=-1] 节点状态与任务状态的对应
+  [TABLE rows=5 cols=2] first='节点情形 | 任务状态 | 9 个节点全部完成或无需执行（含“提示”类情形、N_'
+[正文||b=0] 
+[标题 4|8.2.3.3|b=-1] 任务三：汇总任务结果并邮件通知
+marker left: False

@@ -1,0 +1,126 @@
+!heading 任务二：单票填写托运清单
+!fix 解析节点（节点 2-3）的工作区|||解析节点（节点 2-2、节点 2-5）的工作区
+!fix 以文件页签区分 Shippers_Decl、SDS，支持翻页和缩放|||以文件页签区分 Shippers_Decl、SDS（多份 SDS 分别成页签），支持翻页和缩放
+>b 节点执行轨迹总览
+|序号|节点名称|适用 Type|轨迹中的一行摘要|产出文件标签|分支与异常时的显示
+|2-1|IES+ 下载 Shippers_Decl|全部|已下载 Shippers_Decl|shippers_Decl_<HAWB No.>.pdf|提示：未找到 Shippers_Decl，流程继续，任务最终转待人工处理
+|2-2|Agent 识别 Shippers_Decl|全部（含 SET 展开）|已识别 n 项字段；SET 已展开为 m 个 UN No.|—|待人工处理：低置信或必填缺失；待人工处理：SET 票无 Shippers_Decl 无法展开；无需执行：无 Shippers_Decl 且无 SET
+|2-3|IES+ 查询 Hazmat|Type3|已查询 n 个零件：Y × a、N × b|—|无需执行：无 Type3 零件；待人工处理：Hazmat 未查到【待确认】
+|2-4|IES+ 下载 SDS|Type2、Hazmat = Y 的 Type3|已下载 SDS m 份|SDS_<Part No.>.pdf|无需执行：无需取 SDS 的零件；提示：未查到 SDS
+|2-5|Agent 识别 SDS 第 14 部分|同 2-4|已识别运输名称 m 项|—|无需执行：同 2-4；待人工处理：低置信或未识别到运输名称
+|2-6|Part List 查 Unit N.W|Type4|已判定 n 个零件：≤ 4kg × a、> 4kg × b|—|无需执行：无 Type4 零件；提示：> 4kg 且无 Shippers_Decl；待人工处理：Unit N.W 为空【待确认】
+|2-7|Excel 填写托运清单表|汇总|表头已匹配，纳入明细 n 行，已生成托运清单|道路运输危险货物托运清单_<HAWB No.>.xlsx|失败：表头 Mapping 无匹配；完成：N_ Not required（不生成清单）
+|2-8|IES+ 上传托运清单【待确认】|—|已上传至 IES+ 预报文档资料（Others）|上传回执|失败：无上传回执；无需执行：N_ Not required
+|2-9|文件归档|—|已归档 n 个文件|—|提示：存档失败，已告警并补偿写入
+> 节点 2-3 至 2-6 按零件的 Type 执行（Type 来自任务一 Part List AR 列；SET 套装在节点 2-2 展开后按各 UN 的 Type 执行）。同一票的不同零件可走不同分支，最终在节点 2-7 汇总；该票没有对应 Type 的零件时，节点显示为“无需执行”（灰色），不影响后续节点。
+> 票级判定为“N_ Not required”时，节点 2-8 显示为“无需执行”，任务状态为“已完成”，并带“N_ Not required”标签。
+>b Type 分支说明
+|Type|附表4 判定|经过节点|是否纳入明细|运输名称来源
+|Type1|Y|2-1 → 2-2 → 2-7|纳入|附表4
+|Type2|Y，查 SDS 第14章|2-1 → 2-2 → 2-4 → 2-5 → 2-7|纳入|SDS 第 14 部分
+|Type3|待定，查 Hazmat|2-1 → 2-2 → 2-3 →（Hazmat = Y）2-4 → 2-5 → 2-7|Hazmat = Y 纳入；= N 不纳入|SDS 第 14 部分
+|Type4|待定，查包装净重|2-1 → 2-2 → 2-6 → 2-7|> 4kg 且有 Shippers_Decl 纳入；≤ 4kg 或 > 4kg 无 Shippers_Decl 不纳入|附表4（同 Type1）
+|SET|按 Y 处理|在 2-2 展开为多个 UN 后，各 UN 按自身 Type 走对应路径|按各 UN 的 Type 判定|按各 UN 的 Type
+>b 节点 2-1：IES+ 下载 Shippers_Decl
+> 节点说明：IES+ 预报界面按 HAWB/BL No. 搜索并下载 Shippers_Decl PDF，重命名为 shippers_Decl_<HAWB/BL No.>。
+|序号|名称|类型|点击后展示的内容
+|1|下载记录|过程证据|查询单号、下载结果（Y / N）、文件名、运行状态表 Shippers_Decl 列写入值
+|2|shippers_Decl_<HAWB No.>.pdf|附件|原件预览（支持翻页、缩放）
+
+|情形|节点状态|显示的说明|可用操作
+|未找到 Shippers_Decl|完成（带提示）|“未在 IES+ 找到 Shippers_Decl，已记录 Remark ‘Not found shippers_Decl’，流程继续；SET 套装将无法展开，Type4 中 > 4kg 的零件将不纳入并记录 Remark；本票最终转待人工处理”|在 IES+ 补齐后任务重跑；置为成功【待确认】
+>b 节点 2-2：Agent 识别 Shippers_Decl
+> 节点说明：识别 Shippers_Decl 中的危险品字段；SET 套装从 Shippers_Decl 取出各 UN No.，逐个匹配附表4，展开为独立的零件行并带上各自的 Type。本节点为解析节点，工作区分左右两栏：左栏为当前识别数据，右栏为原文预览。字段口径详见“7.4.1 识别与判定字段”。
+> 当前识别数据（示例）
+|字段|识别值|来源|置信度|是否必填
+|UN or ID No.|UN1263|OCR|高 · 99%|是
+|Proper Shipping Name|PAINT|OCR|高 · 98%|是
+|Class or Division (Subsidiary Hazard)|3|OCR|高 · 98%|是
+|Packing Group|III|OCR|高 · 97%|否（为空或“-”时填“-”）
+|Quantity and type of packing|5 CARDBOARD BOX|OCR|中 · 85%|是
+|UN 编码（Part List AN 列）|1263|系统|规则确定 · 100%|是
+
+|序号|名称|类型|点击后展示的内容
+|1|字段识别结果|过程证据|上表全部字段；每个字段提供“定位”“修正”操作
+|2|SET 展开结果（仅 SET 票显示）|过程证据|SET 零件 Part No.、从 Shippers_Decl 取得的各 UN No.、各 UN 匹配附表4 得到的 Type
+|3|shippers_Decl_<HAWB No.>.pdf|附件|原文预览；被“定位”的字段在原文中高亮
+
+|情形|节点状态|显示的说明|可用操作
+|存在低置信字段|待人工处理|“字段 xxx 置信度低，已高亮，请核对原文并修正后重跑”|定位、修正、任务重跑
+|必填字段未识别|待人工处理|“必填字段 xxx 未识别，请在下方修正后重跑”|定位、修正、任务重跑
+|SET 票未下载到 Shippers_Decl|待人工处理|“SET 套装需从 Shippers_Decl 获取 UN No.，当前未下载到 Shippers_Decl，无法展开，请在 IES+ 补齐后重跑”|任务重跑
+|非 SET 票未下载到 Shippers_Decl|无需执行|“未下载到 Shippers_Decl，本节点跳过”|无
+>b 节点 2-3：IES+ 查询 Hazmat
+> 节点说明：仅对 Type3（待定，查 Hazmat）零件执行。IES+ Hazmat 模块按 Part No. 查询 Hazmat indicator：Y → 标记为“需取 SDS”，进入节点 2-4；N → 按普通货物处理，该零件不纳入明细。
+|序号|名称|类型|点击后展示的内容
+|1|Hazmat 查询结果|过程证据|Part No.、UN No.、Hazmat indicator（Y / N）、判定结果（进入 SDS / 不纳入）、IES+ 查询截图
+
+|情形|节点状态|显示的说明|可用操作
+|该票无 Type3 零件|无需执行|“本票无需查询 Hazmat”|无
+|Hazmat indicator 未查到|待人工处理【待确认】|“Part No. xxx 未查到 Hazmat indicator，无法判断是否纳入，请在 IES+ 核查后重跑”|节点重跑；置为成功【待确认】
+>b 节点 2-4：IES+ 下载 SDS
+> 节点说明：对 Type2 零件及 Hazmat = Y 的 Type3 零件，IES+ Hazmat 模块按 Part No. 批量下载附件，选中 SDS 下载。
+|序号|名称|类型|点击后展示的内容
+|1|SDS 下载记录|过程证据|Part No.、来源 Type（Type2 / Type3）、是否找到 SDS、文件名
+|2|SDS_<Part No.>.pdf|附件|SDS 原件预览
+
+|情形|节点状态|显示的说明|可用操作
+|该票无需取 SDS 的零件|无需执行|“本票无需下载 SDS”|无
+|未查到 SDS|完成（带提示）|“Part No. xxx 未查到 SDS，已记录 Remark；该零件运输名称缺失”|在 IES+ 补齐后节点重跑
+>b 节点 2-5：Agent 识别 SDS 第 14 部分
+> 节点说明：识别 SDS 第 14 部分的“联合国运输名称”或“道路运输 (JT/T 617)”，作为 Type2、Type3 零件的运输名称（第 14 部分现有 3 种版式）。本节点为解析节点，左栏为当前识别数据，右栏为 SDS 原文预览，多份 SDS 以页签区分。
+> 当前识别数据（示例）
+|字段|识别值|来源|置信度|是否必填
+|运输名称（Part No. 1）|涂料|OCR|高 · 96%|是
+|运输名称（Part No. 2）|胶粘剂|OCR|中 · 82%|是
+
+|序号|名称|类型|点击后展示的内容
+|1|字段识别结果|过程证据|逐零件显示 Part No.、运输名称、来源、置信度；每个字段提供“定位”“修正”操作
+|2|SDS 原文|附件|原文预览；被“定位”的字段在原文中高亮
+
+|情形|节点状态|显示的说明|可用操作
+|该票无需取 SDS 的零件|无需执行|“本票无需识别 SDS”|无
+|存在低置信字段|待人工处理|“Part No. xxx 的运输名称置信度低，已高亮，请核对原文并修正后重跑”|定位、修正、任务重跑
+|第 14 部分未识别到运输名称|待人工处理|“SDS 第 14 部分未识别到运输名称，请核对原文并修正后重跑”|定位、修正、任务重跑
+>b 节点 2-6：Part List 查 Unit N.W
+> 节点说明：仅对 Type4（待定，查包装净重）零件执行。在 Part List 中按 UN Number 与 DG Code 定位零件，取 AJ 列 Unit N.W 判定：≤ 4kg → 不纳入；> 4kg 且有 Shippers_Decl → 按 Type1 纳入；> 4kg 且无 Shippers_Decl → 不纳入并记录 Remark。
+|序号|名称|类型|点击后展示的内容
+|1|净重判定结果|过程证据|Part No.、UN No.、DG Code、Unit N.W、是否有 Shippers_Decl、判定结果（纳入 / 不纳入）
+
+|情形|节点状态|显示的说明|可用操作
+|该票无 Type4 零件|无需执行|“本票无需判定包装净重”|无
+|> 4kg 且未下载到 Shippers_Decl|完成（带提示）|Remark 记“含UN3082/UN3077，需进一步核查包装规格是否大于5L/5KG”|线下核查后任务重跑或置为成功
+|Unit N.W 为空|待人工处理【待确认】|“Part No. xxx 的 Unit N.W 为空，无法判定是否纳入，请在 IES+ 核查后重跑”|节点重跑
+>b 节点 2-7：Excel 填写托运清单表
+> 节点说明：汇总节点 2-2 至 2-6 各零件行的判定结果。按三键匹配附表1 填写表头；将“纳入”的零件行按附表2 写入危险货物明细（运输名称：Type1 / Type4 取附表4，Type2 / Type3 取 SDS 第 14 部分；包装规格按附表3 映射）；进行票级判定。
+|序号|名称|类型|点击后展示的内容
+|1|表头 Mapping 结果|过程证据|三键值（PDC、Invoice Type、Terminal WH）、命中的附表1 行、10 个表头字段填写值
+|2|零件判定明细|过程证据|逐零件行：Part No.、UN No.（SET 标注所属套装）、Type、判定路径（如“2-3 Hazmat = Y → 2-4 → 2-5”）、判定依据（Hazmat indicator / Unit N.W / 有无 Shippers_Decl）、是否纳入、运输名称来源、Remark；不纳入的行灰显
+|3|票级判定|过程证据|生成托运清单 / N_ Not required，及判定依据
+|4|道路运输危险货物托运清单_<HAWB No.>.xlsx|文件预览|表头与危险货物明细单内容
+
+|情形|节点状态|显示的说明|可用操作
+|附表1 表头 Mapping 无匹配|失败|“表头 Mapping 无匹配（PDC = xxx / Invoice Type = xxx / Terminal WH = xxx），请在配置中心补充附表1 后重跑”；提示条中提供“去维护附表1”链接|配置角色可跳转配置中心补充映射，其他角色该链接置灰；节点重跑
+|附表3 包装类型未命中|完成（带提示）|“包装类型 xxx 未在附表3 中，包装规格已留空并记录 Remark”；提供“去维护附表3”链接|补充附表3 后节点重跑
+|全票无纳入明细|完成|“本票无需制作托运清单，已记 N_ Not required”；节点 2-8 显示无需执行|无
+>b 节点 2-8：IES+ 上传托运清单【待确认】
+> 节点说明：进口预报 → 输入 HAWB/BL No. → 修改 → 文档资料“上传”，文档类别选择 Others，上传托运清单并保存；记录上传状态 Y / N。
+|序号|名称|类型|点击后展示的内容
+|1|上传记录|过程证据|HAWB/BL No.、IES+ 文档类别（Others）、文件名、上传结果（Y / N）、IES+ 截图 / 回执
+
+|情形|节点状态|显示的说明|可用操作
+|未获取到 IES+ 上传回执|失败|“未获取到 IES+ 上传回执，请在 IES+ 核查是否已上传后重跑（避免产生重复附件）”|节点重跑（需二次确认）
+|票级判定为 N_ Not required|无需执行|“本票无需制作托运清单，无需上传”|无
+>b 节点 2-9：文件归档
+> 节点说明：按“运行日期 / HAWB/BL No.”归档 Part List、Shippers_Decl、MSDS（如涉及）、完成版托运清单。
+|序号|名称|类型|点击后展示的内容
+|1|归档记录|过程证据|归档路径、已归档文件列表；提供“归档位置”跳转 Share Point
+
+|情形|节点状态|显示的说明|可用操作
+|存档路径不可用|完成（带提示）|“存档失败，已告警并加入补偿队列，不影响本票处理结果”|无
+>b 节点状态与任务状态的对应
+|节点情形|任务状态
+|9 个节点全部完成或无需执行（含“提示”类情形、N_ Not required）|已完成
+|任一节点执行中|执行中
+|节点 2-1 未找到 Shippers_Decl；节点 2-2 / 2-5 存在低置信或必填缺失；节点 2-2 SET 无法展开；节点 2-3 Hazmat 未查到、节点 2-6 Unit N.W 为空【待确认】|待人工处理
+|节点 2-7 表头 Mapping 无匹配；节点 2-8 无上传回执|待人工处理（失败）
